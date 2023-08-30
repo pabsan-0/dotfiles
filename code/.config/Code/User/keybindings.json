@@ -1,3 +1,4 @@
+// VSCode key bindings
 [
     {
         // Mimics atom tabbing behavior when part of a line is selected
@@ -72,5 +73,21 @@
         "key": "alt+g",
         "command": "cursorHome",
         "when": "editorTextFocus"
+    },
+    {
+        "key": "shift+delete",
+        "command": "editor.action.deleteLines",
+        "when": "textInputFocus && !editorReadonly"
+    },
+    /*
+    ,
+    {
+        "key": "shift+space",
+        "command": "type",
+        "when": "editorTextFocus",
+        "args": {
+            "text": "_"
+        }
     }
+    */
 ]
