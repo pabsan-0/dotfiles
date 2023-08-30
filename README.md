@@ -30,3 +30,6 @@
     - .inputrc
 
 - Make a map on how everything comes together
+
+
+<img src="./.docs/preview.png" width="640" height="360" />
