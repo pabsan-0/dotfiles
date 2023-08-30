@@ -1,0 +1,5 @@
+#! xargs sudo apt install  
+
+vim 
+tmux
+tmuxinator

@@ -1,0 +1,76 @@
+[
+    {
+        // Mimics atom tabbing behavior when part of a line is selected
+        // so that the line(s) is indented without replacing the selection
+        // with the tab character.
+        "key": "tab",
+        "command": "editor.action.indentLines",
+        "when": "editorHasSelection && editorTextFocus && !editorReadonly"
+    },
+    {
+        // Open a terminal in the location of the active text file
+        "key": "ctrl+alt+t",
+        "command": "openInTerminal"
+    },
+    {
+        // Mimics atom duplicate line behavior
+        "key": "ctrl+shift+d",
+        "command": "editor.action.copyLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "ctrl+shift+alt+down",
+        "command": "-editor.action.copyLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {   // Move lines UP with control instead of alt
+        "key": "ctrl+up",
+        "command": "editor.action.moveLinesUpAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "alt+up",
+        "command": "editor.action.moveLinesUpAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {   // Move lines DOWN with control instead of alt
+        "key": "ctrl+down",
+        "command": "editor.action.moveLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "alt+down",
+        "command": "editor.action.moveLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {   // Mimic VIM cursor movements when pressing alt
+        "key": "alt+k",
+        "command": "cursorUp",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+j",
+        "command": "cursorDown",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+l",
+        "command": "cursorRight",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+h",
+        "command": "cursorLeft",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+;",
+        "command": "cursorEnd",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "alt+g",
+        "command": "cursorHome",
+        "when": "editorTextFocus"
+    }
+]
