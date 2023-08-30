@@ -1,5 +1,6 @@
-#! xargs sudo apt install  
+#! xargs sudo apt install 
 
+stow
 vim 
 tmux
 tmuxinator
