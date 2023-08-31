@@ -121,8 +121,8 @@ set $urgent-bg-color     #E53935
 # window colors
 #                       border              background         text                 indicator
 client.focused          $bg-color           $bg-color          $text-color          #00ff00
-client.unfocused        $inactive-bg-color $inactive-bg-color $inactive-text-color #00ff00
-client.focused_inactive $inactive-bg-color $inactive-bg-color $inactive-text-color #00ff00
+client.unfocused        $inactive-bg-color  $inactive-bg-color $inactive-text-color #00ff00
+client.focused_inactive $inactive-bg-color  $inactive-bg-color $inactive-text-color #00ff00
 client.urgent           $urgent-bg-color    $urgent-bg-color   $text-color          #00ff00
 
 # bar
@@ -130,7 +130,7 @@ bar {
   	status_command i3blocks -c ~/.config/i3/i3blocks.conf
 	colors {
 		background $bg-color
-	    	separator #757575
+		separator #757575
 		#                  border             background         text
 		focused_workspace  $bg-color          $bg-color          $text-color
 		inactive_workspace $inactive-bg-color $inactive-bg-color $inactive-text-color
@@ -142,15 +142,15 @@ bar {
 # sticky window
 bindsym $mod+Shift+s sticky toggle
 
-# floating
-for_window [class="qTox"] floating enable
-for_window [class="Pavucontrol"] floating enable
-for_window [class="Skype"] floating enable
+# floating if needed
+# for_window [class="qTox"] floating enable
+# for_window [class="Pavucontrol"] floating enable
+# for_window [class="Skype"] floating enable
 
 # default workspaces
-assign [class="Spotify"] $workspace10
-assign [class="Skype"] $workspace9
-assign [class="qTox"] $workspace9
+# assign [class="Spotify"] $workspace10
+# assign [class="Skype"] $workspace9
+# assign [class="qTox"] $workspace9
 
 # workspace default monitors
 workspace $workspace1 output DVI-I-2
@@ -179,8 +179,6 @@ bindsym $mod+d exec rofi -show run -lines 3 -eh 2 -width 100 -padding 800 -opaci
 # startup
 # exec_always --no-startup-id feh --bg-scale /home/booker/.wallpaper.jpg
 # exec_always --no-startup-id xrandr --output HDMI-0 --off --output DVI-I-1 --off --output DVI-I-0 --off --output DVI-I-3 --mode 1920x1080 --pos 0x0 --rotate normal --output DVI-I-2 --mode 1920x1080 --pos 1920x0 --rotate normal
-# exec --no-startup-id spotify
-# exec --no-startup-id skype
 
 # Keys
 # exec_always xmodmap -e "clear lock" #disable caps lock switch
@@ -201,9 +199,10 @@ exec --no-startup-id i3-msg "workspace $workspace10; append_layout ~/.config/i3/
 
 # Open apps
 exec --no-startup-id firefox
-exec --no-startup-id konsole
 exec --no-startup-id code 
+exec --no-startup-id konsole
 exec --no-startup-id chromium --app="https://web.whatsapp.com"   # browser applications - chromium is superior on this
 exec --no-startup-id chromium --app="https://www.youtube.com/watch?v=jfKfPfyJRdk&pp=ygUJbG9maSBnaXJs"
+exec --no-startup-id spotify
 
 
