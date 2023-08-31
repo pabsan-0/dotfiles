@@ -8,7 +8,7 @@ font pango:monospace 9
 # thin borders
 hide_edge_borders both
 
-# drag windows
+# drag windows with Alt
 floating_modifier Mod1
 
 # change focus
@@ -171,11 +171,14 @@ bindsym $mod+Shift+s sticky toggle
 # bindsym XF86AudioNext exec playerctl next
 # bindsym XF86AudioPrev exec playerctl previous
 # bindsym $mod+Shift+f exec firefox
-bindsym $mod+Return exec konsole # i3-sensible-terminal
+bindsym $mod+Return exec konsole
 bindsym $mod+Shift+q kill
 bindsym Print exec screenshot
 bindsym $mod+d exec rofi -show run -lines 3 -eh 2 -width 100 -padding 800 -opacity "85" -bw 0 -bc "$bg-color" -bg "$bg-color" -fg "$text-color" -hlbg "$bg-color" -hlfg "#9575cd" #  -font "System San Francisco Display 18"
 bindsym $mod+Tab exec rofi -show window
+
+# If I used dunst, I'd need this
+# exec /usr/bin/dunst
 
 # startup
 # exec_always --no-startup-id xrandr --output HDMI-0 --off --output DVI-I-1 --off --output DVI-I-0 --off --output DVI-I-3 --mode 1920x1080 --pos 0x0 --rotate normal --output DVI-I-2 --mode 1920x1080 --pos 1920x0 --rotate normal
@@ -184,16 +187,13 @@ bindsym $mod+Tab exec rofi -show window
 # exec_always xmodmap -e "clear lock" #disable caps lock switch
 # exec_always xmodmap -e "keysym Caps_Lock = Escape" #set caps_lock as escape
 
-# Switchable US-ES keyboard
-# localectl  
-# localectl list-x11-keymap-layouts 
-# setxkbmap -query
-exec_always --no-startup-id "setxkbmap -model pc105 -layout us,es -option  grp:win_space_toggle"
 
 # Window smooth transitions and wallpaper
 exec --no-startup-id compton -f
 exec --no-startup-id feh --bg-scale --zoom fill ~/dotfiles/i3/.config/i3/media/.wallpaper.jpg
 
+# Switchable US-ES keyboard, needs delay on launch.
+exec_always "sleep 5; setxkbmap -model pc105 -layout us,es -option grp:win_space_toggle"
 
 # Define a layout for startup 
 exec --no-startup-id i3-msg "workspace $workspace1;  append_layout ~/.config/i3/layouts/startup/workspace-1.json"
