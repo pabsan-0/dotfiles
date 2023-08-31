@@ -1,0 +1,22 @@
+#! /bin/bash
+#
+# This script parses virtual led values to yield the language 
+# the keyboard is set to.
+# 
+
+layout_code () {
+    led_strip_virtual=$(xset -q|grep LED| awk '{ print $10 }')
+    led_strip_fifth=${led_strip_virtual:4:1}
+    echo $led_strip_fifth
+}
+
+layout_code_humanreadable () {
+    case $(layout_code) in
+        "0") KBD="US" ;;
+        "1") KBD="ES" ;;
+        *) KBD="?" ;;
+    esac
+    echo "$KBD "
+}
+
+layout_code_humanreadable
