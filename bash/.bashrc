@@ -117,11 +117,24 @@ if ! shopt -oq posix; then
 fi
 
 
-export PATH="/home/pablo/pablocustompath:$PATH"
+find_up () {
+    local path=$(pwd)
 
+    while [[ "$path" != "" && ! -e "$path/$1" ]]; do
+        path=${path%/*}
+    done
+    echo "$path"
+}
+
+export PATH="/home/pablo/pablocustompath:$PATH"
 source /opt/ros/humble/setup.bash && echo Sourced ROS Humble!
-fortune pabsan 
 
 
 alias dotconf="code ~/dotfiles"
-alias i3conf="vim ~/dotfiles/i3/.config/i3/config"
+alias i3conf="vim ~/.config/i3/config"
+alias bashrcconf="vim ~/.bashrc"
+
+alias ,="xdg-open"
+alias gitcd="cd $(find_up .git)"
+
+fortune pabsan 
