@@ -27,7 +27,7 @@ bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
 # split in h/v orientation
-bindsym $mod+s split h  # think sunset :)
+bindsym $mod+s split h  
 bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
@@ -72,7 +72,7 @@ bindsym $mod+Shift+0 move container to workspace $workspace10
 
 # switch to workspace
 bindsym $mod+1 workspace $workspace1; exec [ $(ps h -C firefox | wc -l) = 0 ] && firefox  # open a firefox on switch to ws1 
-bindsym $mod+2 workspace $workspace2
+bindsym $mod+2 workspace $workspace2; exec [ $(ps h -C konsole | wc -l) = 0 ] && konsole  # open a firefox on switch to ws1 
 bindsym $mod+3 workspace $workspace3
 bindsym $mod+4 workspace $workspace4
 bindsym $mod+5 workspace $workspace5
@@ -89,7 +89,7 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 
 # exit i3
-# bindsym $mod+Shift+e exec /home/booker/.i3/scripts/exit_menu
+#bindsym $mod+Shift+e exec ~/.config/i3/scripts/exit_menu
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 
@@ -178,7 +178,6 @@ bindsym $mod+d exec rofi -show run -lines 3 -eh 2 -width 100 -padding 800 -opaci
 bindsym $mod+Tab exec rofi -show window
 
 # startup
-# exec_always --no-startup-id feh --bg-scale /home/booker/.wallpaper.jpg
 # exec_always --no-startup-id xrandr --output HDMI-0 --off --output DVI-I-1 --off --output DVI-I-0 --off --output DVI-I-3 --mode 1920x1080 --pos 0x0 --rotate normal --output DVI-I-2 --mode 1920x1080 --pos 1920x0 --rotate normal
 
 # Keys
@@ -206,6 +205,7 @@ exec --no-startup-id chromium --app="https://web.whatsapp.com"   # browser appli
 exec --no-startup-id chromium --app="https://www.youtube.com/watch?v=jfKfPfyJRdk&pp=ygUJbG9maSBnaXJs"
 exec --no-startup-id spotify
 
+# Disable urgent notifications and leave me in WS2
 exec --no-startup-id ~/.config/i3/scripts/reset_urgent
 exec --no-startup-id i3-msg workspace $workspace2
 
