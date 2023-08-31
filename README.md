@@ -13,8 +13,6 @@
     - Markdown support
 - i3 conf
     - Review Booker personal's
-    - Arrange on-boot apps
-    - Arrange which app on which workspace
     - Volume Up and Down
     - 
     - Solve password storage (i3? or general?)
