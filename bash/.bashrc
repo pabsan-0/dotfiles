@@ -121,3 +121,7 @@ export PATH="/home/pablo/pablocustompath:$PATH"
 
 source /opt/ros/humble/setup.bash && echo Sourced ROS Humble!
 fortune pabsan 
+
+
+alias dotconf="code ~/dotfiles"
+alias i3conf="vim ~/dotfiles/i3/.config/i3/config"
