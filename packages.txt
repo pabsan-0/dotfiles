@@ -20,6 +20,8 @@ tmux
 tmuxinator
 xdotool
 snap
+compton
+lm-sensors
 
 # spotify snap
 # firefox snap

@@ -107,7 +107,7 @@ font pango:monospace 9
 hide_edge_borders both
 
 # Window smooth transitions and wallpaper
-exec --no-startup-id compton -f
+exec --no-startup-id compton --config ~/.config/.compton.conf
 exec --no-startup-id feh --bg-scale --zoom fill ~/dotfiles/i3/.config/i3/media/.wallpaper.jpg
 
 # Colors

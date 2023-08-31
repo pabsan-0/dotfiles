@@ -19,7 +19,6 @@
     - Branch for laptop
 - Compton
     - Make sure it works
-- Terminal emulator
 - Bash
     - See ideas from zsh
     - Unclutter current default  
@@ -31,3 +30,12 @@
 
 
 <img src="./.docs/preview.png" width="640" height="360" />
+
+
+## Issues
+
+- Whatsapp - or other chrome apps - wont yield notifications until manually clicked by the user, among other issues.
+    - Try assigning the windows with weirdo appnames by hand rather than all this junk.
+    - Use chrome://apps rather than specific sites, more flexible / non compulsary login
+    - Enable notifications in the app?
+- Dunst uses the Ctrl+` that i use in vscode and i dont know how to remove it
