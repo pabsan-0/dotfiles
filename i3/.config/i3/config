@@ -112,7 +112,7 @@ mode "resize" {
 # resize mode
 bindsym $mod+r mode "resize"
 
-set $bg-color 	         #2f343f
+set $bg-color 	         #4d5566
 set $inactive-bg-color   #2f343f
 set $text-color          #f3f4f5
 set $inactive-text-color #676E7D
@@ -129,7 +129,7 @@ client.urgent           $urgent-bg-color    $urgent-bg-color   $text-color      
 bar {
   	status_command i3blocks -c ~/.config/i3/i3blocks.conf
 	colors {
-		background $bg-color
+		background $inactive-bg-color
 		separator #757575
 		#                  border             background         text
 		focused_workspace  $bg-color          $bg-color          $text-color
@@ -153,14 +153,14 @@ bindsym $mod+Shift+s sticky toggle
 # assign [class="qTox"] $workspace9
 
 # workspace default monitors
-workspace $workspace1 output DVI-I-2
-workspace $workspace2 output DVI-I-2
-workspace $workspace3 output DVI-I-2
-workspace $workspace4 output DVI-I-2
-workspace $workspace5 output DVI-I-2
-workspace $workspace6 output DVI-I-2
-workspace $workspace9 output DVI-I-2
-workspace $workspace10 output DVI-I-2
+# workspace $workspace1 output DVI-I-2
+# workspace $workspace2 output DVI-I-2
+# workspace $workspace3 output DVI-I-2
+# workspace $workspace4 output DVI-I-2
+# workspace $workspace5 output DVI-I-2
+# workspace $workspace6 output DVI-I-2
+# workspace $workspace9 output DVI-I-2
+# workspace $workspace10 output DVI-I-2
 
 # key-bindings
 # bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 2 +5% #increase sound volume
@@ -184,10 +184,15 @@ bindsym $mod+Tab exec rofi -show window
 # exec_always xmodmap -e "clear lock" #disable caps lock switch
 # exec_always xmodmap -e "keysym Caps_Lock = Escape" #set caps_lock as escape
 
+# Switchable US-ES keyboard
+# localectl  
+# localectl list-x11-keymap-layouts 
+# setxkbmap -query
+exec_always --no-startup-id "setxkbmap -model pc105 -layout us,es -option  grp:win_space_toggle"
 
 # Window smooth transitions and wallpaper
 exec --no-startup-id compton -f
-exec_always --no-startup-id feh --bg-scale --zoom fill ~/dotfiles/i3/.config/i3/media/.wallpaper.jpg
+exec --no-startup-id feh --bg-scale --zoom fill ~/dotfiles/i3/.config/i3/media/.wallpaper.jpg
 
 
 # Define a layout for startup 
@@ -205,7 +210,6 @@ exec --no-startup-id chromium --app="https://web.whatsapp.com"   # browser appli
 exec --no-startup-id chromium --app="https://www.youtube.com/watch?v=jfKfPfyJRdk&pp=ygUJbG9maSBnaXJs"
 exec --no-startup-id spotify
 
-# Disable urgent notifications and leave me in WS2
-# exec --no-startup-id ~/.config/i3/scripts/reset_urgent
+# Leave me in WS2
 exec --no-startup-id i3-msg workspace $workspace2
 
