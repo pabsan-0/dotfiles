@@ -206,6 +206,6 @@ exec --no-startup-id chromium --app="https://www.youtube.com/watch?v=jfKfPfyJRdk
 exec --no-startup-id spotify
 
 # Disable urgent notifications and leave me in WS2
-exec --no-startup-id ~/.config/i3/scripts/reset_urgent
+# exec --no-startup-id ~/.config/i3/scripts/reset_urgent
 exec --no-startup-id i3-msg workspace $workspace2
 
