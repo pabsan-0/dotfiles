@@ -186,23 +186,24 @@ bindsym $mod+d exec rofi -show run -lines 3 -eh 2 -width 100 -padding 800 -opaci
 # exec_always xmodmap -e "clear lock" #disable caps lock switch
 # exec_always xmodmap -e "keysym Caps_Lock = Escape" #set caps_lock as escape
 
+
+# Window smooth transitions and wallpaper
 exec --no-startup-id compton -f
 exec_always --no-startup-id feh --bg-scale --zoom fill ~/dotfiles/i3/.config/i3/media/.wallpaper.jpg
 
 
-# Open browser applications - chromium is really superior on this
+# Define a layout for startup 
+exec --no-startup-id i3-msg "workspace $workspace1;  append_layout ~/.config/i3/layouts/startup/workspace-1.json"
+exec --no-startup-id i3-msg "workspace $workspace2;  append_layout ~/.config/i3/layouts/startup/workspace-2.json"
+exec --no-startup-id i3-msg "workspace $workspace3;  append_layout ~/.config/i3/layouts/startup/workspace-3.json"
+exec --no-startup-id i3-msg "workspace $workspace9;  append_layout ~/.config/i3/layouts/startup/workspace-9.json"
+exec --no-startup-id i3-msg "workspace $workspace10; append_layout ~/.config/i3/layouts/startup/workspace-10.json"
+
+# Open apps
 exec --no-startup-id firefox
-assign [instance="firefox"] $workspace1
-
 exec --no-startup-id konsole
-assign [instance="terminator"] $workspace2
-assign [instance="konsole"] $workspace2
-
 exec --no-startup-id code 
-assign [instance="code"] $workspace3
-
-exec --no-startup-id chromium --app="https://web.whatsapp.com"
-assign [instance="web.whatsapp.com"] $workspace9
-
+exec --no-startup-id chromium --app="https://web.whatsapp.com"   # browser applications - chromium is superior on this
 exec --no-startup-id chromium --app="https://www.youtube.com/watch?v=jfKfPfyJRdk&pp=ygUJbG9maSBnaXJs"
-assign [instance="youtube.com"] $workspace10
+
+
