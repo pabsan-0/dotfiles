@@ -126,7 +126,10 @@ find_up () {
     echo "$path"
 }
 
+export EDITOR="/usr/bin/vim"
+export TERMINAL="/usr/bin/konsole"
 export PATH="/home/pablo/pablocustompath:$PATH"
+
 source /opt/ros/humble/setup.bash && echo Sourced ROS Humble!
 
 
