@@ -61,7 +61,7 @@ set $workspace10 "10 "
 
 # switch to workspace, default application if not already running
 bindsym $mod+1 workspace $workspace1; exec [ $(ps h -C firefox | wc -l) = 0 ] && firefox
-bindsym $mod+2 workspace $workspace2; exec [ $(ps h -C konsole | wc -l) = 0 ] && konsole 
+bindsym $mod+2 workspace $workspace2; exec [ $(ps h -C konsole | wc -l) = 0 ] && konsole
 bindsym $mod+3 workspace $workspace3
 bindsym $mod+4 workspace $workspace4
 bindsym $mod+5 workspace $workspace5
@@ -70,6 +70,10 @@ bindsym $mod+7 workspace $workspace7
 bindsym $mod+8 workspace $workspace8
 bindsym $mod+9 workspace $workspace9
 bindsym $mod+0 workspace $workspace10
+
+# Could have used these, but they fail with workspace_auto_back_and_forth
+# bindsym $mod+1 workspace $workspace1; exec i3-save-tree --workspace 1 | grep -q firefox || firefox
+# bindsym $mod+2 workspace $workspace2; exec i3-save-tree --workspace 2 | grep -q konsole || konsole
 
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace $workspace1
