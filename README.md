@@ -15,6 +15,9 @@
     - Solve password storage (i3? or general?)
     - Branch for laptop
     - i3blocks --- but for later since laptop requires a few more
+- Rofi
+    - window menu: kill apps
+    - navigate with ctrl+hjkl
 - Bash
     - See ideas from zsh
     - Unclutter current default  
