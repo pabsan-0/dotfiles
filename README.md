@@ -38,3 +38,6 @@
     - Use chrome://apps rather than specific sites, more flexible / non compulsary login
     - Enable notifications in the app?
 - Dunst uses the Ctrl+` that i use in vscode and i dont know how to remove it
+
+- For better ^Z
+    - https://superuser.com/questions/378018/how-can-i-do-ctrl-z-and-bg-in-one-keypress-to-make-process-continue-in-backgroun

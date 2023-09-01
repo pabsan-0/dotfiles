@@ -130,14 +130,18 @@ export EDITOR="/usr/bin/vim"
 export TERMINAL="/usr/bin/konsole"
 export PATH="/home/pablo/pablocustompath:$PATH"
 
-source /opt/ros/humble/setup.bash && echo Sourced ROS Humble!
+# Better fzf for hidden files https://github.com/junegunn/fzf/issues/337
+export FZF_DEFAULT_COMMAND="find \! \( -path '*/.git' -prune \) -printf '%P\n'"
 
+alias conf_dotfiles="code ~/dotfiles"
+alias conf_i3="vim ~/.config/i3/config"
+alias conf_bashrc="vim ~/.bashrc"
+alias conf_vim="vim ~/.vimrc"
+alias conf_tmux="vim ~/.tmux.conf"
 
-alias dotconf="code ~/dotfiles"
-alias i3conf="vim ~/.config/i3/config"
-alias bashrcconf="vim ~/.bashrc"
 
 alias ,="xdg-open"
 alias gitcd="cd $(find_up .git)"
 
+source /opt/ros/humble/setup.bash && echo Sourced ROS Humble!
 fortune pabsan 
