@@ -82,7 +82,14 @@ format() {
 
 #------------------------------------------------------------------------
 
+# I have no clue why this works inside a func, as it wont work if we place the command directly
+switch_volume_mixer_gui () {
+    killall pavucontrol || pavucontrol &
+}
+
+
 case $BLOCK_BUTTON in
+  1) switch_volume_mixer_gui ;;  # left click, switch pavucontrol
   3) amixer $AMIXER_PARAMS -q -D $MIXER sset $SCONTROL $(capability) toggle ;;  # right click, mute/unmute
   4) amixer $AMIXER_PARAMS -q -D $MIXER sset $SCONTROL $(capability) ${STEP}+ unmute ;; # scroll up, increase
   5) amixer $AMIXER_PARAMS -q -D $MIXER sset $SCONTROL $(capability) ${STEP}- unmute ;; # scroll down, decrease
