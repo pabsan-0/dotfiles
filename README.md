@@ -12,13 +12,9 @@
     - Research plugins and linters
     - Markdown support
 - i3 conf
-    - Review Booker personal's
-    - Volume Up and Down
-    - 
     - Solve password storage (i3? or general?)
     - Branch for laptop
-- Compton
-    - Make sure it works
+    - i3blocks --- but for later since laptop requires a few more
 - Bash
     - See ideas from zsh
     - Unclutter current default  
