@@ -1,0 +1,7 @@
+## sudo snap install $(sed "s/#.*//g" packages.snap.txt  | xargs) --classic
+
+# All these are OPTIONAL
+spotify
+firefox
+chromium
+Code

@@ -1,0 +1,33 @@
+## sudo apt install $(sed "s/#.*//g" packages.apt.txt  | xargs)
+
+# Basic utilities
+stow         # Dotfiles (symlink) manager
+vim          # Text editor 
+tmux         # Terminal multiplexer
+tmuxinator   # tmux compositor
+
+# Window manager
+i3            # main WM
+i3lock        # Lock screen
+i3status      # i3 status bar
+i3blocks      # i3 status bar app compositor
+# i3-gaps     # Window gaps, waiting for i3 4.22 in ubuntu22 apt lists
+compton       # Window transparency renderer
+dmenu         # Fallback application launcher
+rofi          # Application launcher, window menu and more
+feh           # Sets window background
+pavucontrol   # GUI volume mixer
+lxappearance  # GUI customiser
+xbacklight    # Brightness controls
+fonts-font-awesome  # Emoji charset
+
+# Useful extras
+xdotool        # X window utilities
+snap           # Yet another package manager
+lm-sensors     # Monitor CPU temperature 
+
+# Funky stuff
+neofetch    # System stats
+fortune     # Random quotes
+cowsay      # Funky animal display
+sl          # Steam machine, yay!
