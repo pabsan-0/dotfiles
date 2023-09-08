@@ -41,3 +41,7 @@
 
 - For better ^Z
     - https://superuser.com/questions/378018/how-can-i-do-ctrl-z-and-bg-in-one-keypress-to-make-process-continue-in-backgroun
+
+- Compton issues: 
+    - Bad value etc.  -> `sudo usermod -a -G video $USER`
+    - The above fix didnt last too long... migrate to picom 
