@@ -1,0 +1,5 @@
+## firefox $(sed "s/#.*//g" packages.ffext.txt  | xargs)
+
+https://addons.mozilla.org/en-US/firefox/addon/vimium-ff/
+https://addons.mozilla.org/en-US/firefox/addon/adblocker-ultimate/
+https://addons.mozilla.org/en-US/firefox/addon/bitwarden-password-manager/
