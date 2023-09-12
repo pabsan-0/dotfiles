@@ -1,5 +1,45 @@
 # Dotfiles 
 
+These are my dotfiles. I use these across a few **ubuntu** computers with a few modifications. Do not copypaste blindly.
+
+## Usage
+
+
+#### Dotfiles
+
+You can either replace your system's files or read and paste the bits in here that interest you. My canonical setup method uses `stow`.
+
+Here's an example to stow i3 into your system.
+```bash
+cd ~
+git clone https://www.github.com/pabsan-0/dotfiles
+cd dotfiles
+
+stow i3
+```
+#### Software setup
+
+- Applications: Installed from text files. The command to be used is commented at the top of each packages.*.txt files
+- Browser extensions: Installed via GUI. A script will open the extension URLs, then I simply click on them.
+
+Here's how I would install all my SW:
+
+```bash
+
+# Apt and snap packages. Snap may fail due to --classic flags
+sudo apt install $(sed "s/#.*//g" packages.apt.txt  | xargs)
+sudo snap install $(sed "s/#.*//g" packages.snap.txt  | xargs)
+
+# Firefox extensions. This opens a few tabs which need interaction
+firefox $(sed "s/#.*//g" packages.ffext.txt  | xargs)
+```
+
+
+
+
+
+## Notes
+
 - Packages
     - Readable list / installation
     - App extensions: vscode, vim, firefox
@@ -12,7 +52,6 @@
     - Research plugins and linters
     - Markdown support
 - i3 conf
-    - Solve password storage (i3? or general?)
     - Branch for laptop
     - i3blocks --- but for later since laptop requires a few more
 - Rofi
@@ -23,9 +62,8 @@
     - Unclutter current default  
     - Customise Shopts, expansions, caps...
     - fzf and shortcuts
+    - Retrieve previous output
     - .inputrc
-
-- Make a map on how everything comes together
 
 
 <img src="./.docs/preview.png" width="640" height="360" />
@@ -41,7 +79,7 @@
 
 - For better ^Z
     - https://superuser.com/questions/378018/how-can-i-do-ctrl-z-and-bg-in-one-keypress-to-make-process-continue-in-backgroun
-
+- Screen timeout while watching video
 - Compton issues: 
     - Bad value etc.  -> `sudo usermod -a -G video $USER`
     - The above fix didnt last too long... migrate to picom 
