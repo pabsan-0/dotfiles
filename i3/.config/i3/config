@@ -170,6 +170,7 @@ for_window [class="Pavucontrol"] \
 bindsym $mod+Return exec konsole
 bindsym $mod+Shift+q kill
 bindsym $mod+d exec rofi -show drun
+bindsym $mod+Shift+d exec rofi -show run
 bindsym $mod+Tab exec rofi -show window
 bindsym Print exec flameshot gui
 

@@ -20,9 +20,10 @@ lxappearance  # GUI customiser
 xbacklight    # Brightness controls
 fonts-font-awesome  # Emoji charset
 
-# hardware interactions
+# Hardware interactions
 xserver-xorg-input-synaptics  # sensible touchpad defaults, requires reboot 
 pavucontrol   # GUI volume mixer
+flameshot  # print screen button
 
 # Useful extras
 xdotool        # X window utilities
