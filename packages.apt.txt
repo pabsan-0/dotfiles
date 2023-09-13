@@ -16,10 +16,13 @@ compton       # Window transparency renderer
 dmenu         # Fallback application launcher
 rofi          # Application launcher, window menu and more
 feh           # Sets window background
-pavucontrol   # GUI volume mixer
 lxappearance  # GUI customiser
 xbacklight    # Brightness controls
 fonts-font-awesome  # Emoji charset
+
+# hardware interactions
+xserver-xorg-input-synaptics  # sensible touchpad defaults, requires reboot 
+pavucontrol   # GUI volume mixer
 
 # Useful extras
 xdotool        # X window utilities
