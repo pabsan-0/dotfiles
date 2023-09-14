@@ -1,0 +1,9 @@
+[user]
+	name = pabsan-0
+	email = 63670587+pabsan-0@users.noreply.github.com
+
+[init]
+	defaultBranch = master
+
+[core]
+	editor = vim
