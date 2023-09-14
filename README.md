@@ -34,7 +34,18 @@ sudo snap install $(sed "s/#.*//g" packages.snap.txt  | xargs)
 firefox $(sed "s/#.*//g" packages.ffext.txt  | xargs)
 ```
 
+## First time setups
 
+Here's a todo list when using these on a new system:
+- Install software from text files
+- Stow all dotfiles
+- If using i3:  
+    - Log out and back in
+    - Check i3 works in general - it usually will
+    - Check i3blocks are working - more prone to conflicts
+- Handling credentials:
+    - Password manager and extensions
+    - Set git user and email automtically
 
 
 
