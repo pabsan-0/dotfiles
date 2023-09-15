@@ -1,6 +1,38 @@
 {
-    "workbench.colorTheme": "Visual Studio Dark",
-    "explorer.compactFolders": false,
-    "workbench.tree.indent": 16,
-    "workbench.tree.renderIndentGuides": "always"
+"console": "externalTerminal",
+"terminal.explorerKind": "external",
+"terminal.external.linuxExec": "konsole",
+
+"editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?_",
+"editor.minimap.size": "fit",
+"editor.minimap.showSlider": "always",
+"editor.minimap.renderCharacters": false,
+"editor.lineNumbers": "on",
+"editor.rulers":   [{
+    "column": 80,
+    "color": "#313131"
+}],
+
+"explorer.confirmDelete": false,
+"explorer.compactFolders": false,
+
+"workbench.colorTheme": "Visual Studio Dark",
+"workbench.tree.indent": 16,
+"workbench.iconTheme": "material-icon-theme",
+"workbench.tree.renderIndentGuides": "always",
+"files.exclude": {
+    "**/.git": false
+},
+
+"git.confirmSync": false,
+"gitlens.codeLens.authors.enabled": false,
+"gitlens.codeLens.recentChange.enabled": false,
+"gitlens.views.branches.branches.layout": "list",
+
+"dashboard.projectData": null,
+"diffEditor.ignoreTrimWhitespace": false,
+"[python]": {
+    "editor.formatOnType": true
+},
+"window.zoomLevel": -1
 }
