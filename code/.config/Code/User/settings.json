@@ -13,10 +13,14 @@
     "color": "#313131"
 }],
 
+"window.zoomLevel": -1,
+"window.menuBarVisibility": "toggle",
+
 "explorer.confirmDelete": false,
 "explorer.compactFolders": false,
 
 "workbench.colorTheme": "Visual Studio Dark",
+"workbench.preferredDarkColorTheme": "Visual Studio Dark",
 "workbench.tree.indent": 16,
 "workbench.iconTheme": "material-icon-theme",
 "workbench.tree.renderIndentGuides": "always",
@@ -33,6 +37,5 @@
 "diffEditor.ignoreTrimWhitespace": false,
 "[python]": {
     "editor.formatOnType": true
-},
-"window.zoomLevel": -1
+}
 }
