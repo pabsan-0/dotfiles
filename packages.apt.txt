@@ -3,6 +3,7 @@
 # Basic utilities
 stow         # Dotfiles (symlink) manager
 vim          # Text editor 
+konsole      # Low input latency terminal
 tmux         # Terminal multiplexer
 tmuxinator   # tmux compositor
 
@@ -16,10 +17,13 @@ compton       # Window transparency renderer
 dmenu         # Fallback application launcher
 rofi          # Application launcher, window menu and more
 feh           # Sets window background
-pavucontrol   # GUI volume mixer
 lxappearance  # GUI customiser
 xbacklight    # Brightness controls
 fonts-font-awesome  # Emoji charset
+
+# Hardware interactions
+pavucontrol   # GUI volume mixer
+flameshot  # print screen button
 
 # Useful extras
 xdotool        # X window utilities
