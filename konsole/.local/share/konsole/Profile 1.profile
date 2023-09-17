@@ -1,6 +1,6 @@
 [Appearance]
 ColorScheme=WhiteOnBlack
-Font=monospace,13,-1,2,50,0,0,0,0,0
+Font=monospace,9,-1,2,50,0,0,0,0,0
 
 [General]
 Name=Profile 1
