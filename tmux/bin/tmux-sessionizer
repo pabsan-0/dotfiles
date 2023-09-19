@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env -S bash -x
 
 if [[ $# -eq 1 ]]; then
     selected=$1
@@ -13,20 +13,12 @@ fi
 selected_name=$(basename "$selected" | tr . _)
 tmux_running=$(pgrep tmux)
 
+# Create session or attach if exists (-A), in detached mode (-d)
+tmux new-session -dAs $selected_name -c $selected
 
-# If tmux NOT running, create session
-if [[ -z $tmux_running ]]; then
-    tmux new-session -s $selected_name -c $selected
-else    
-    # If the session does NOT exist, create it
-    if ! tmux has-session -t $selected_name 2> /dev/null; then
-        tmux new-session -s $selected_name -c $selected
-    else
-        # If inside tmux switch to client, else attach
-        if [[ -n $TMUX ]] ; then
-            tmux switch-client -t $selected_name
-        else 
-            tmux attach -t $selected_name
-        fi
-    fi
+# Either switch or attach whether we're inside tmux
+if [[ -n $TMUX ]] ; then
+    tmux switch-client -t $selected_name
+else 
+    tmux attach -t $selected_name
 fi
