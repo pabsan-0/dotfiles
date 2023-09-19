@@ -124,6 +124,7 @@ fi
 ## ## ## ## ## ## ## ## ## ## ## ##
 
 bind '"\C-f":"tmux-sessionizer\n"'
+bind '"\C-^":"tmux-sessionizer /home/pablo \n"' # Ctrl Shift `
 
 # Misc exports
 export EDITOR="/usr/bin/vim"
@@ -149,6 +150,6 @@ fortune_catec
 
 # Start tmux
 # https://wiki.archlinux.org/title/Tmux#Start_tmux_on_every_shell_login
-if [ -x "$(command -v tmux)" ] && [ -n "${DISPLAY}" ] && [ -z "${TMUX}" ]; then
-    exec tmux new-session -A -s ${USER} >/dev/null 2>&1
-fi
+# if [ -x "$(command -v tmux)" ] && [ -n "${DISPLAY}" ] && [ -z "${TMUX}" ]; then
+#     exec tmux new-session -A -s ${USER} >/dev/null 2>&1
+# fi
