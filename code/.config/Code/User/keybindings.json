@@ -78,6 +78,12 @@
         "command": "editor.action.deleteLines",
         "when": "textInputFocus && !editorReadonly"
     },
+    /* This I use for something different */
+    {
+        "key": "ctrl+shift+`",
+        "command": "-workbench.action.terminal.new",
+        "when": "terminalProcessSupported || terminalWebExtensionContributedProfile"
+    },
     /*
     ,
     {
