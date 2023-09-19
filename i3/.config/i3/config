@@ -177,6 +177,8 @@ bindsym $mod+Shift+d exec rofi -show run
 bindsym $mod+Control+d exec rofi -show window
 bindsym Print exec flameshot gui
 
+# Custom commands
+bindsym $mod+c exec ~/.config/i3/scripts/catecosas.sh
 
 ########## Boot ##########
 
@@ -192,6 +194,7 @@ exec --no-startup-id firefox
 exec --no-startup-id code 
 exec --no-startup-id konsole
 exec --no-startup-id chromium --app="https://web.whatsapp.com"   # browser applications - chromium is superior on this
+exec --no-startup-id teams
 exec --no-startup-id chromium --app="https://www.youtube.com/watch?v=jfKfPfyJRdk&pp=ygUJbG9maSBnaXJs"
 exec --no-startup-id spotify
 

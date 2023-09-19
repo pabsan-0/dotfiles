@@ -117,31 +117,34 @@ if ! shopt -oq posix; then
 fi
 
 
-find_up () {
-    local path=$(pwd)
+## ## ## ## ## ## ## ## ## ## ## ##
+##                               ##
+##      CUSTOM FROM NOW ON       ##
+##                               ##
+## ## ## ## ## ## ## ## ## ## ## ##
 
-    while [[ "$path" != "" && ! -e "$path/$1" ]]; do
-        path=${path%/*}
-    done
-    echo "$path"
-}
+bind '"\C-f":"tmux-sessionizer\n"'
 
+# Misc exports
 export EDITOR="/usr/bin/vim"
 export TERMINAL="/usr/bin/konsole"
 export PATH="/home/pablo/pablocustompath:$PATH"
 
+# Add Go to path
+export PATH=/usr/local/go/bin:$PATH
+
 # Better fzf for hidden files https://github.com/junegunn/fzf/issues/337
 export FZF_DEFAULT_COMMAND="find \! \( -path '*/.git' -prune \) -printf '%P\n'"
 
-alias conf_dotfiles="code ~/dotfiles"
-alias conf_i3="vim ~/.config/i3/config"
-alias conf_bashrc="vim ~/.bashrc"
-alias conf_vim="vim ~/.vimrc"
-alias conf_tmux="vim ~/.tmux.conf"
+# Mcfly init ^R
+eval "$(mcfly init bash)"
+export MCFLY_FUZZY=2
+export MCFLY_RESULTS=50
+
+# Init cargo package manager
+source ~/.cargo/env
+
+# source /opt/ros/humble/setup.bash && echo Sourced ROS Humble!
+fortune_catec 
 
 
-alias ,="xdg-open"
-alias gitcd="cd $(find_up .git)"
-
-source /opt/ros/humble/setup.bash && echo Sourced ROS Humble!
-fortune pabsan 
