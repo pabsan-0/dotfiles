@@ -24,7 +24,8 @@ fonts-font-awesome  # Emoji charset
 # Hardware interactions
 xserver-xorg-input-synaptics  # sensible touchpad defaults, requires reboot 
 pavucontrol   # GUI volume mixer
-flameshot  # print screen button
+flameshot     # print screen button
+udiskie       # auto usb mounter 
 
 # Useful extras
 xdotool        # X window utilities

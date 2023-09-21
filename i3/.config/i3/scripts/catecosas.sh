@@ -1,5 +1,22 @@
 #!/usr/bin/env bash
 
+
+open_in_terminal () {
+    local command="$1"
+
+    if command -v konsole >/dev/null; then
+        konsole -e "$1"
+    elif command -v terminator >/dev/null; then
+        terminator -e "$1"
+    elif command -v gnome-terminal >/dev/null; then
+        gnome-terminal -- bash -c "$1; read -p 'Press Enter to exit'"
+    elif command -v x-terminal-emulator >/dev/null; then
+        x-terminal-emulator -e "$1"
+    else
+        echo "No supported terminal emulators found."
+    fi
+}
+
 # Options
 github='1  GitHub'
 gists='2  Gists'
@@ -54,6 +71,7 @@ case ${chosen} in
 		xdg-open http://erp.catec.aero/IDiNet/misproyectos.aspx?pag=MisHoras#DiaAnterior
 		;;
 	$imputador)
+                open_in_terminal el_imputador	
 		;;
 esac
 

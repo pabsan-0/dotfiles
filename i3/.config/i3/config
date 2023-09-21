@@ -44,7 +44,7 @@ bindsym $mod+Shift+s sticky toggle
 #
 # If I used dunst, I'd need this - kept while I figure whatsapp urgent 
 # exec /usr/bin/dunst
-
+exec udiskie 
 
 ########## Workspaces ##########
 
@@ -178,7 +178,7 @@ bindsym $mod+Control+d exec rofi -show window
 bindsym Print exec flameshot gui
 
 # Custom commands
-bindsym $mod+c exec ~/.config/i3/scripts/catecosas.sh
+bindsym $mod+c exec catecosas
 
 ########## Boot ##########
 
