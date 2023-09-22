@@ -53,21 +53,18 @@ Here's a todo list when using these on a new system:
 
 - Packages
     - Readable list / installation
-    - App extensions: vscode, vim, firefox
-- Tmux conf
-    - Test usable one
-    - See Primeagean for reference
+    - App extensions: vscode, vim, chrome
 - Vim conf
     - Test usable
     - See Primagean AND booker especially https://github.com/bookercodes/dotfiles/tree/ubuntu
     - Research plugins and linters
     - Markdown support
 - i3 conf
-    - Branch for laptop
-    - i3blocks --- but for later since laptop requires a few more
+    - i3blocks - missing network util
+    - i3blocks - udiskie 
 - Rofi
-    - window menu: kill apps
-    - navigate with ctrl+hjkl
+    - window menu: kill apps binding
+    - navigate with ctrl+hjkl 
 - Bash
     - See ideas from zsh
     - Unclutter current default  
