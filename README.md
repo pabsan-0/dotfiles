@@ -56,12 +56,13 @@ Here's a todo list when using these on a new system:
     - App extensions: vscode, vim, chrome
 - Vim conf
     - Test usable
-    - See Primagean AND booker especially https://github.com/bookercodes/dotfiles/tree/ubuntu
     - Research plugins and linters
-    - Markdown support
+        - fzf vim: see into keystrokes, file menu with preview
+        - git gutter: see into committing and basic usage
+        - fugitive
+    - Markdown support - backlogged
 - i3 conf
     - i3blocks - missing network util
-    - i3blocks - udiskie 
 - Rofi
     - window menu: kill apps binding
     - navigate with ctrl+hjkl 

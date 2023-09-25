@@ -60,7 +60,25 @@ highlight Comment ctermfg=gray
 " center cursor on screen
 nnoremap j jzz
 nnoremap k kzz
-"inoremap <C-Enter> <>o
+" set scrolloff=10
+
+" Install with :PlugInstall
+call plug#begin()
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+call plug#end()
+
+" Vim gitgutter
+set updatetime=100
+set signcolumn=yes
+highlight clear SignColumn
+highlight GitGutterAdd    guifg=#009900 ctermfg=green ctermbg=NONE
+highlight GitGutterDelete guifg=#ff2222 ctermfg=red ctermbg=NONE
+highlight GitGutterChange guifg=#bbbb00 ctermfg=3 ctermbg=NONE " orange
+
 
 """ FOR THE FUTURE
 """ https://vim.fandom.com/wiki/Generating_a_column_of_increasing_numbers
+""" inoremap <C-Enter> <>o 
