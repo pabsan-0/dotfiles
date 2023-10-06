@@ -37,3 +37,7 @@ neofetch    # System stats
 fortune     # Random quotes
 cowsay      # Funky animal display
 sl          # Steam machine, yay!
+
+
+# Integrations
+rclone   # OneDrive CLI API
