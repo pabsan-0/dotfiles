@@ -7,13 +7,12 @@
 "editor.minimap.size": "fit",
 "editor.minimap.showSlider": "always",
 "editor.minimap.renderCharacters": false,
-"editor.lineNumbers": "on",
+"editor.lineNumbers": "relative",
 "editor.rulers":   [{
     "column": 80,
     "color": "#313131"
-}],
-
-"window.zoomLevel": -1,
+}
+],
 "window.menuBarVisibility": "toggle",
 
 "explorer.confirmDelete": false,
@@ -37,5 +36,8 @@
 "diffEditor.ignoreTrimWhitespace": false,
 "[python]": {
     "editor.formatOnType": true
-}
+},
+"vim.vimrc.enable": true,
+"vim.vimrc.path": "$HOME/.vimrc",
+"window.zoomLevel": -1
 }

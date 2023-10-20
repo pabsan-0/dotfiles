@@ -58,9 +58,9 @@ highlight colorcolumn ctermbg=None ctermfg=green
 highlight Comment ctermfg=gray
 
 " center cursor on screen
-nnoremap j jzz
-nnoremap k kzz
-" set scrolloff=10
+" nnoremap j jzz
+" nnoremap k kzz
+set scrolloff=15
 
 " Install with :PlugInstall
 call plug#begin()
