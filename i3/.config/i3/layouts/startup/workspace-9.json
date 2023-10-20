@@ -1,9 +1,7 @@
-// vim:ts=4:sw=4:et
 {
-    // tabbed split container with 2 children
     "border": "normal",
     "floating": "auto_off",
-    "layout": "tabbed",
+    "layout": "splith",
     "percent": null,
     "type": "con",
     "nodes": [
@@ -22,30 +20,27 @@
             "swallows": [
                {
                "class": "^Chromium$",
-               "instance": "^web\\.whatsapp\\.com$",
-               // "title": "^web\\.whatsapp\\.com$",
-               // "window_role": "^pop\\-up$"
+               "instance": "^web\\.whatsapp\\.com$"
                }
             ],
             "type": "con"
         },
         {
-            "border": "none",
+            "border": "normal",
             "current_border_width": 2,
             "floating": "auto_off",
             "geometry": {
-               "height": 1063,
-               "width": 1920,
-               "x": 50,
-               "y": 50
+               "height": 1060,
+               "width": 945,
+               "x": 10,
+               "y": 10
             },
+            "name": "Chat | Microsoft Teams Classic",
             "percent": 0.5,
             "swallows": [
                {
-               "class": "^Microsoft\\ Teams\\ \\-\\ Preview$",
-               "instance": "^microsoft\\ teams\\ \\-\\ preview$",
-               // "title": "^Calendar\\ \\|\\ Microsoft\\ Teams\\ Classic$",
-               // "window_role": "^browser\\-window$"
+               "class": "^Chromium$",
+               "instance": "^teams\\.microsoft\\.com$"
                }
             ],
             "type": "con"

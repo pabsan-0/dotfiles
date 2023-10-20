@@ -5,6 +5,10 @@ set $mod Mod4
 floating_modifier Mod1
 workspace_auto_back_and_forth no
 
+# move focused workspace between monitors
+bindsym $mod+Ctrl+greater move workspace to output right
+bindsym $mod+Ctrl+less move workspace to output left
+
 # change focus
 bindsym $mod+h focus left
 bindsym $mod+j focus down
@@ -48,6 +52,7 @@ exec udiskie --tray
 
 ########## Workspaces ##########
 
+set $workspace0 "0 "
 set $workspace1 "1 "
 set $workspace2 "2 "
 set $workspace3 "3 "
@@ -55,11 +60,12 @@ set $workspace4 "4 "
 set $workspace5 "5 "
 set $workspace6 "6 "
 set $workspace7 "7 "
-set $workspace8 "8 "
+set $workspace8 "8 "
 set $workspace9 "9 "
 set $workspace10 "10 "
 
 # switch to workspace, default application if not already running
+bindsym $mod+grave workspace $workspace0; exec [ $(ps h -C obsidian | wc -l) = 0 ] && obsidian 
 bindsym $mod+1 workspace $workspace1; exec [ $(ps h -C firefox | wc -l) = 0 ] && firefox
 bindsym $mod+2 workspace $workspace2; exec [ $(ps h -C konsole | wc -l) = 0 ] && konsole
 bindsym $mod+3 workspace $workspace3
@@ -67,7 +73,7 @@ bindsym $mod+4 workspace $workspace4
 bindsym $mod+5 workspace $workspace5
 bindsym $mod+6 workspace $workspace6
 bindsym $mod+7 workspace $workspace7
-bindsym $mod+8 workspace $workspace8; exec [ $(ps h -C obsidian | wc -l) = 0 ] && obsidian 
+bindsym $mod+8 workspace $workspace8
 bindsym $mod+9 workspace $workspace9
 bindsym $mod+0 workspace $workspace10
 
@@ -78,6 +84,7 @@ bindsym $mod+Tab workspace back_and_forth
 # bindsym $mod+2 workspace $workspace2; exec i3-save-tree --workspace 2 | grep -q konsole || konsole
 
 # move focused container to workspace
+bindsym $mod+Shift+grave move container to workspace $workspace0
 bindsym $mod+Shift+1 move container to workspace $workspace1
 bindsym $mod+Shift+2 move container to workspace $workspace2
 bindsym $mod+Shift+3 move container to workspace $workspace3
@@ -148,6 +155,7 @@ bar {
 
 # Switchable US-ES keyboard, needs delay on launch.
 exec_always "sleep 5; setxkbmap -model pc105 -layout us,es -option grp:win_space_toggle"
+exec_always "autorandr"
 exec_always "~/.config/i3/layouts/xrandr-single-monitor.sh"
 
 # key-bindings
@@ -183,6 +191,7 @@ bindsym $mod+c exec catecosas
 ########## Boot ##########
 
 # Define a layout for startup 
+exec --no-startup-id i3-msg "workspace $workspace0;  append_layout ~/.config/i3/layouts/startup/workspace-0.json"
 exec --no-startup-id i3-msg "workspace $workspace1;  append_layout ~/.config/i3/layouts/startup/workspace-1.json"
 exec --no-startup-id i3-msg "workspace $workspace2;  append_layout ~/.config/i3/layouts/startup/workspace-2.json"
 exec --no-startup-id i3-msg "workspace $workspace3;  append_layout ~/.config/i3/layouts/startup/workspace-3.json"
@@ -190,11 +199,12 @@ exec --no-startup-id i3-msg "workspace $workspace9;  append_layout ~/.config/i3/
 exec --no-startup-id i3-msg "workspace $workspace10; append_layout ~/.config/i3/layouts/startup/workspace-10.json"
 
 # Open apps
+exec --no-startup-id obsidian
 exec --no-startup-id firefox
 exec --no-startup-id code 
 exec --no-startup-id konsole
 exec --no-startup-id chromium --app="https://web.whatsapp.com"   # browser applications - chromium is superior on this
-exec --no-startup-id teams
+exec --no-startup-id chromium --app="https://teams.microsoft.com"
 exec --no-startup-id chromium --app="https://www.youtube.com/watch?v=jfKfPfyJRdk&pp=ygUJbG9maSBnaXJs"
 exec --no-startup-id spotify
 
