@@ -22,9 +22,9 @@ set shiftwidth=4
 set expandtab
 set autoindent
 
-" buggy
-" map <S-Enter> o<ESC>
-map <Enter> O<ESC>
+" buggy - space insertion
+"nmap <S-Enter> <ESC>o<ESC>d^
+nmap <Enter> <ESC>O<ESC>
 
 
 " search highlight, and smart case
@@ -36,13 +36,9 @@ set smartcase
 " Netrw filetree options
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
-let g:netrw_browse_split = 3
+let g:netrw_browse_split = 0
 let g:netrw_altv = 1
 let g:netrw_winsize = 75
-
-" toggle netrw 
-inoremap <c-b> <Esc>:Lex<cr>:vertical resize 50%<cr>
-nnoremap <c-b> <Esc>:Lex<cr>:vertical resize 50%<cr>
 
 " autodelete netrw buffers
 augroup AutoDeleteNetrwHiddenBuffers
@@ -68,9 +64,19 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
+Plug 'kshenoy/vim-signature'
+Plug 'tpope/vim-vinegar'
+"Plug 'madox2/vim-ai'
 call plug#end()
 
+" Fzf.vim
+let $FZF_DEFAULT_OPTS = '--bind "alt-j:down,alt-k:up,ctrl-j:preview-down,ctrl-k:preview-up"'
+nnoremap <leader>f <Esc>:Files<cr> 
+nnoremap <leader>b <Esc>:Buffers<cr>
+nnoremap <leader>r <Esc>:Rg<cr>
+
 " Vim gitgutter
+" jump hunks: [c ]c; preview, stage, and undo hunks:  <leader>hp, <leader>hs, and <leader>hu
 set updatetime=100
 set signcolumn=yes
 highlight clear SignColumn
@@ -78,6 +84,9 @@ highlight GitGutterAdd    guifg=#009900 ctermfg=green ctermbg=NONE
 highlight GitGutterDelete guifg=#ff2222 ctermfg=red ctermbg=NONE
 highlight GitGutterChange guifg=#bbbb00 ctermfg=3 ctermbg=NONE " orange
 
+" Vim signature
+" inherit color to make compatible with git-gutter
+let g:SignatureMarkTextHLDynamic = 1
 
 """ FOR THE FUTURE
 """ https://vim.fandom.com/wiki/Generating_a_column_of_increasing_numbers

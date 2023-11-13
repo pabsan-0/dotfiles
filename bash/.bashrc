@@ -129,18 +129,18 @@ bind '"\C-^":"tmux-sessionizer /home/pablo \n"' # Ctrl Shift `
 # Misc exports
 export EDITOR="/usr/bin/vim"
 export TERMINAL="/usr/bin/konsole"
-export PATH="/home/pablo/pablocustompath:$PATH"
+export PATH="/home/pablo/bin:$PATH"
+
+alias sl='ls'
 
 # Add Go to path
 export PATH=/usr/local/go/bin:$PATH
 
 # Better fzf for hidden files https://github.com/junegunn/fzf/issues/337
+export FZF_DEFAULT_OPTS='--bind "ctrl-j:down,ctrl-k:up,alt-j:preview-down,alt-k:preview-up"'
 export FZF_DEFAULT_COMMAND="find \! \( -path '*/.git' -prune \) -printf '%P\n'"
+source /usr/share/doc/fzf/examples/key-bindings.bash
 
-# Mcfly init ^R
-eval "$(mcfly init bash)"
-export MCFLY_FUZZY=2
-export MCFLY_RESULTS=50
 
 # Init cargo package manager
 source ~/.cargo/env
@@ -153,3 +153,6 @@ fortune_catec
 # if [ -x "$(command -v tmux)" ] && [ -n "${DISPLAY}" ] && [ -z "${TMUX}" ]; then
 #     exec tmux new-session -A -s ${USER} >/dev/null 2>&1
 # fi
+
+
+source /home/pablo/unreal/aliases.sh

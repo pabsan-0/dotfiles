@@ -156,7 +156,7 @@ bar {
 # Switchable US-ES keyboard, needs delay on launch.
 exec_always "sleep 5; setxkbmap -model pc105 -layout us,es -option grp:win_space_toggle"
 exec_always "autorandr"
-exec_always "~/.config/i3/layouts/xrandr-single-monitor.sh"
+exec "~/.config/i3/layouts/xrandr-single-monitor.sh"
 
 # key-bindings
 # bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 2 +5% #increase sound volume
