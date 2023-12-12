@@ -137,7 +137,7 @@ alias sl='ls'
 export PATH=/usr/local/go/bin:$PATH
 
 # Better fzf for hidden files https://github.com/junegunn/fzf/issues/337
-export FZF_DEFAULT_OPTS='--bind "ctrl-j:down,ctrl-k:up,alt-j:preview-down,alt-k:preview-up"'
+export FZF_DEFAULT_OPTS='--bind "alt-j:down,alt-k:up,ctrl-j:preview-down,ctrl-k:preview-up"'
 export FZF_DEFAULT_COMMAND="find \! \( -path '*/.git' -prune \) -printf '%P\n'"
 source /usr/share/doc/fzf/examples/key-bindings.bash
 

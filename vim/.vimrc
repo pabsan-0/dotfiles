@@ -39,6 +39,7 @@ let g:netrw_liststyle = 3
 let g:netrw_browse_split = 0
 let g:netrw_altv = 1
 let g:netrw_winsize = 75
+let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
 
 " autodelete netrw buffers
 augroup AutoDeleteNetrwHiddenBuffers
@@ -52,6 +53,11 @@ set cursorline
 set colorcolumn=80
 highlight colorcolumn ctermbg=None ctermfg=green
 highlight Comment ctermfg=gray
+
+" Status line with filename
+set laststatus=2
+set statusline=%F
+hi StatusLine ctermbg=white ctermfg=black
 
 " center cursor on screen
 " nnoremap j jzz
@@ -87,6 +93,8 @@ highlight GitGutterChange guifg=#bbbb00 ctermfg=3 ctermbg=NONE " orange
 " Vim signature
 " inherit color to make compatible with git-gutter
 let g:SignatureMarkTextHLDynamic = 1
+
+nnoremap <leader>v <Esc>:!cd &&  glow %:p -p vim <CR><CR><cr>
 
 """ FOR THE FUTURE
 """ https://vim.fandom.com/wiki/Generating_a_column_of_increasing_numbers
