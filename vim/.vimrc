@@ -69,6 +69,7 @@ call plug#begin()
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
 Plug 'airblade/vim-gitgutter'
 Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-vinegar'
@@ -80,6 +81,7 @@ let $FZF_DEFAULT_OPTS = '--bind "alt-j:down,alt-k:up,ctrl-j:preview-down,ctrl-k:
 nnoremap <leader>f <Esc>:Files<cr> 
 nnoremap <leader>b <Esc>:Buffers<cr>
 nnoremap <leader>r <Esc>:Rg<cr>
+nnoremap <leader>d <Esc>:GFiles?<cr>
 
 " Vim gitgutter
 " jump hunks: [c ]c; preview, stage, and undo hunks:  <leader>hp, <leader>hs, and <leader>hu
