@@ -3,6 +3,7 @@
 # Basic utilities
 stow         # Dotfiles (symlink) manager
 vim          # Text editor 
+vim-gtk3     #    provides clipboard integration, etc
 konsole      # Low input latency terminal
 tmux         # Terminal multiplexer
 tmuxinator   # tmux compositor
