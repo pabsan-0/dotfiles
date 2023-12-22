@@ -15,6 +15,8 @@ filetype plugin indent on
 set relativenumber
 set number
 
+" allow unsaved buffers in bg
+set hidden
 
 " tabs are really 4 spaces
 set tabstop=4
@@ -27,8 +29,9 @@ set autoindent
 nmap <Enter> <ESC>O<ESC>
 
 
-" search highlight, and smart case
+" search highlight, incremental, and smart case
 set hlsearch
+set incsearch
 set ignorecase
 set smartcase
 
