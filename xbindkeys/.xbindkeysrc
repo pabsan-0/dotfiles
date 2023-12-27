@@ -53,7 +53,7 @@
   Alt + bracketright
 
 "sleep 0.2 && xdotool key --clearmodifiers bar"
-  Shift + bracketright
+  Alt + Shift + bracketright
 
 "sleep 0.2 && xdotool key --clearmodifiers ntilde"
   Alt + ntilde 

@@ -27,11 +27,14 @@ xserver-xorg-input-synaptics  # sensible touchpad defaults, requires reboot
 pavucontrol   # GUI volume mixer
 flameshot     # print screen button
 udiskie       # auto usb mounter 
+xbindkeysrc   # keyboard remaps
 
 # Useful extras
 xdotool        # X window utilities
 snap           # Yet another package manager
 lm-sensors     # Monitor CPU temperature 
+fzf            # the fuzzy finder
+ripgrep        # grep but faster
 
 # Funky stuff
 neofetch    # System stats
