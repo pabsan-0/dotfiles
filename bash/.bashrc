@@ -123,38 +123,7 @@ fi
 ##                               ##
 ## ## ## ## ## ## ## ## ## ## ## ##
 
-bind '"\C-f":"tmux-sessionizer\n"'
-bind '"\C-^":"tmux-sessionizer /home/pablo \n"' # Ctrl Shift `
+# export PATH="/usr/local/go/bin:$PATH"
+# source ~/.cargo/env
 
-# Misc exports
-export EDITOR="/usr/bin/vim"
-export TERMINAL="/usr/bin/konsole"
-export PATH="/home/pablo/bin:$PATH"
-
-alias sl='ls'
-
-# Add Go to path
-export PATH=/usr/local/go/bin:$PATH
-
-# Custom fzf navigation
-export FZF_DEFAULT_OPTS='--bind "alt-j:down,alt-k:up,ctrl-j:preview-down,ctrl-k:preview-up"'
-
-# Better fzf for hidden files https://github.com/junegunn/fzf/issues/337
-export FZF_DEFAULT_COMMAND="find \! \( -path '*/.git' -prune \) -printf '%P\n'"
-
-# Enable CtrlR and friends
-source /usr/share/doc/fzf/examples/key-bindings.bash
-
-
-# Init cargo package manager
-source ~/.cargo/env
-
-# source /opt/ros/humble/setup.bash && echo Sourced ROS Humble!
-fortune_catec 
-
-# Start tmux
-# https://wiki.archlinux.org/title/Tmux#Start_tmux_on_every_shell_login
-# if [ -x "$(command -v tmux)" ] && [ -n "${DISPLAY}" ] && [ -z "${TMUX}" ]; then
-#     exec tmux new-session -A -s ${USER} >/dev/null 2>&1
-# fi
-
+source ~/.bashrc.d/init

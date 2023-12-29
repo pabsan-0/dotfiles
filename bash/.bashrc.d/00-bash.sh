@@ -1,3 +1,22 @@
+# Misc exports
+export EDITOR="/usr/bin/vim"
+export TERMINAL="/usr/bin/konsole"
+export PATH="/home/pablo/bin:$PATH"
+export DOTFILES="/home/pablo/dotfiles"
+export BASHRC_D="/home/pablo/.bashrc.d"
+
+
+# Bindings for tmux sessioizer
+bind '"\C-f":"tmux-sessionizer\n"'
+bind '"\C-^":"tmux-sessionizer /home/pablo \n"' # Ctrl Shift `
+
+
+# Straightforward xdg-open
+,() {
+    xdg-open "$1"
+}
+
+
 # Create dir and cd in
 take() {
     mkdir "$1" && cd "$1"
@@ -7,6 +26,21 @@ take() {
 # Cd into directory and ls
 cdd() {
     cd "$1" && ls
+}
+
+
+# Print definition and location of function
+whereis2() {
+    shopt -s extdebug
+    declare -f "$1"
+    declare -F "$1"
+    shopt -u extdebug
+}
+
+
+# Use regex to parse declared funtions in a given shell script
+parse_shell_functions () {
+    grep -E '^[[:space:]]*([[:alnum:]_]+[[:space:]]*\(\)|function[[:space:]]+[[:alnum:]_]+)' "$1"
 }
 
 

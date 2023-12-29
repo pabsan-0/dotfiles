@@ -1,0 +1,9 @@
+# Source all the 'bashrc.d' files
+for BASHRC_D_FILE in /home/pablo/.bashrc.d/*.sh; do
+    ## Debug if needed
+    # echo ""
+    # echo "$BASHRC_D_FILE"
+    # time source "$BASHRC_D_FILE"
+
+    source "$BASHRC_D_FILE"
+done
