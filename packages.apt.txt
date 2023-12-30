@@ -28,6 +28,7 @@ pavucontrol   # GUI volume mixer
 flameshot     # print screen button
 udiskie       # auto usb mounter 
 xbindkeysrc   # keyboard remaps
+xvkbd         # keyboard actions
 
 # Useful extras
 xdotool        # X window utilities

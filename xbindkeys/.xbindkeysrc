@@ -48,15 +48,23 @@
 # 
 # "sleep 0.1 && xdotool key --clearmodifiers ntilde"
 #   Alt + Mode_switch + ntilde 
-# 
-"sleep 0.2 && xdotool key --clearmodifiers backslash"
+
+"xvkbd -xsendevent -text "\[backslash]""
   Alt + bracketright
 
-"sleep 0.2 && xdotool key --clearmodifiers bar"
+"xvkbd -xsendevent -text "|""
   Alt + Shift + bracketright
 
-"sleep 0.2 && xdotool key --clearmodifiers ntilde"
-  Alt + ntilde 
+"xvkbd -xsendevent -text "\[ntilde]""
+  alt + ntilde 
+
+## These are much slower and may induce Alt-Lock bugs!!!
+# "sleep 0.2 && xdotool key --clearmodifiers backslash"
+#   Alt + bracketright
+# "sleep 0.2 && xdotool key --clearmodifiers bar"
+#   Alt + Shift + bracketright
+# "sleep 0.2 && xdotool key --clearmodifiers ntilde"
+#   alt + ntilde 
 
 ## Alt+Mod2 + Alt_R
 
