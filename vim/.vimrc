@@ -70,12 +70,12 @@ set scrolloff=15
 " Install with :PlugInstall
 call plug#begin()
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-surround'
-Plug 'airblade/vim-gitgutter'
-Plug 'kshenoy/vim-signature'
-Plug 'tpope/vim-vinegar'
+Plug 'junegunn/fzf.vim'       " fuzzy finding
+Plug 'tpope/vim-fugitive'     " git 
+Plug 'tpope/vim-surround'     " bracing conveniences
+Plug 'airblade/vim-gitgutter' " git hints
+Plug 'kshenoy/vim-signature'  " display marks
+Plug 'tpope/vim-vinegar'      " super netrw
 "Plug 'madox2/vim-ai'
 call plug#end()
 
@@ -85,6 +85,25 @@ nnoremap <leader>f <Esc>:Files<cr>
 nnoremap <leader>b <Esc>:Buffers<cr>
 nnoremap <leader>r <Esc>:Rg<cr>
 nnoremap <leader>d <Esc>:GFiles?<cr>
+
+
+" Rip grepping of snippets, yay!
+let s:snippets_path = "~/Templates/"
+
+function! s:rg_file_read(location)
+    let string_list = split(a:location, ':', 2)
+    execute 'read ' .. s:snippets_path .. string_list[0]
+endfunction
+
+command! -bang -nargs=* CustomSnippets
+    \ call fzf#vim#grep(
+    \ "rg --column --no-heading --pretty --smart-case ".shellescape(<q-args>), 
+    \ 1, 
+    \ fzf#vim#with_preview({'dir': s:snippets_path, 'sink': function('s:rg_file_read')}),
+    \ <bang>0)
+
+nnoremap <leader>s <Esc>:CustomSnippets<cr>
+
 
 " Vim gitgutter
 " jump hunks: [c ]c; preview, stage, and undo hunks:  <leader>hp, <leader>hs, and <leader>hu
