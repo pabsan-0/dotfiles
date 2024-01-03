@@ -155,7 +155,7 @@ bar {
 
 # Switchable US-ES keyboard, needs delay on launch.
 exec_always "sleep 5; setxkbmap -model pc105 -layout us,es -option grp:win_space_toggle -option caps:escape_shifted_capslock"
-exec "sleep 5; xbindkeys"
+exec "sleep 10; xbindkeys"
 
 # Screen behavior
 exec_always "autorandr"

@@ -97,7 +97,7 @@ endfunction
 
 command! -bang -nargs=* CustomSnippets
     \ call fzf#vim#grep(
-    \ "rg --column --no-heading --pretty --smart-case ".shellescape(<q-args>), 
+    \ "rg -m 1 -L --column --no-heading --pretty --smart-case ".shellescape(<q-args>), 
     \ 1, 
     \ fzf#vim#with_preview({'dir': s:snippets_path, 'sink': function('s:rg_file_read')}),
     \ <bang>0)
