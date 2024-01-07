@@ -28,6 +28,11 @@ set autoindent
 "nmap <S-Enter> <ESC>o<ESC>d^
 nmap <Enter> <ESC>O<ESC>
 
+" Bash-like completion on cmd mode
+set wildmode=longest,list
+
+" display partially fed commands
+set showcmd
 
 " search highlight, incremental, and smart case
 set hlsearch
@@ -88,7 +93,7 @@ nnoremap <leader>d <Esc>:GFiles?<cr>
 
 
 " Rip grepping of snippets, yay!
-let s:snippets_path = "~/Templates/"
+let s:snippets_path = "~/snippets/"
 
 function! s:rg_file_read(location)
     let string_list = split(a:location, ':', 2)

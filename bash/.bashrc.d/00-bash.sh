@@ -10,9 +10,17 @@ export BASHRC_D="/home/pablo/.bashrc.d"
 bind '"\C-f":"tmux-sessionizer\n"'
 bind '"\C-^":"tmux-sessionizer /home/pablo \n"' # Ctrl Shift `
 
+hhh () {
+    source ~/bin/hhh.sh
+}
+
+# Straightforward xdg-open, silent
+,() {
+    xdg-open "$1" 2>&1 >/dev/null &
+}
 
 # Straightforward xdg-open
-,() {
+,,() {
     xdg-open "$1"
 }
 

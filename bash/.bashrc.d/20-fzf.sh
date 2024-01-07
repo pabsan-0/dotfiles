@@ -1,5 +1,8 @@
 # Custom fzf navigation
-export FZF_DEFAULT_OPTS='--bind "alt-j:down,alt-k:up,ctrl-j:preview-down,ctrl-k:preview-up"'
+export FZF_DEFAULT_OPTS='--bind "alt-j:down,alt-k:up,ctrl-j:preview-down,ctrl-k:preview-up" '
+
+# Preview files by default
+export FZF_DEFAULT_OPTS+=' --preview "batcat --color always {} 2>/dev/null || tree {}" '
 
 # Better fzf for hidden files https://github.com/junegunn/fzf/issues/337
 export FZF_DEFAULT_COMMAND="find \! \( -path '*/.git' -prune \) -printf '%P\n'"
