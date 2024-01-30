@@ -19,14 +19,15 @@ set number
 set hidden
 
 " tabs are really 4 spaces
-set tabstop=4
-set shiftwidth=4
-set expandtab
+set tabstop=4     " sets width of tab charcter
+set shiftwidth=4  " amount of whitespace to use with <, > in normal mode
+set softtabstop=4 " amount of whitespace to insert/delete in insert mode
+set expandtab     " insert spaces rather than tabs in insert mode
 set autoindent
 
-" buggy - space insertion
-"nmap <S-Enter> <ESC>o<ESC>d^
-nmap <Enter> <ESC>O<ESC>
+" whitespace inspecting tools, toggle visuals
+set listchars=eol:¬,tab:▷\ ,trail:⎵,nbsp:⎵
+noremap <Leader><Tab><Tab> :set invlist<CR>
 
 " Bash-like completion on cmd mode
 set wildmode=longest,list
@@ -40,6 +41,8 @@ set incsearch
 set ignorecase
 set smartcase
 
+" Saner behavior of C-a on 0-leading numbers
+set nrformats=
 
 " Netrw filetree options
 let g:netrw_banner = 0
