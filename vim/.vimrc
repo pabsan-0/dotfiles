@@ -58,6 +58,11 @@ augroup AutoDeleteNetrwHiddenBuffers
   au FileType netrw setlocal bufhidden=wipe
 augroup end
 
+" Comfier buffer nav
+nnoremap <silent> [b :bprevious<CR>
+nnoremap <silent> ]b :bnext<CR>
+nnoremap <silent> [B :bfirst<CR>
+nnoremap <silent> ]B :blast<CR>
 
 " Cursor options
 set cursorline
