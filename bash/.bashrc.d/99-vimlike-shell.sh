@@ -35,11 +35,11 @@ qq () {
 }
 
 
-# Edit mode switching 
+# Edit mode switching. Keeps command emacs->vi, but not the other way around 
 switch_edit_mode () {
     if  set -o | grep -q '^vi\s*off'; then 
         set -o vi 
-        bind '"\C-`":"\eddiswitch_edit_mode\n\C-y"'
+        bind '"\C-`":"\eddiswitch_edit_mode\n"'
         bind 'set show-mode-in-prompt on'
         bind 'set vi-ins-mode-string "\033[1;33m "'
         bind 'set vi-cmd-mode-string "\033[1;32m "'
