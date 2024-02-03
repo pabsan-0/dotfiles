@@ -136,3 +136,7 @@ nnoremap <leader>v <Esc>:!cd &&  glow %:p -p vim <CR><CR><cr>
 """ FOR THE FUTURE
 """ https://vim.fandom.com/wiki/Generating_a_column_of_increasing_numbers
 """ inoremap <C-Enter> <>o 
+
+
+" Default macros, override anytime
+let @q = 'WBi"Ea"'    " surround WORD with quotes
