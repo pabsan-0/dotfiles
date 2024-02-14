@@ -132,6 +132,7 @@ highlight GitGutterChange guifg=#bbbb00 ctermfg=3 ctermbg=NONE " orange
 let g:SignatureMarkTextHLDynamic = 1
 
 nnoremap <leader>v <Esc>:!cd &&  glow %:p -p vim <CR><CR><cr>
+nnoremap <leader>r :!%:p 
 
 """ FOR THE FUTURE
 """ https://vim.fandom.com/wiki/Generating_a_column_of_increasing_numbers
