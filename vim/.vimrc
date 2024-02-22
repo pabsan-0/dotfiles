@@ -133,6 +133,17 @@ let g:SignatureMarkTextHLDynamic = 1
 
 nnoremap <leader>v <Esc>:!cd &&  glow %:p -p vim <CR><CR><cr>
 nnoremap <leader>r :!%:p 
+nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
+
+" search for entire visual selection
+xnoremap * :<C-u>call <SID>VSetSearch()<CR>/<C-R>=@/<CR><CR>
+xnoremap # :<C-u>call <SID>VSetSearch()<CR>?<C-R>=@/<CR><CR>
+function! s:VSetSearch()
+    let temp = @s
+    norm! gv"sy
+    let @/ = '\V' . substitute(escape(@s, '/\'), '\n', '\\n', 'g')
+    let @s = temp
+endfunction
 
 """ FOR THE FUTURE
 """ https://vim.fandom.com/wiki/Generating_a_column_of_increasing_numbers
