@@ -9,3 +9,11 @@
 	editor = vim
 [credential]
 	helper = store
+
+[alias]
+    s = status
+    co = checkout
+    cc =  commit 
+    d = diff 
+    ds = diff --staged
+    adog = log --all --decorate --one-line --graph
