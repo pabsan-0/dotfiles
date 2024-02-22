@@ -204,9 +204,9 @@ exec --no-startup-id i3-msg "workspace $workspace9;  append_layout ~/.config/i3/
 exec --no-startup-id i3-msg "workspace $workspace10; append_layout ~/.config/i3/layouts/startup/workspace-10.json"
 
 # Open apps
-exec --no-startup-id obsidian
+# exec --no-startup-id obsidian
 exec --no-startup-id firefox
-exec --no-startup-id code 
+# exec --no-startup-id code 
 exec --no-startup-id konsole
 exec --no-startup-id chromium --app="https://web.whatsapp.com"   # browser applications - chromium is superior on this
 exec --no-startup-id chromium --app="https://teams.microsoft.com"
