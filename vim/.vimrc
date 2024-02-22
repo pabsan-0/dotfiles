@@ -148,3 +148,22 @@ endfunction
 """ FOR THE FUTURE
 """ https://vim.fandom.com/wiki/Generating_a_column_of_increasing_numbers
 """ inoremap <C-Enter> <>o 
+
+function! VimExecute()
+    " default command
+    let command = "%:p"   
+
+    let line = 1
+    while line <= 5 && line('$') >= line
+        let comment = getline(line)
+        if comment =~ 'vimcmd:\s*\S\+'
+            let command = substitute(comment, '.*vimcmd:\s*\(\S\+.*\)$', '\1', '')
+            break 
+        endif
+        let line += 1
+    endwhile
+    execute "!".command
+endfunction
+
+nnoremap  <leader><leader>R :call VimExecute()<CR>
+
