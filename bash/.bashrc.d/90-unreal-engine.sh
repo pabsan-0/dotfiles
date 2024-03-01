@@ -1,4 +1,4 @@
-__unreal_engine_path="/home/pablo/UnrealEngine/" # TUNE ME
+__unreal_engine_path="/home/pablo/unreal/UnrealEngine/" # TUNE ME
 
 
 # Launches an instance of Unreal Engine Editor pointing to a particular project, 
