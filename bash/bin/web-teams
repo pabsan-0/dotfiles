@@ -1,2 +1,2 @@
 #! /usr/bin/env bash
-chromium --app=https://teams.microsoft.com
+brave --app="https://teams.microsoft.com"

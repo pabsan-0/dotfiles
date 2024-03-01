@@ -65,23 +65,22 @@ set $workspace9 "9 "
 set $workspace10 "10 "
 
 # switch to workspace, default application if not already running
+# remember these dont work with auto back and forth
 bindsym $mod+grave workspace $workspace0; exec [ $(ps h -C obsidian | wc -l) = 0 ] && obsidian 
-bindsym $mod+1 workspace $workspace1; exec [ $(ps h -C firefox | wc -l) = 0 ] && firefox
-bindsym $mod+2 workspace $workspace2; exec [ $(ps h -C konsole | wc -l) = 0 ] && konsole
+bindsym $mod+1 workspace $workspace1; exec i3-save-tree --workspace 1 | grep brave   || brave 
+bindsym $mod+2 workspace $workspace2; exec i3-save-tree --workspace 2 | grep konsole || konsole
 bindsym $mod+3 workspace $workspace3
 bindsym $mod+4 workspace $workspace4
 bindsym $mod+5 workspace $workspace5
 bindsym $mod+6 workspace $workspace6
 bindsym $mod+7 workspace $workspace7
 bindsym $mod+8 workspace $workspace8
-bindsym $mod+9 workspace $workspace9
+bindsym $mod+9 workspace $workspace9; exec i3-save-tree --workspace 9 | grep teams || web-teams \
+                                    ; exec i3-save-tree --workspace 9 | grep whats || web-whatsapp 
 bindsym $mod+0 workspace $workspace10
 
 bindsym $mod+Tab workspace back_and_forth 
 
-# Could have used these, but they fail with workspace_auto_back_and_forth
-# bindsym $mod+1 workspace $workspace1; exec i3-save-tree --workspace 1 | grep -q firefox || firefox
-# bindsym $mod+2 workspace $workspace2; exec i3-save-tree --workspace 2 | grep -q konsole || konsole
 
 # move focused container to workspace
 bindsym $mod+Shift+grave move container to workspace $workspace0
@@ -208,9 +207,9 @@ exec --no-startup-id i3-msg "workspace $workspace10; append_layout ~/.config/i3/
 exec --no-startup-id firefox
 # exec --no-startup-id code 
 exec --no-startup-id konsole
-exec --no-startup-id chromium --app="https://web.whatsapp.com"   # browser applications - chromium is superior on this
-exec --no-startup-id chromium --app="https://teams.microsoft.com"
-exec --no-startup-id chromium --app="https://www.youtube.com/watch?v=jfKfPfyJRdk&pp=ygUJbG9maSBnaXJs"
+exec --no-startup-id web-whatsapp # bin/ scripts with browser apps 
+exec --no-startup-id web-teams 
+exec --no-startup-id brave --app="https://www.youtube.com/watch?v=jfKfPfyJRdk&pp=ygUJbG9maSBnaXJs"
 exec --no-startup-id spotify
 
 # Leave me in WS2

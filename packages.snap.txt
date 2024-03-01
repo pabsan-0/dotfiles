@@ -2,8 +2,7 @@
 
 # All these are OPTIONAL
 spotify
-firefox
-chromium
+brave
 code
 
 bw          # CLI
