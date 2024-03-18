@@ -88,6 +88,11 @@ nnoremap <silent> ]b :bnext<CR>
 nnoremap <silent> [B :bfirst<CR>
 nnoremap <silent> ]B :blast<CR>
 " 
+nnoremap <silent> [a :prev<CR>
+nnoremap <silent> ]a :next<CR>
+nnoremap <silent> [A :first<CR>
+nnoremap <silent> ]A :last<CR>
+"
 nnoremap <silent> [q :cprev<CR>
 nnoremap <silent> ]q :cnext<CR>
 nnoremap <silent> [Q :cfirst<CR>
@@ -106,6 +111,8 @@ Plug 'tpope/vim-surround'     " bracing conveniences
 Plug 'airblade/vim-gitgutter' " git hints
 Plug 'kshenoy/vim-signature'  " display marks
 Plug 'tpope/vim-vinegar'      " super netrw
+Plug 'dense-analysis/ale'     " async lint engine 
+Plug 'puremourning/vimspector' " tui debugger
 call plug#end()
 
 " Fzf.vim
@@ -144,6 +151,22 @@ highlight GitGutterChange guifg=#bbbb00 ctermfg=3 ctermbg=NONE " orange
 " Vim signature
 " inherit color to make compatible with git-gutter
 let g:SignatureMarkTextHLDynamic = 1
+
+" ALE
+let g:ale_linters_explicit = 1
+let g:ale_linters = {
+\   'python': ['flake8'],
+\   'sh': ['shellcheck']
+\}
+
+let g:ale_fixers = {
+\   '*': [],
+\   'python': ['black', 'isort']
+\}
+
+" Vimspector
+let g:vimspector_enable_mappings = 'HUMAN'
+let g:vimspector_sign_priority = {}  " TBD
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
