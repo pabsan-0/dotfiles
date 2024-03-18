@@ -48,7 +48,8 @@ bindsym $mod+Shift+s sticky toggle
 #
 # If I used dunst, I'd need this - kept while I figure whatsapp urgent 
 # exec /usr/bin/dunst
-exec udiskie --tray 
+exec udiskie --tray  # auto mount usbs etc
+exec clipit --daemon # clipboard manager
 
 ########## Workspaces ##########
 
@@ -75,8 +76,8 @@ bindsym $mod+5 workspace $workspace5
 bindsym $mod+6 workspace $workspace6
 bindsym $mod+7 workspace $workspace7
 bindsym $mod+8 workspace $workspace8
-bindsym $mod+9 workspace $workspace9; exec i3-save-tree --workspace 9 | grep teams || web-teams \
-                                    ; exec i3-save-tree --workspace 9 | grep whats || web-whatsapp 
+bindsym $mod+9 workspace $workspace9; exec i3-save-tree --workspace 9 | grep teams || ~/bin/web-teams \
+                                    ; exec i3-save-tree --workspace 9 | grep whats || ~/bin/web-whatsapp 
 bindsym $mod+0 workspace $workspace10
 
 bindsym $mod+Tab workspace back_and_forth 
@@ -204,11 +205,11 @@ exec --no-startup-id i3-msg "workspace $workspace10; append_layout ~/.config/i3/
 
 # Open apps
 # exec --no-startup-id obsidian
-exec --no-startup-id firefox
+exec --no-startup-id brave
 # exec --no-startup-id code 
 exec --no-startup-id konsole
-exec --no-startup-id web-whatsapp # bin/ scripts with browser apps 
-exec --no-startup-id web-teams 
+exec --no-startup-id ~/bin/web-whatsapp # bin/ scripts with browser apps 
+exec --no-startup-id ~/bin/web-teams 
 exec --no-startup-id brave --app="https://www.youtube.com/watch?v=jfKfPfyJRdk&pp=ygUJbG9maSBnaXJs"
 exec --no-startup-id spotify
 
