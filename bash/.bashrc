@@ -126,4 +126,5 @@ fi
 # export PATH="/usr/local/go/bin:$PATH"
 # source ~/.cargo/env
 
+echo -e "\e[36m$(fortune_catec 2>/dev/null)\e[m"
 source ~/.bashrc.d/init
