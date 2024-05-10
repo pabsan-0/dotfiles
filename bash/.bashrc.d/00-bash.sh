@@ -10,9 +10,6 @@ export BASHRC_D="/home/pablo/.bashrc.d"
 bind '"\C-f":"tmux-sessionizer\n"'
 bind '"\C-^":"tmux-sessionizer /home/pablo \n"' # Ctrl Shift `
 
-# Bind a key to switch modes. This line MUST run in emacs mode
-bind '"\C-`":"\C-a\C-kswitch_edit_mode\n\C-y"'
-
 
 # Straightforward xdg-open, silent
 ,() {
