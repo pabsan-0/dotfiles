@@ -22,6 +22,12 @@ bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
 bindsym $mod+Shift+l move right
 
+# multi screen
+bindsym $mod+Shift+Up    move workspace to output up
+bindsym $mod+Shift+Down  move workspace to output down
+bindsym $mod+Shift+Left  move workspace to output left
+bindsym $mod+Shift+Right move workspace to output right
+
 # split in h/v orientation
 bindsym $mod+s split h  
 bindsym $mod+v split v
@@ -78,7 +84,7 @@ bindsym $mod+7 workspace $workspace7
 bindsym $mod+8 workspace $workspace8
 bindsym $mod+9 workspace $workspace9; exec i3-save-tree --workspace 9 | grep teams || ~/bin/web-teams \
                                     ; exec i3-save-tree --workspace 9 | grep whats || ~/bin/web-whatsapp 
-bindsym $mod+0 workspace $workspace10
+bindsym $mod+0 workspace $workspace10 exec i3-save-tree --workspace 10 | grep spotify || spotify 
 
 bindsym $mod+Tab workspace back_and_forth 
 
@@ -199,19 +205,18 @@ bindsym $mod+c exec catecosas
 exec --no-startup-id i3-msg "workspace $workspace0;  append_layout ~/.config/i3/layouts/startup/workspace-0.json"
 exec --no-startup-id i3-msg "workspace $workspace1;  append_layout ~/.config/i3/layouts/startup/workspace-1.json"
 exec --no-startup-id i3-msg "workspace $workspace2;  append_layout ~/.config/i3/layouts/startup/workspace-2.json"
-exec --no-startup-id i3-msg "workspace $workspace3;  append_layout ~/.config/i3/layouts/startup/workspace-3.json"
 exec --no-startup-id i3-msg "workspace $workspace9;  append_layout ~/.config/i3/layouts/startup/workspace-9.json"
 exec --no-startup-id i3-msg "workspace $workspace10; append_layout ~/.config/i3/layouts/startup/workspace-10.json"
 
 # Open apps
 # exec --no-startup-id obsidian
-exec --no-startup-id brave
+# exec --no-startup-id brave
 # exec --no-startup-id code 
 exec --no-startup-id konsole
-exec --no-startup-id ~/bin/web-whatsapp # bin/ scripts with browser apps 
-exec --no-startup-id ~/bin/web-teams 
-exec --no-startup-id brave --app="https://www.youtube.com/watch?v=jfKfPfyJRdk&pp=ygUJbG9maSBnaXJs"
-exec --no-startup-id spotify
+# exec --no-startup-id ~/bin/web-whatsapp # bin/ scripts with browser apps 
+# exec --no-startup-id ~/bin/web-teams 
+# exec --no-startup-id brave --app="https://www.youtube.com/watch?v=jfKfPfyJRdk&pp=ygUJbG9maSBnaXJs"
+# exec --no-startup-id spotify
 
 # Leave me in WS2
 exec --no-startup-id i3-msg workspace $workspace2

@@ -98,6 +98,11 @@ nnoremap <silent> ]q :cnext<CR>
 nnoremap <silent> [Q :cfirst<CR>
 nnoremap <silent> ]Q :clast<CR>
 
+nnoremap <silent> [t :tabp<CR>
+nnoremap <silent> ]t :tabn<CR>
+nnoremap <silent> [T :tabfirst<CR>
+nnoremap <silent> ]T :tablast<CR>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ Plugins and plugin-related
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -113,6 +118,7 @@ Plug 'kshenoy/vim-signature'  " display marks
 Plug 'tpope/vim-vinegar'      " super netrw
 Plug 'dense-analysis/ale'     " async lint engine 
 Plug 'puremourning/vimspector' " tui debugger
+Plug 'vimwiki/vimwiki'
 call plug#end()
 
 " Fzf.vim
@@ -179,6 +185,13 @@ let g:ale_fixers = {
 let g:vimspector_enable_mappings = 'HUMAN'
 let g:vimspector_sign_priority = {}  " TBD
 
+let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'default', 'ext': '.wiki'}]
+let g:vimwiki_global_ext = 1
+let g:vimwiki_syntax_list = {}
+let g:vimwiki_syntax_list['markdown'] = {}
+let g:vimwiki_syntax_list['markdown']['typeface'] = {'bold': [], 'italic': [], 'underline': [], 'bold_italic': [], 'code': [], 'del':  [], 'sup':  [], 'sub':  [], 'eq': []}
+
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ Custom functionality 
@@ -203,14 +216,33 @@ function! VimExecute()
 endfunction
 
 
+function! OpenReadmeAtGitRoot()
+    " Get the path to the repository root (empty on error)
+    let root = system('git rev-parse --show-toplevel 2>/dev/null')
+
+    " Check if root is empty (indicates error)
+    if empty(root)
+        echoerr "Not a git repository"
+        return
+    endif
+
+    " Open README.md in a new buffer
+    let root = root[0:-2]
+    execute 'edit ' . root .'/README.md'
+endfunction
+
+
 " Custom remaps
 
-" coding and debugging
+" Coding and debugging
 nnoremap <leader><leader>r :!%:p 
 nnoremap <leader><leader>R :call VimExecute()<CR>
 nnoremap <leader><leader>m :make<CR>
 nnoremap <leader><leader>v <Esc>:!cd &&  glow %:p -p vim <CR><CR><cr>
 
-" help me better see what im doing
+" Documentation and sanity
+nnoremap <leader>gr :call OpenReadmeAtGitRoot()<CR>
+
+" Help me better see what im doing
 nnoremap <leader><leader><Tab> :set invlist<CR>
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>

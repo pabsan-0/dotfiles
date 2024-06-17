@@ -2,8 +2,9 @@
 
 These are my dotfiles. I use these across a few **ubuntu** computers with a few modifications. Do not copypaste blindly.
 
-## Usage
+`stow -R --no-folding vim`
 
+## Usage
 
 #### Dotfiles
 
@@ -15,8 +16,10 @@ cd ~
 git clone https://www.github.com/pabsan-0/dotfiles
 cd dotfiles
 
-stow i3
+stow --no-folding i3
+stow --no-folding -R i3
 ```
+
 #### Software setup
 
 - Applications: Installed from text files. The command to be used is commented at the top of each packages.*.txt files
@@ -48,47 +51,11 @@ Here's a todo list when using these on a new system:
     - Set git user and email automtically
 
 
+### See also
 
-## Notes
-
-- Packages
-    - Readable list / installation
-    - App extensions: vscode, vim, chrome
-- Vim conf
-    - Test usable
-    - Research plugins and linters
-        - fzf vim: see into keystrokes, file menu with preview
-        - git gutter: see into committing and basic usage
-        - fugitive
-    - Markdown support - backlogged
-- i3 conf
-    - i3blocks - missing network util
-- Rofi
-    - window menu: kill apps binding
-    - navigate with ctrl+hjkl 
-- Bash
-    - See ideas from zsh
-    - Unclutter current default  
-    - Customise Shopts, expansions, caps...
-    - fzf and shortcuts
-    - Retrieve previous output
-    - .inputrc
+- [Components](.docs/Components.md) 
+- [Issues](.docs/Issues.md)
 
 
 <img src="./.docs/preview.png" width="640" height="360" />
 
-
-## Issues
-
-- Whatsapp - or other chrome apps - wont yield notifications until manually clicked by the user, among other issues.
-    - Try assigning the windows with weirdo appnames by hand rather than all this junk.
-    - Use chrome://apps rather than specific sites, more flexible / non compulsary login
-    - Enable notifications in the app?
-- Dunst uses the Ctrl+` that i use in vscode and i dont know how to remove it
-
-- For better ^Z
-    - https://superuser.com/questions/378018/how-can-i-do-ctrl-z-and-bg-in-one-keypress-to-make-process-continue-in-backgroun
-- Screen timeout while watching video
-- Compton issues: 
-    - Bad value etc.  -> `sudo usermod -a -G video $USER`
-    - The above fix didnt last too long... migrate to picom 
