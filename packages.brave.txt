@@ -1,0 +1,5 @@
+## brave $(sed "s/#.*//g" packages.ffext.txt  | xargs)
+
+https://chromewebstore.google.com/detail/vimium/dbepggeogbaibhgnhhndojpepiihcmeb
+https://chromewebstore.google.com/detail/adblocker-ultimate/ohahllgiabjaoigichmmfljhkcfikeof
+https://chromewebstore.google.com/detail/bitwarden-administrador-d/nngceckbapebfimnlniiiahkandclblb

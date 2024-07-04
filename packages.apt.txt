@@ -27,7 +27,7 @@ xserver-xorg-input-synaptics  # sensible touchpad defaults, requires reboot
 pavucontrol   # GUI volume mixer
 flameshot     # print screen button
 udiskie       # auto usb mounter 
-xbindkeysrc   # keyboard remaps
+xbindkeys     # keyboard remaps
 xvkbd         # keyboard actions
 
 # Useful extras
@@ -46,3 +46,9 @@ sl          # Steam machine, yay!
 
 # Integrations
 rclone   # OneDrive CLI API
+
+
+brightnessctl   # control brightness
+arandr          # xrandr gui
+autorandr       # auto randr
+diodon          # clipboard manager

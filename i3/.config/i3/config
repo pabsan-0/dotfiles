@@ -55,7 +55,7 @@ bindsym $mod+Shift+s sticky toggle
 # If I used dunst, I'd need this - kept while I figure whatsapp urgent 
 # exec /usr/bin/dunst
 exec udiskie --tray  # auto mount usbs etc
-exec clipit --daemon # clipboard manager
+exec diodon          # clipboard manager
 
 ########## Workspaces ##########
 

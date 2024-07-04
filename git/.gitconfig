@@ -16,4 +16,4 @@
     cc =  commit 
     d = diff 
     ds = diff --staged
-    adog = log --all --decorate --one-line --graph
+    adog = log --all --decorate --oneline --graph

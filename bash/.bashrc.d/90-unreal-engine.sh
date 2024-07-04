@@ -1,4 +1,11 @@
-__unreal_engine_path="/home/pablo/unreal/UnrealEngine/" # TUNE ME
+## UE 5
+
+export UE5_DIR="/opt/epicgames/UnrealEngine5/" # TUNE ME
+
+
+## UE 4
+
+__unreal_engine_path="/opt/epicgames/UnrealEngine/" # TUNE ME
 
 
 # Launches an instance of Unreal Engine Editor pointing to a particular project, 
