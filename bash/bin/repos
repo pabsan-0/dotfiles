@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Get the list of repositories and pipe to fzf for selection
+selected_repo=$(gh repo list -L 100 | fzf)
+
+# Check if a repository was selected
+if [ -n "$selected_repo" ]; then
+  # Extract the first word from the selected line (the repo name)
+  repo_name=$(echo "$selected_repo" | awk '{print $1}')
+
+  # Form the git clone command
+  clone_command="git clone https://github.com/$repo_name"
+  
+  # Gets the shell dirty
+  # xdotool type "git clone https://github.com/$repo_name"    
+
+  eval "$clone_command"
+fi
