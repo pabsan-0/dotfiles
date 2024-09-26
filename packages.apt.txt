@@ -46,6 +46,7 @@ sl          # Steam machine, yay!
 
 # Integrations
 rclone   # OneDrive CLI API
+gh       # github api && other utils
 
 
 brightnessctl   # control brightness
