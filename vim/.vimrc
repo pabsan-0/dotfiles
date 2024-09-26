@@ -298,3 +298,6 @@ nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 " To be incorporated
 nnoremap <c-t> /[A-Z]<return>
 
+augroup cpp_detect
+    au BufNewFile,BufRead *.ino setlocal filetype=cpp
+augroup end
