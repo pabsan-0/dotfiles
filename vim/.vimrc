@@ -119,6 +119,9 @@ Plug 'tpope/vim-vinegar'      " super netrw
 Plug 'dense-analysis/ale'     " async lint engine 
 Plug 'puremourning/vimspector' " tui debugger
 Plug 'vimwiki/vimwiki'
+Plug 'junegunn/vim-easy-align' 
+Plug 'tpope/vim-commentary'
+Plug 'pabsan-0/vim-actions'
 call plug#end()
 
 " Fzf.vim
@@ -176,21 +179,30 @@ let g:ale_linters = {
 nnoremap <silent> [e :ALEPrevious<CR>
 nnoremap <silent> ]e :ALENext<CR>
 
+let g:ale_fix_on_save = 1
 let g:ale_fixers = {
 \   '*': [],
-\   'python': ['black', 'isort']
+\   'python': ['black', 'isort'],
+\   'cpp': ['clang-format']
 \}
 
 " Vimspector
 let g:vimspector_enable_mappings = 'HUMAN'
 let g:vimspector_sign_priority = {}  " TBD
 
+" Vimwiki
 let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'default', 'ext': '.wiki'}]
 let g:vimwiki_global_ext = 1
 let g:vimwiki_syntax_list = {}
 let g:vimwiki_syntax_list['markdown'] = {}
 let g:vimwiki_syntax_list['markdown']['typeface'] = {'bold': [], 'italic': [], 'underline': [], 'bold_italic': [], 'code': [], 'del':  [], 'sup':  [], 'sub':  [], 'eq': []}
 
+" Easy align
+nmap ga <Plug>(EasyAlign)
+xmap ga <Plug>(EasyAlign)
+
+" Commentary
+" autocmd FileType apache setlocal commentstring=#\ %s
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -232,6 +244,42 @@ function! OpenReadmeAtGitRoot()
 endfunction
 
 
+function! UECppSwitch()
+    " Switch between header and source in UE cpp file structures
+
+    let l:extension = expand('%:e')
+    let l:filename_noext = expand('%:p:r')
+
+    " Source file in case-insensitive Private directory
+    if l:extension == 'cpp' && l:filename_noext =~ '/private/'
+
+        " Append extension and case-preserving substitution
+        let l:filename = l:filename_noext .. '.h'
+        if l:filename_noext =~# '/private/'
+            let l:filename = substitute (l:filename, '/\Cprivate/', '/public/', 'gi')
+        else
+            let l:filename = substitute (l:filename, '/\CPrivate/', '/Public/', 'gi')
+        endif
+
+        execute "edit " ..  expand(l:filename)
+
+    " Header file in case-insensitive Public directory
+    elseif l:extension == 'h' && l:filename_noext =~ '/public/'
+
+        " Append extension and case-preserving substitution
+        let l:filename = l:filename_noext .. '.cpp'
+        if l:filename_noext =~# '/public/'
+            let l:filename = substitute (l:filename, '/\Cpublic/', '/private/', 'gi')
+        else
+            let l:filename = substitute (l:filename, '/\CPublic/', '/Private/', 'gi')
+        endif
+
+        execute "edit " ..  expand(l:filename)
+    endif
+endfunction
+
+
+nnoremap <silent> <leader><leader>c :call UECppSwitch()<CR>
 " Custom remaps
 
 " Coding and debugging
@@ -246,3 +294,7 @@ nnoremap <leader>gr :call OpenReadmeAtGitRoot()<CR>
 " Help me better see what im doing
 nnoremap <leader><leader><Tab> :set invlist<CR>
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
+
+" To be incorporated
+nnoremap <c-t> /[A-Z]<return>
+
