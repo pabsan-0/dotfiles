@@ -1,8 +1,15 @@
 #!/bin/bash
 
-gh repo list ${1-""} -L 1000 | column -s$'\t' -t | fzf             \
-    --bind='enter:execute(git clone https://github.com/{1})+abort' \
-    --bind=',:execute(xdg-open https://github.com/{1} &)+abort'    \
-    --preview=""                                                   \
-    --header='browse , clone ↵ '
+#
+# FZF repo cloner / inspector
+# Pass an username as argument, or it will default to git global's.
+# You may erase all the ${} argument to use the default user for `gh`, 
+# though if you're using gh you probaby already have working git defaults.
+#
+
+gh repo list ${1-"$(git config user.name)"} -L 1000 | column -s$'\t' -t | fzf \
+    --bind='enter:execute(git clone https://github.com/{1})+abort'            \
+    --bind=',:abort+execute(xdg-open https://github.com/{1} & >/dev/null 2>&1)'               \
+    --preview=""                                                              \
+    --header='browse , clone ↵ '                                              ;
 
