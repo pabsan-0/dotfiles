@@ -107,6 +107,9 @@ nnoremap <silent> ]T :tablast<CR>
 """ Plugins and plugin-related
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" Prevents vimwiki from stepping on vim-vinegar mapping. Needs PlugInstall
+let g:vimwiki_post_hook = 'sed -i /map_key.*-.*VimwikiRemoveHeaderLevel/d ftplugin/vimwiki.vim'
+
 " Install with :PlugInstall
 call plug#begin()
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -118,7 +121,7 @@ Plug 'kshenoy/vim-signature'  " display marks
 Plug 'tpope/vim-vinegar'      " super netrw
 Plug 'dense-analysis/ale'     " async lint engine 
 Plug 'puremourning/vimspector' " tui debugger
-Plug 'vimwiki/vimwiki'
+Plug 'vimwiki/vimwiki', { 'do': g:vimwiki_post_hook }
 Plug 'junegunn/vim-easy-align' 
 Plug 'tpope/vim-commentary'
 Plug 'pabsan-0/vim-actions'
