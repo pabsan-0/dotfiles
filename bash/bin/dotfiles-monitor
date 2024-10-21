@@ -63,5 +63,5 @@ compare_files() {
     done
 }
 
-compare_files | column -ts $'\t'
+compare_files | column -ts $'\t' | less -R
 
