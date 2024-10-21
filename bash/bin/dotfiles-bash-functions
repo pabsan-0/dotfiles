@@ -1,13 +1,13 @@
 #!/bin/bash
 
-echo -e "\e[37mParsing custom functions... See their definition with \`declare -f *\`"
+temp_file=$(mktemp)
 
 
 # Loop through all files in the directory
 for file in ~/.bashrc.d/*.sh; do
   # Check if the file is a regular file
   if [ -f "$file" ]; then
-    echo -e "\e[95m$file\e[0m"
+    echo -e "\e[95m$file\e[0m" >> "$temp_file"
 
     # echo -e "\e[33m$stow_pkg_rel \t$stow_file_rel\e[0m \t(File exists in system)"
     # Extract function names
@@ -15,7 +15,7 @@ for file in ~/.bashrc.d/*.sh; do
 
     # Print the results
     if [ -n "$functions" ]; then
-      echo "$functions"
+      echo "$functions" >> "$temp_file"
     fi
 
     # Extract environment variable names
@@ -25,7 +25,15 @@ for file in ~/.bashrc.d/*.sh; do
     #   echo "Variables in $file: $variables"
     # fi
 
-    echo ""
+    echo "" >> "$temp_file"
   fi
 done
 
+echo -e "\e[37mParsed custom functions! See their definition with \`declare -f *\`" >> "$temp_file"
+
+less --quit-if-one-screen \
+     --no-init            \
+     --RAW-CONTROL-CHARS  \
+     "$temp_file"
+
+rm "$temp_file"

@@ -63,5 +63,5 @@ compare_files() {
     done
 }
 
-compare_files | column -ts $'\t' | less -R
+compare_files | column -ts $'\t' | less --quit-if-one-screen --no-init --RAW-CONTROL-CHARS
 
