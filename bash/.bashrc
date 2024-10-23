@@ -129,5 +129,7 @@ fi
 echo -e "\e[36m$(fortune_pabsan 2>/dev/null)\e[m"
 source ~/.bashrc.d/init
 
-# This is where you put your keys and stuff
-source ~/.env
+# This is where you put your setup-specific stuff, keys, etc.
+if [ -f ~/.env ]; then
+    source ~/.env
+fi

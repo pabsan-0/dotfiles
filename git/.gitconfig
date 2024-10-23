@@ -2,6 +2,12 @@
 	name = pabsan-0
 	email = 63670587+pabsan-0@users.noreply.github.com
 
+[url "https://github.com/pabsan-0/"]
+   insteadOf = gh:
+
+[include]
+    path = ~/.gitconfig-antexia
+
 [init]
 	defaultBranch = master
 
@@ -17,3 +23,4 @@
     d = diff 
     ds = diff --staged
     adog = log --all --decorate --oneline --graph
+
