@@ -1,3 +1,6 @@
+" Indices to jump with gF
+" ~/.vimrc:118 
+
 " Automatic reloading of .vimrc
 autocmd! bufwritepost .vimrc source %
 
@@ -75,8 +78,9 @@ let g:netrw_browse_split = 0
 let g:netrw_altv = 1
 let g:netrw_winsize = 75
 let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
+let g:netrw_altfile = 1 " alternate file is never netrw
 
-" autodelete netrw buffers
+" autodelete netrw buffers on exit
 augroup AutoDeleteNetrwHiddenBuffers
   au!
   au FileType netrw setlocal bufhidden=wipe
@@ -125,10 +129,16 @@ Plug 'vimwiki/vimwiki', { 'do': g:vimwiki_post_hook }
 Plug 'junegunn/vim-easy-align' 
 Plug 'tpope/vim-commentary'
 Plug 'pabsan-0/vim-actions'
+Plug 'pabsan-0/vim-flashcards'
 call plug#end()
 
 " Fzf.vim
-let $FZF_DEFAULT_OPTS = '--bind "alt-j:down,alt-k:up,ctrl-j:preview-down,ctrl-k:preview-up"'
+
+" Lets you keep history of searches. 
+" Explicitly map c-p and c-n to keep usual behavior
+let g:fzf_history_dir = '~/.local/share/fzf-history'
+let $FZF_DEFAULT_OPTS = '--bind ctrl-n:down,ctrl-p:up,alt-n:next-history,alt-p:prev-history,ctrl-j:preview-down,ctrl-k:preview-up'
+
 nnoremap <leader>f <Esc>:Files<cr> 
 nnoremap <leader>b <Esc>:Buffers<cr>
 nnoremap <leader>r <Esc>:Rg<cr>
@@ -176,7 +186,6 @@ let g:SignatureMarkTextHLDynamic = 1
 " ALE
 let g:ale_linters_explicit = 1
 let g:ale_linters = {
-\   'python': ['flake8'],
 \   'sh': ['shellcheck']
 \}
 nnoremap <silent> [e :ALEPrevious<CR>
@@ -185,6 +194,7 @@ nnoremap <silent> ]e :ALENext<CR>
 let g:ale_fix_on_save = 1
 let g:ale_fixers = {
 \   '*': [],
+\   'help': ['align_help_tags'],
 \   'python': ['black', 'isort'],
 \   'cpp': ['clang-format']
 \}
