@@ -130,6 +130,7 @@ Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-commentary'
 Plug 'pabsan-0/vim-actions'
 Plug 'pabsan-0/vim-flashcards'
+Plug 'pabsan-0/vim-snippets'
 call plug#end()
 
 " Fzf.vim
@@ -143,32 +144,6 @@ nnoremap <leader>f <Esc>:Files<cr>
 nnoremap <leader>b <Esc>:Buffers<cr>
 nnoremap <leader>r <Esc>:Rg<cr>
 nnoremap <leader>d <Esc>:GFiles?<cr>
-nnoremap <leader>s <Esc>:CustomSnippets<cr>
-nnoremap <leader>S <Esc>:CustomSnippetsEdit<cr>
-
-" Rip grepping of snippets, yay!
-let s:snippets_path = "~/snippets/"
-"
-function! s:rg_file_read(location)
-    let string_list = split(a:location, ':', 2)
-    execute 'read ' .. s:snippets_path .. string_list[0]
-endfunction
-"
-command! -bang -nargs=* CustomSnippets
-    \ call fzf#vim#grep(
-    \ "rg -m 1 -L --column --no-heading --pretty --smart-case ".shellescape(<q-args>), 
-    \ 1, 
-    \ fzf#vim#with_preview({'dir': s:snippets_path, 'sink': function('s:rg_file_read')}),
-    \ <bang>0)
-"
-" Open the snippet directory ready for edition
-function! CustomSnippetsEdit()
-    execute "vsplit"
-    execute "lcd " .. s:snippets_path
-    execute "Explore " .. s:snippets_path
-endfunction
-command! CustomSnippetsEdit call CustomSnippetsEdit()
-
 
 " Vim gitgutter
 " jump hunks: [c ]c; preview, stage, and undo hunks:  <leader>hp, <leader>hs, and <leader>hu
