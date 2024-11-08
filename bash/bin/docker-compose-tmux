@@ -1,5 +1,14 @@
 #! /usr/bin/env bash 
 
+executable_exists() {
+    if command -v $1 2>&1 >/dev/null; then
+        return 0
+    else
+        echo "[INFO] Command '$1' could not be found"
+        return 1
+    fi
+}
+
 create_tmuxinator_config_panes() {
     local dump_file=${1}
     local services=${2}
@@ -41,21 +50,27 @@ print_usage() {
     local source=${BASH_SOURCE[0]}
     local indent=$(printf "%*s" ${#source})   # Adjust the padding to align text nicely
 
-    echo "Usage: ${source}                                                                      "
-    echo "       ${indent} [ --windows ]            : use tmux windows rather than panes        "
-    echo "       ${indent} [ --dry-run ]            : display generated tmux config and exit    "
-    echo "       ${indent} [ --no-kill-session ]    : don't kill tmux session after detach      "
-    echo "       ${indent} [ --no-kill-containers ] : don't kill docker containers after detach "
-    echo "       ${indent} [ --help ]               : display this help and exit                "
-    echo "                                                                                      "
-    echo "Launches all services in a docker compose file, each on its own tmux pane.            "
+    echo "Usage: ${source}                                                                            "
+    echo "       ${indent} [  -w | --windows            ] : use tmux windows rather than panes        "
+    echo "       ${indent} [  -d | --dry-run            ] : display generated tmux config and exit    "
+    echo "       ${indent} [ -ns | --no-kill-session    ] : don't kill tmux session after detach      "
+    echo "       ${indent} [ -nc | --no-kill-containers ] : don't kill docker containers after detach "
+    echo "       ${indent} [  -h | --help               ] : display this help and exit                "
+    echo "                                                                                            "
+    echo "Launches all services in a docker compose file, each on its own tmux pane.                  "
 }
 
 main() {
+
+    if ! executable_exists 'tmux' || ! executable_exists 'tmuxinator'; then
+        echo "[ERROR] Missing dependencies: apt install tmux tmuxinator" >&2
+        exit 1
+    fi
+
+    local arg__windows=false
     local arg__dry_run=false
     local arg__no_kill_session=false
     local arg__no_kill_containers=false
-    local arg__windows=false
     local arg__debug=false
 
     local tmuxinator_config_function
@@ -120,10 +135,20 @@ main() {
     fi 
 
 
-    # Core logic: build config file, then launch and attach tmux
+    # Build tmuxinator config file
     tmuxinator_config_file=$(mktemp)
     ${tmuxinator_config_function} ${tmuxinator_config_file} "$services"
-    tmuxinator start -p           ${tmuxinator_config_file} 
+
+    # Show the config file if debugging
+    ${arg__debug} && echo "[DEBUG] Generated config for tmux:"                  >&2 \
+                  && echo "[DEBUG] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " >&2 \
+                  && cat  "$tmuxinator_config_file"                             >&2 \
+                  && echo "[DEBUG] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< " >&2 \
+                  && read -p "Press RETURN to continue"                         >&2 ;
+
+
+    # Run and attach to the tmux session
+    tmuxinator start -p ${tmuxinator_config_file} 
 
 
     # Cleanup tmux session
