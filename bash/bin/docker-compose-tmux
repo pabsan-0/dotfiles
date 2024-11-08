@@ -1,0 +1,153 @@
+#! /usr/bin/env bash 
+
+create_tmuxinator_config_panes() {
+    local dump_file=${1}
+    local services=${2}
+
+    # Mind the leading whitespaces of the heredoc must be tab characters
+    cat <<- EOF > $dump_file
+		name: docker_compose_tmux
+		on_project_start: 
+		on_project_exit: 
+		windows:
+		  - main:
+		      panes:
+	EOF
+
+    for service in $services; do
+        echo "      - docker compose up --remove-orphans $service" >> $dump_file
+    done
+}
+
+create_tmuxinator_config_windows() {
+    local dump_file=${1}
+    local services=${2}
+
+    cat <<- EOF > $dump_file
+		name: docker_compose_tmux
+		on_project_start: 
+		on_project_exit: 
+		windows:
+	EOF
+
+    for service in $services; do
+        echo "  - $service:                                      " >> $dump_file
+        echo "      panes:                                       " >> $dump_file
+        echo "      - docker compose up --remove-orphans $service" >> $dump_file
+    done
+}
+
+print_usage() {
+    local source=${BASH_SOURCE[0]}
+    local indent=$(printf "%*s" ${#source})   # Adjust the padding to align text nicely
+
+    echo "Usage: ${source}                                                                      "
+    echo "       ${indent} [ --windows ]            : use tmux windows rather than panes        "
+    echo "       ${indent} [ --dry-run ]            : display generated tmux config and exit    "
+    echo "       ${indent} [ --no-kill-session ]    : don't kill tmux session after detach      "
+    echo "       ${indent} [ --no-kill-containers ] : don't kill docker containers after detach "
+    echo "       ${indent} [ --help ]               : display this help and exit                "
+    echo "                                                                                      "
+    echo "Launches all services in a docker compose file, each on its own tmux pane.            "
+}
+
+main() {
+    local arg__dry_run=false
+    local arg__no_kill_session=false
+    local arg__no_kill_containers=false
+    local arg__windows=false
+    local arg__debug=false
+
+    local tmuxinator_config_function
+    local tmuxinator_config_file
+    local services
+
+    while ((${#}))
+    do
+        local arg="${1:-}"
+        case "${arg}" in
+            -w|--windows)
+                arg__windows=true
+                ;;
+            --dry-run)
+                arg__dry_run=true
+                ;;
+            --no-kill-session)
+                arg__no_kill_session=true
+                ;;
+            --no-kill-containers)
+                arg__no_kill_containers=true
+                ;;
+            -h|--help)
+                print_usage
+                exit 0
+                ;;
+            --debug)
+                arg__debug=true
+                ;;
+            *)
+                print_usage
+                exit 1
+                ;;
+        esac
+        shift
+    done
+
+    ${arg__debug} && echo "[DEBUG] --windows: $windows.                            " >&2
+    ${arg__debug} && echo "[DEBUG] --dry-run: $arg__dry_run.                       " >&2
+    ${arg__debug} && echo "[DEBUG] --no-kill-session: $arg__no_kill_session.       " >&2
+    ${arg__debug} && echo "[DEBUG] --no-kill-containers: $arg__no_kill_containers. " >&2
+
+
+    # Parse docker compose file and sort for consistent order
+    services=$(docker compose config --services | sort)
+    if [ -z "$services" ]; then 
+        echo "[ERROR] Could not parse docker services. Is there a compose file?" >&2
+        exit 1
+    fi
+
+    # Decide whether to distribute services in windows or panes
+    if ${arg__windows}; then
+        tmuxinator_config_function=create_tmuxinator_config_windows
+    else
+        tmuxinator_config_function=create_tmuxinator_config_panes
+    fi
+
+    # Print and early quit if dry run mode (argument)
+    if ${arg__dry_run} ; then
+        ${tmuxinator_config_function} /dev/stdout "$services"
+        exit 0
+    fi 
+
+
+    # Core logic: build config file, then launch and attach tmux
+    tmuxinator_config_file=$(mktemp)
+    ${tmuxinator_config_function} ${tmuxinator_config_file} "$services"
+    tmuxinator start -p           ${tmuxinator_config_file} 
+
+
+    # Cleanup tmux session
+    if ${arg__no_kill_session} ; then
+        echo "[INFO] Skipping tmux kill, session (and containers) still alive." >&2
+    else
+        tmux kill-session && echo "[INFO] Killed tmux session." >&2
+
+        # Cleanup containers
+        # Only makes sense if session killed
+        if ${arg__no_kill_containers};  then
+            echo "[INFO] Skipping docker kill, containers still alive." >&2
+        else
+            if docker compose kill; then
+                echo "[INFO] Killed docker containers." >&2
+            else
+                echo "[INFO] Apparent failure when killing containers." >&2
+                set -x
+                sleep 3
+                docker container list
+            fi
+        fi 
+    fi 
+
+
+}
+main "$@"
