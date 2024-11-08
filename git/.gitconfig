@@ -20,10 +20,13 @@
 	helper = store
 
 [alias]
-    s = status
-    co = checkout
-    cc =  commit 
-    d = diff 
-    ds = diff --staged
+    s    = status
+    co   = checkout
+    cc   = commit 
+    d    = diff 
+    ds   = diff --staged
     adog = log --all --decorate --oneline --graph
 
+    wa    = git worktree add
+    wls   = ! git --git-dir=$(echo ./*.git) worktree list
+    wadog = ! git --git-dir=$(echo ./*.git) log --all --decorate --oneline --graph
