@@ -1,7 +1,7 @@
 #! /usr/bin/env bash 
 
 executable_exists() {
-    if command -v $1 2>&1 >/dev/null; then
+    if command -v "$1" >/dev/null 2>&1; then
         return 0
     else
         echo "[INFO] Command '$1' could not be found"
@@ -14,7 +14,7 @@ create_tmuxinator_config_panes() {
     local services=${2}
 
     # Mind the leading whitespaces of the heredoc must be tab characters
-    cat <<- EOF > $dump_file
+    cat <<- EOF > "$dump_file"
 		name: docker_compose_tmux
 		on_project_start: 
 		on_project_exit: 
@@ -24,7 +24,7 @@ create_tmuxinator_config_panes() {
 	EOF
 
     for service in $services; do
-        echo "      - docker compose up --remove-orphans $service" >> $dump_file
+        echo "      - docker compose up --remove-orphans $service" >> "$dump_file"
     done
 }
 
@@ -32,7 +32,7 @@ create_tmuxinator_config_windows() {
     local dump_file=${1}
     local services=${2}
 
-    cat <<- EOF > $dump_file
+    cat <<- EOF > "$dump_file"
 		name: docker_compose_tmux
 		on_project_start: 
 		on_project_exit: 
@@ -40,9 +40,11 @@ create_tmuxinator_config_windows() {
 	EOF
 
     for service in $services; do
-        echo "  - $service:                                      " >> $dump_file
-        echo "      panes:                                       " >> $dump_file
-        echo "      - docker compose up --remove-orphans $service" >> $dump_file
+        {
+            echo "  - $service:                                       " 
+            echo "      panes:                                        "
+            echo "      - docker compose up --remove-orphans $service "
+        } >> "$dump_file"
     done
 }
 
@@ -109,7 +111,7 @@ main() {
         shift
     done
 
-    ${arg__debug} && echo "[DEBUG] --windows: $windows.                            " >&2
+    ${arg__debug} && echo "[DEBUG] --windows: $arg__windows.                       " >&2
     ${arg__debug} && echo "[DEBUG] --dry-run: $arg__dry_run.                       " >&2
     ${arg__debug} && echo "[DEBUG] --no-kill-session: $arg__no_kill_session.       " >&2
     ${arg__debug} && echo "[DEBUG] --no-kill-containers: $arg__no_kill_containers. " >&2
@@ -138,18 +140,18 @@ main() {
 
     # Build tmuxinator config file
     tmuxinator_config_file=$(mktemp)
-    ${tmuxinator_config_function} ${tmuxinator_config_file} "$services"
+    ${tmuxinator_config_function} "$tmuxinator_config_file" "$services"
 
     # Show the config file if debugging
     ${arg__debug} && echo "[DEBUG] Generated config for tmux:"                  >&2 \
                   && echo "[DEBUG] >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " >&2 \
                   && cat  "$tmuxinator_config_file"                             >&2 \
                   && echo "[DEBUG] <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< " >&2 \
-                  && read -p "Press RETURN to continue"                         >&2 ;
+                  && read -rp "Press RETURN to continue"                        >&2 ;
 
 
     # Run and attach to the tmux session
-    tmuxinator start -p ${tmuxinator_config_file} 
+    tmuxinator start -p "$tmuxinator_config_file"
 
 
     # Cleanup tmux session
