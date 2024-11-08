@@ -52,9 +52,10 @@ print_usage() {
 
     echo "Usage: ${source}                                                                            "
     echo "       ${indent} [  -w | --windows            ] : use tmux windows rather than panes        "
-    echo "       ${indent} [  -d | --dry-run            ] : display generated tmux config and exit    "
+    echo "       ${indent} [ -dr | --dry-run            ] : display generated tmux config and exit    "
     echo "       ${indent} [ -ns | --no-kill-session    ] : don't kill tmux session after detach      "
     echo "       ${indent} [ -nc | --no-kill-containers ] : don't kill docker containers after detach "
+    echo "       ${indent} [  -d | --debug              ] : display additional hints at runtime       "
     echo "       ${indent} [  -h | --help               ] : display this help and exit                "
     echo "                                                                                            "
     echo "Launches all services in a docker compose file, each on its own tmux pane.                  "
@@ -84,21 +85,21 @@ main() {
             -w|--windows)
                 arg__windows=true
                 ;;
-            --dry-run)
+            -dr|--dry-run)
                 arg__dry_run=true
                 ;;
-            --no-kill-session)
+            -ns|--no-kill-session)
                 arg__no_kill_session=true
                 ;;
-            --no-kill-containers)
+            -nc|--no-kill-containers)
                 arg__no_kill_containers=true
+                ;;
+            -d|--debug)
+                arg__debug=true
                 ;;
             -h|--help)
                 print_usage
                 exit 0
-                ;;
-            --debug)
-                arg__debug=true
                 ;;
             *)
                 print_usage
