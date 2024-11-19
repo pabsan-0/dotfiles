@@ -128,6 +128,7 @@ Plug 'puremourning/vimspector' " tui debugger
 Plug 'vimwiki/vimwiki', { 'do': g:vimwiki_post_hook }
 Plug 'junegunn/vim-easy-align' 
 Plug 'tpope/vim-commentary'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 Plug 'pabsan-0/vim-actions'
 Plug 'pabsan-0/vim-flashcards'
 Plug 'pabsan-0/vim-snippets'

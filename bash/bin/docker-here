@@ -1,0 +1,127 @@
+#! /usr/bin/env bash
+
+this_file_path () {
+    local SOURCE=${BASH_SOURCE[0]}
+    local DIR=
+
+    # resolve $SOURCE until the file is no longer a symlink
+    while [ -L "$SOURCE" ]; do
+        DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
+        SOURCE=$(readlink "$SOURCE")
+        # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+        [[ $SOURCE != /* ]] && SOURCE=$DIR/$SOURCE
+    done
+    echo "$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )/$SOURCE"
+}
+
+docker_image_select_fzf() {
+    local docker_user_filter=${1-"*"}
+    local selected
+
+    selected=$(                                                                  \
+        docker image ls | while read -r name tag etc; do                         \
+            [[ "$name $tag $etc" =~ $DOCKER_NVDS_FILTER ]] &&                    \
+            [[ "$name $tag $etc" =~ $docker_user_filter ]] && echo "$name:$tag"; \
+        done | fzf --select-1                                                    ;
+    )
+
+    echo "$selected"
+}
+
+docker_image_select_vanilla() {
+    local docker_user_filter=${1-"*"}
+
+    local image_multiline_str
+    local image_list
+    local index
+    local index_selected
+    local selected
+    local selected_with_index
+
+    index=1
+    image_multiline_str=$(                                                                     \
+        docker image ls | while read -r name tag etc; do                                       \
+            [[ "$name $tag $etc" =~ $DOCKER_NVDS_FILTER ]] &&                                  \
+            [[ "$name $tag $etc" =~ $docker_user_filter ]] && echo "$((index++)). $name:$tag"; \
+        done                                                                                   ;
+    )
+
+    if [[ -n "$image_multiline_str" ]]; then
+
+        # Convert multiline str to array
+        IFS=$'\n' image_list=($image_multiline_str)
+
+        # If there is only one image, auto-select it
+        if [[ ${#image_list[@]} -eq 1 ]]; then
+            selected="${image_list[0]}"
+        else
+            echo "" >&2
+            echo "$image_multiline_str" >&2
+            read -rp "Select a Docker image by number: " index_selected
+        fi
+
+        # Parse the `1. image-name:tag` into  `image-name:tag`
+        selected_with_index="${image_list[$((index_selected-1))]}"
+        selected="${selected_with_index#*.' '}"
+
+    else
+        selected=""
+    fi
+
+    echo "$selected"
+}
+
+docker_nvidia () {
+    local image_with_tag="${1}"
+
+    docker run                              \
+        -it                                 \
+        --rm                                \
+        --runtime=nvidia                    \
+        --gpus all                          \
+        --network=host                      \
+        --name docker-here                  \
+        -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+        -v "$XAUTHORITY":"$XAUTHORITY"      \
+        -e QT_X11_NO_MITSHM=1               \
+        -e XAUTHORITY="$XAUTHORITY"         \
+        -e DISPLAY="$DISPLAY"               \
+        --privileged                        \
+        --shm-size=64gb                     \
+        -w /host                            \
+        -v "${PWD}:/host"                   \
+        "$image_with_tag"                   \
+        bash -c "bash"                      ;
+
+    return $?
+}
+
+print_usage() {
+    local SOURCE=${BASH_SOURCE[0]}
+    echo "Usage:  $SOURCE input.onnx output.engine [ docker_filter | --help ]" >&2
+    echo "Converts an .onnx file into a TensorRT .engine." >&2
+}
+
+
+export DOCKER_NVDS_FILTER='deepstream'
+
+main() {
+    local docker_user_filter=${1}
+
+
+    if command -v "fzf" > /dev/null; then
+        docker_image_with_tag=$(docker_image_select_fzf "$docker_user_filter")
+    else
+        echo "[INFO] Falling back to non-fzf TUI." >&2
+        docker_image_with_tag=$(docker_image_select_vanilla "$docker_user_filter")
+    fi
+
+    if [[ "$docker_image_with_tag" =~ "nvidia" ]]; then
+        docker_nvidia "$docker_image_with_tag"
+    else
+        :
+    fi
+
+}
+
+main "$@"
