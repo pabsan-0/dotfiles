@@ -1,26 +1,12 @@
 #! /usr/bin/env bash
 
-this_file_path () {
-    local SOURCE=${BASH_SOURCE[0]}
-    local DIR=
-
-    # resolve $SOURCE until the file is no longer a symlink
-    while [ -L "$SOURCE" ]; do
-        DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
-        SOURCE=$(readlink "$SOURCE")
-        # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
-        [[ $SOURCE != /* ]] && SOURCE=$DIR/$SOURCE
-    done
-    echo "$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )/$SOURCE"
-}
-
 docker_image_select_fzf() {
     local docker_user_filter=${1-"*"}
     local selected
 
     selected=$(                                                                  \
         docker image ls | while read -r name tag etc; do                         \
-            [[ "$name $tag $etc" =~ $DOCKER_NVDS_FILTER ]] &&                    \
+            [[ "$name $tag $etc" =~ $DOCKER_HERE_FILTER ]] &&                    \
             [[ "$name $tag $etc" =~ $docker_user_filter ]] && echo "$name:$tag"; \
         done | fzf --select-1                                                    ;
     )
@@ -41,7 +27,7 @@ docker_image_select_vanilla() {
     index=1
     image_multiline_str=$(                                                                     \
         docker image ls | while read -r name tag etc; do                                       \
-            [[ "$name $tag $etc" =~ $DOCKER_NVDS_FILTER ]] &&                                  \
+            [[ "$name $tag $etc" =~ $DOCKER_HERE_FILTER ]] &&                                  \
             [[ "$name $tag $etc" =~ $docker_user_filter ]] && echo "$((index++)). $name:$tag"; \
         done                                                                                   ;
     )
@@ -97,17 +83,29 @@ docker_nvidia () {
 }
 
 print_usage() {
-    local SOURCE=${BASH_SOURCE[0]}
-    echo "Usage:  $SOURCE input.onnx output.engine [ docker_filter | --help ]" >&2
-    echo "Converts an .onnx file into a TensorRT .engine." >&2
+    echo "Usage:  docker-here [ docker_filter ]                               " >&2
+    echo "                                                                    " >&2
+    echo "Runs a docker container in interactive mode and volumes PWD into it." >&2
+    echo "                                                                    " >&2
+    echo "You will be prompted to select a container via fzf (if installed) or" >&2
+    echo "by CLI input. You may pass a regex filter as a positional parameter " >&2
+    echo "or via the env variable DOCKER_HERE_FILTER (or both). If only one   " >&2
+    echo "match is found, the container will run without confirmation.        " >&2
 }
 
 
-export DOCKER_NVDS_FILTER='deepstream'
+# From shell (or hardcode)
+# export DOCKER_HERE_FILTER=''
 
 main() {
-    local docker_user_filter=${1}
 
+    local docker_user_filter=''
+
+    local arg="${1:-}"
+    case "${arg}" in
+        -h|--help)  print_usage; exit 0           ;; 
+        *)          local docker_user_filter="$1" ;;
+    esac
 
     if command -v "fzf" > /dev/null; then
         docker_image_with_tag=$(docker_image_select_fzf "$docker_user_filter")
@@ -119,7 +117,7 @@ main() {
     if [[ "$docker_image_with_tag" =~ "nvidia" ]]; then
         docker_nvidia "$docker_image_with_tag"
     else
-        :
+        : # TBD
     fi
 
 }
