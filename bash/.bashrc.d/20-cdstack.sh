@@ -63,3 +63,8 @@ s() {
 b() {
 	s "$((_CD_STACK_PTR + 1))"
 }
+
+# After trying to cd to a file, this cmd crops the file and gets the dirname
+cdir() {
+    cd "${_%/*}" || true
+}
