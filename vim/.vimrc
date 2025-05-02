@@ -49,6 +49,9 @@ set smartcase
 " Saner behavior of C-a on 0-leading numbers
 set nrformats=
 
+" Filename completion ^x^f works after assignments
+set isfname-==
+
 " search for entire visual selection
 xnoremap * :<C-u>call <SID>VSetSearch()<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-u>call <SID>VSetSearch()<CR>?<C-R>=@/<CR><CR>
@@ -132,6 +135,7 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 
 Plug 'pabsan-0/vim-actions'
 Plug 'pabsan-0/vim-flashcards'
 Plug 'pabsan-0/vim-snippets'
+Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 call plug#end()
 
 " Fzf.vim
@@ -144,7 +148,7 @@ let $FZF_DEFAULT_OPTS = '--bind ctrl-n:down,ctrl-p:up,alt-n:next-history,alt-p:p
 nnoremap <leader>f <Esc>:Files<cr> 
 nnoremap <leader>b <Esc>:Buffers<cr>
 nnoremap <leader>r <Esc>:Rg<cr>
-nnoremap <leader>d <Esc>:GFiles?<cr>
+nnoremap <leader>D <Esc>:GFiles?<cr>
 
 " Vim gitgutter
 " jump hunks: [c ]c; preview, stage, and undo hunks:  <leader>hp, <leader>hs, and <leader>hu
@@ -162,6 +166,7 @@ let g:SignatureMarkTextHLDynamic = 1
 " ALE
 let g:ale_linters_explicit = 1
 let g:ale_linters = {
+\   'javascript': ['deno'],
 \   'sh': ['shellcheck']
 \}
 nnoremap <silent> [e :ALEPrevious<CR>
@@ -171,6 +176,7 @@ let g:ale_fix_on_save = 1
 let g:ale_fixers = {
 \   '*': [],
 \   'help': ['align_help_tags'],
+\   'javascript': ['deno'],
 \   'python': ['black', 'isort'],
 \   'cpp': ['clang-format']
 \}

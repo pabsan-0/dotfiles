@@ -27,14 +27,26 @@ class YoloViz:
         shutil.rmtree(self.dump_dir, ignore_errors=True)
         os.makedirs(self.dump_dir)
 
+    def _find_label(self, img_path):
+        img_path = os.path.abspath(img_path)
+        candidates = [
+            re.sub(r"\.[^.]+$", ".txt", img_path),
+            re.sub("images", "labels", re.sub(r"\.[^.]+$", ".txt", img_path)),
+        ]
+
+        for candidate in candidates:
+            if os.path.isfile(candidate):
+                return candidate
+        return None
+
     def _draw_img(self, img_path):
         pic = cv2.imread(img_path)
         if pic is None:
             print("Ignoring bad input file %s" % img_path)
             return None
 
-        lab_path = re.sub(r"\.[^.]+$", ".txt", img_path)
-        if not os.path.isfile(lab_path):
+        lab_path = self._find_label(img_path)
+        if not lab_path:
             print("Could not find a label for %s" % img_path)
             return None
 
