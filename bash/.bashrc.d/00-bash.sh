@@ -1,14 +1,16 @@
 # Misc exports
 export EDITOR="/usr/bin/vim"
 export TERMINAL="/usr/bin/konsole"
-export PATH="/home/pablo/bin:$PATH"
-export DOTFILES="/home/pablo/dotfiles"
-export BASHRC_D="/home/pablo/.bashrc.d"
+export PATH="$HOME/bin:$PATH"
+export DOTFILES="$HOME/dotfiles"
+export BASHRC_D="$HOME/.bashrc.d"
+
+eval $(thefuck --alias f)
 
 
 # Bindings for tmux sessioizer
 bind '"\C-f":"tmux-sessionizer\n"'
-bind '"\C-^":"tmux-sessionizer /home/pablo \n"' # Ctrl Shift `
+bind '"\C-^":"tmux-sessionizer ~ \n"' # Ctrl Shift `
 
 
 # Straightforward xdg-open, silent

@@ -36,6 +36,7 @@ snap           # Yet another package manager
 lm-sensors     # Monitor CPU temperature 
 fzf            # the fuzzy finder
 ripgrep        # grep but faster
+tsp            # task spooler for job queueing
 
 # Funky stuff
 neofetch    # System stats
