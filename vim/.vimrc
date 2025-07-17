@@ -166,7 +166,7 @@ let g:SignatureMarkTextHLDynamic = 1
 " ALE
 let g:ale_linters_explicit = 1
 let g:ale_linters = {
-\   'javascript': ['deno'],
+\   'javascript': ['deno --options-indent-width 4'],
 \   'sh': ['shellcheck']
 \}
 nnoremap <silent> [e :ALEPrevious<CR>
