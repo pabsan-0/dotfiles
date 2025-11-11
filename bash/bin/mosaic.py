@@ -15,12 +15,18 @@ from tqdm import tqdm
 IMAGE_FORMATS = {".jpg", ".jpeg", ".png", ".bmp", ".gif"}
 
 
-def get_image_paths(folder):
+def get_image_paths_from_inputs(inputs):
     image_paths = []
-    for root, _, files in os.walk(folder):
-        for f in files:
-            if os.path.splitext(f.lower())[1] in IMAGE_FORMATS:
-                image_paths.append(os.path.join(root, f))
+    for inp in inputs:
+        if os.path.isdir(inp):
+            for root, _, files in os.walk(inp):
+                for f in files:
+                    if os.path.splitext(f.lower())[1] in IMAGE_FORMATS:
+                        image_paths.append(os.path.join(root, f))
+        elif os.path.isfile(inp) and os.path.splitext(inp.lower())[1] in IMAGE_FORMATS:
+            image_paths.append(inp)
+        else:
+            print(f"Warning: Ignored unsupported path: {inp}")
     return image_paths
 
 
@@ -88,16 +94,16 @@ def run_command(template, image_path):
 def main():
     # fmt: off
     parser = argparse.ArgumentParser(
-        description="Create a mosaic from images in a directory."
+        description="Create a mosaic from image files and/or directories."
     )
-    parser.add_argument("input_dir", help="Input directory with images")
+    parser.add_argument("inputs", nargs="+", help="Input image files and/or directories")
     parser.add_argument("-o", "--output-file", help="Mosaic destination")
     parser.add_argument("-s", "--max-size", type=int, default=2000, help="Maximum width/height of the mosaic")
     parser.add_argument("-n", "--max-images", type=int, default=2500, help="Maximum number of images to include")
     parser.add_argument("-t", "--threads", type=int, default=min(32, (os.cpu_count() or 4) * 2), help="Number of threads to use")
     parser.add_argument("-e", "--exec", nargs="+", help="Shell command to run on result image. Use `{}` as placeholder for image path.")
     args = parser.parse_args()
-    # fmt: on
+    # fmt: off
 
     tmp_dir = tempfile.mkdtemp(prefix="mosaic_", dir="/tmp")
     tmp_output_path = os.path.join(tmp_dir, "mosaic.jpg")
@@ -105,7 +111,7 @@ def main():
     print(f"Temporary output path: {tmp_output_path}")
     print("Collecting images...")
 
-    image_paths = get_image_paths(args.input_dir)
+    image_paths = get_image_paths_from_inputs(args.inputs)
     print(f"Found {len(image_paths)} image(s).")
 
     try:
@@ -119,7 +125,7 @@ def main():
 
         if args.output_file:
             shutil.copy(tmp_output_path, args.output_file)
-            print(f"Copied mosaic to: {args.outpu,t_file}")
+            print(f"Copied mosaic to: {args.output_file}")
         else:
             print(f"Mosaic saved to temporary location: {tmp_output_path}")
 
@@ -128,7 +134,7 @@ def main():
 
     finally:
         pass
-        # You can delete tmp_dir here if you want:
+        # Optionally clean up:
         # shutil.rmtree(tmp_dir)
 
 

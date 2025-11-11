@@ -1,13 +1,11 @@
 #! /usr/bin/env python3
 
-import glob
 import os
 import re
 import shutil
 import sys
 
 import cv2
-import numpy as np
 
 
 class YoloViz:
@@ -48,11 +46,18 @@ class YoloViz:
         lab_path = self._find_label(img_path)
         if not lab_path:
             print("Could not find a label for %s" % img_path)
-            return None
+            # return None
 
         with open(lab_path, "r") as file:
-            for label in file.readlines():
-                cls, x, y, w, h = [float(k) for k in label.split()]
+            lines = file.readlines()
+            for label in lines:
+                try:
+                    cls, x, y, w, h = [float(k) for k in label.split()]
+                except Exception as e:
+                    print(e)
+                    print("Failed to parse label %s" % lab_path)
+                    print(lines)
+                    return None
 
                 x1 = int((x - w / 2) * pic.shape[1])
                 y1 = int((y - h / 2) * pic.shape[0])
