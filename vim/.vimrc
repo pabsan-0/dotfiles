@@ -136,6 +136,8 @@ Plug 'pabsan-0/vim-actions'
 Plug 'pabsan-0/vim-flashcards'
 Plug 'pabsan-0/vim-snippets'
 Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
+Plug 'github/copilot.vim'
+Plug 'DanBradbury/copilot-chat.vim'
 call plug#end()
 
 " Fzf.vim
@@ -167,11 +169,13 @@ let g:SignatureMarkTextHLDynamic = 1
 let g:ale_linters_explicit = 1
 let g:ale_linters = {
 \   'javascript': ['deno --options-indent-width 4'],
-\   'sh': ['shellcheck']
+\   'sh': ['shellcheck'],
+\   'python': ['ruff']
 \}
 nnoremap <silent> [e :ALEPrevious<CR>
 nnoremap <silent> ]e :ALENext<CR>
 
+let g:ale_virtualtext_cursor = 0 " dont add virtual text 
 let g:ale_fix_on_save = 1
 let g:ale_fixers = {
 \   '*': [],
@@ -180,6 +184,8 @@ let g:ale_fixers = {
 \   'python': ['black', 'isort'],
 \   'cpp': ['clang-format']
 \}
+" Easy saving without reformatting
+command W :noautocmd w
 
 " Vimspector
 let g:vimspector_enable_mappings = 'HUMAN'
@@ -198,6 +204,10 @@ xmap ga <Plug>(EasyAlign)
 
 " Commentary
 " autocmd FileType apache setlocal commentstring=#\ %s
+
+" Copilot chat
+nnoremap <leader>C :CopilotChatOpen<CR>
+vmap <leader>a <Plug>CopilotChatAddSelection
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -293,6 +303,7 @@ nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 " To be incorporated
 nnoremap <c-t> /[A-Z]<return>
 
+" Detect Arduino .ino files as C++ 
 augroup cpp_detect
     au BufNewFile,BufRead *.ino setlocal filetype=cpp
 augroup end
