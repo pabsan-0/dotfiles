@@ -116,3 +116,16 @@ cap () {
 ret () {
     cat /tmp/capture.out; 
 }
+
+# Highlight: like grep, but show everything
+high() {
+    if [[ $# -eq 0 ]]; then
+        echo "Usage: high PATTERN [FILE...]"
+        return 1
+    fi
+    local pattern="$1"
+    shift
+    # Use magenta (purple) for matches
+    GREP_COLORS='mt=1;95' grep --color=always -E "$pattern|$" "$@"
+}
+
