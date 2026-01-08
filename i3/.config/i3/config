@@ -54,8 +54,6 @@ bindsym $mod+Shift+s sticky toggle
 #
 # If I used dunst, I'd need this - kept while I figure whatsapp urgent 
 # exec /usr/bin/dunst
-exec udiskie --tray  # auto mount usbs etc
-exec diodon          # clipboard manager
 
 ########## Workspaces ##########
 
@@ -130,11 +128,11 @@ exec --no-startup-id picom
 exec --no-startup-id feh --bg-scale --zoom fill ~/dotfiles/i3/.config/i3/media/.wallpaper.jpg
 
 # Colors
-set $bg-color 	         #4d5566
-set $inactive-bg-color   #2f343f
-set $text-color          #f3f4f5
-set $inactive-text-color #676E7D
-set $urgent-bg-color     #E53935
+set $bg-color             #1e222a
+set $inactive-bg-color    #16191f
+set $text-color           #e6e8eb
+set $inactive-text-color  #8b93a7
+set $urgent-bg-color      #ff6b6b
 
 # window colors         border              background         text                 indicator
 client.focused          $bg-color           $bg-color          $text-color          #00ff00
@@ -217,6 +215,11 @@ exec --no-startup-id konsole
 # exec --no-startup-id ~/bin/web-teams 
 # exec --no-startup-id brave --app="https://www.youtube.com/watch?v=jfKfPfyJRdk&pp=ygUJbG9maSBnaXJs"
 # exec --no-startup-id spotify
+
+# Tray and misc
+exec --no-startup-id nm-applet
+exec --no-startup-id udiskie --tray  # auto mount usbs etc
+exec --no-startup-id diodon          # clipboard manager
 
 # Leave me in WS2
 exec --no-startup-id i3-msg workspace $workspace2
