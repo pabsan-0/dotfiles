@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 open_in_terminal () {
     local command="$1"
 
@@ -17,17 +16,22 @@ open_in_terminal () {
     fi
 }
 
-# Options
-github='1  GitHub'
-gists='2  Gists'
-outlook='3  Outlook'
-onedrive='4  One Drive'
-bitbucket='5  Bitbucket'
-sharepoint='6  Sharepoint Upia'
-zoho='7  Zoho'
-symphony='8  Symphony'
-idinet='9  Idinet'
-imputador='10  El Imputador'
+github='github'
+gists='gists'
+outlook='outlook'
+onedrive='onedrive'
+bitbucket='bitbucket'
+mind='mind'
+mind_smartear='mind/smartear_ai'
+jira='jira'
+indraweb='indraweb'
+dedicaciones='indraweb/dedicaciones'
+service_point='indraweb/servicepoint'
+calendario_laboral='indraweb/calendario'
+forticlient='forticlient'
+chatgpt='chatgpt'
+copilot='github-copilot'
+zerotier='zerotier'
 
 # Rofi CMD
 rofi_cmd() {
@@ -37,14 +41,14 @@ rofi_cmd() {
 
 # Pass variables to rofi dmenu
 run_rofi() {
-	echo -e "$github\n$gists\n$outlook\n$onedrive\n$bitbucket\n$sharepoint\n$zoho\n$symphony\n$idinet\n$imputador" | rofi_cmd
+    echo -e "$github\n$gists\n$outlook\n$onedrive\n$bitbucket\n$mind\n$mind_smartear\n$jira\n$indraweb\n$dedicaciones\n$service_point\n$calendario_laboral\n$forticlient\n$chatgpt\n$copilot\n$zerotier" | rofi_cmd
 }
 
 # Actions
 chosen="$(run_rofi)"
 case ${chosen} in
 	$github)
-		xdg-open https://github.com/$(git config user.name)
+		xdg-open https://github.com/$(git config user.name)?tab=repositories
 		;;
 	$gists)
 		xdg-open https://gist.github.com/$(git config user.name)
@@ -53,25 +57,46 @@ case ${chosen} in
 		xdg-open https://outlook.office.com/mail/
 		;;
 	$onedrive)
-		xdg-open https://fadacatecatlas-my.sharepoint.com/
+		xdg-open https://indra365-my.sharepoint.com/my
 		;;
 	$bitbucket)
-		xdg-open https://bitbucket.org/dashboard/overview
+		xdg-open https://bitbucket.indra.es
 		;;
-	$sharepoint)
-		xdg-open https://fadacatecatlas.sharepoint.com/_layouts/15/sharepoint.aspx?
+	$mind)
+		# xdg-open https://mind.indra.es/display/ANTEXIA
+		xdg-open https://mind.indra.es/display/ANTEXIA/Reuniones+de+seguimiento
 		;;
-	$zoho)
-		xdg-open https://projects.zoho.eu/portal/catec
+	$mind_smartear)
+		# xdg-open https://mind.indra.es/display/ANTEXIA
+		xdg-open https://mind.indra.es/pages/viewpage.action?pageId=933661105
 		;;
-	$symphony)
-		xdg-open http://controlpresencia.catec.aero
+	$jira)
+        xdg-open "https://jira.indra.es/secure/RapidBoard.jspa?rapidView=16829&projectKey=ANTEXIA"
 		;;
-	$idinet)
-		xdg-open http://erp.catec.aero/IDiNet/misproyectos.aspx?pag=MisHoras#DiaAnterior
+	$indraweb)
+		xdg-open https://www.indraweb.net/languages/es-es/Paginas/default.aspx
 		;;
-	$imputador)
-                open_in_terminal el_imputador	
+	$dedicaciones)
+		xdg-open https://apps.indraweb.net/DedicacionesWEB/pages/homeimputacion.xhtml
 		;;
+    $service_point)
+        xdg-open "https://indraistiprovisioning-dwp.onbmc.com/dwp/app/#/catalog"
+        ;;
+	$calendario_laboral)
+		xdg-open https://apps.indraweb.net/calendarios/micalendario.jsp
+		;;
+	$forticlient)
+        forticlient gui
+		;;
+	$chatgpt)
+		xdg-open https://chatgpt.com/
+		;;
+	$copilot)
+		xdg-open https://github.com/copilot
+		;;
+	$zerotier)
+		xdg-open https://my.zerotier.com/
+		;;
+
 esac
 

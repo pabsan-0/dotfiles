@@ -15,7 +15,9 @@ bind '"\C-^":"tmux-sessionizer ~ \n"' # Ctrl Shift `
 
 # Straightforward xdg-open, silent
 ,() {
-    xdg-open "$1" 2>&1 >/dev/null &
+    [ -n "$1" ] || return
+    xdg-open "$1" >/dev/null 2>&1 &
+    disown
 }
 
 # Straightforward xdg-open

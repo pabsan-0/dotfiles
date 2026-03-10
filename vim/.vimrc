@@ -1,5 +1,5 @@
 " Indices to jump with gF
-" ~/.vimrc:118 
+" ~/.vimrc:138 
 
 " Automatic reloading of .vimrc
 autocmd! bufwritepost .vimrc source %
@@ -8,12 +8,28 @@ autocmd! bufwritepost .vimrc source %
 """ Customisation of existing features 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" All swap files in the same dir, make sure it exists!
-set directory^=$HOME/.vim/swap//
+" All swap files in the same dir, make sure dir exists!
+set directory^=$HOME/.vim/files/swap//
+set updatecount=200
+
+" Persistent undo files, make sure dir exists!
 if has('persistent_undo')
-  set undodir=$HOME/.vim/undo
   set undofile
+  set undodir=$HOME/.vim/files/undo/
 endif
+
+" Backup files, make sure dir exists!
+set backup
+set backupdir=$HOME/.vim/files/backup//
+set backupcopy=yes
+set backupskip=
+augroup RenameBackupFiles
+    au BufWritePre * let &bex = '@' . strftime("%F.%H:%M")
+augroup end
+
+" Viminfo
+set viminfo='100,n$HOME/.vim/files/info/viminfo
+
 
 filetype plugin indent on
 
@@ -151,6 +167,9 @@ nnoremap <leader>f <Esc>:Files<cr>
 nnoremap <leader>b <Esc>:Buffers<cr>
 nnoremap <leader>r <Esc>:Rg<cr>
 nnoremap <leader>D <Esc>:GFiles?<cr>
+
+" Vim fugitive
+nnoremap <leader>gd :Gdiffsplit<CR>
 
 " Vim gitgutter
 " jump hunks: [c ]c; preview, stage, and undo hunks:  <leader>hp, <leader>hs, and <leader>hu
@@ -307,3 +326,19 @@ nnoremap <c-t> /[A-Z]<return>
 augroup cpp_detect
     au BufNewFile,BufRead *.ino setlocal filetype=cpp
 augroup end
+
+
+function! GstFormat() range
+  " Append ; if not already there
+  exec 's/\v;?\s*$/ ;/'
+
+  " Replace !| with newline and proper indentation
+  "    <--- actual subs ---> <--------------- indentation bullshit ------------------------------>
+  exec 's/\v([!|])/\="\\\r" . repeat(" ", indent(".")) . repeat(" ", &shiftwidth) . submatch(1)/g'
+
+  if exists(':EasyAlign')
+    normal gaip-\' \'
+  endif
+endfunction
+command GstFormat :call GstFormat()
+nnoremap <silent> <Leader>gf :GstFormat<CR>

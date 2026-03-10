@@ -133,3 +133,5 @@ source ~/.bashrc.d/init
 if [ -f ~/.env ]; then
     source ~/.env
 fi
+
+# eval "$(thefuck --alias)"

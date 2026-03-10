@@ -118,6 +118,8 @@ main() {
         docker_nvidia "$docker_image_with_tag"
     else
         : # TBD
+        docker_nvidia "$docker_image_with_tag"
+        echo TO BE IMPLEMENTED: Falling back to running in NVIDIA mode.
     fi
 
 }
