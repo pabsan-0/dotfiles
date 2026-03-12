@@ -5,8 +5,6 @@ export PATH="$HOME/bin:$PATH"
 export DOTFILES="$HOME/dotfiles"
 export BASHRC_D="$HOME/.bashrc.d"
 
-eval $(thefuck --alias f)
-
 
 # Bindings for tmux sessioizer
 bind '"\C-f":"tmux-sessionizer\n"'

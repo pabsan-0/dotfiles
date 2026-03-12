@@ -126,12 +126,10 @@ fi
 # export PATH="/usr/local/go/bin:$PATH"
 # source ~/.cargo/env
 
-echo -e "\e[36m$(fortune_pabsan 2>/dev/null)\e[m"
+command -v fortune_pabsan >/dev/null 2>&1 && echo -e "\e[36m$(fortune_pabsan 2>/dev/null)\e[m"
 source ~/.bashrc.d/init
 
 # This is where you put your setup-specific stuff, keys, etc.
 if [ -f ~/.env ]; then
     source ~/.env
 fi
-
-# eval "$(thefuck --alias)"
