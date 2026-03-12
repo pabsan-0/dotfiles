@@ -2,60 +2,34 @@
 
 These are my dotfiles. I use these across a few **ubuntu** computers with a few modifications. Do not copypaste blindly.
 
-`stow -R --no-folding vim`
-
-## Usage
-
-#### Dotfiles
-
-You can either replace your system's files or read and paste the bits in here that interest you. My canonical setup method uses `stow`.
-
-Here's an example to stow i3 into your system.
+#### Install
 ```bash
 cd ~
 git clone https://www.github.com/pabsan-0/dotfiles
 cd dotfiles
 
-stow --no-folding i3
-stow --no-folding -R i3
+./installs.bash           # Install apt+snap+git packages
+./installs_brave.bash     # GUI interactive browser extension installs
+./stow.bash bash vim i3   # Stow using the helper file
+
+vim +PlugInstall +qall    # Once vim is installed and dotfiles in place, install plugins
+gnome-session-quit        # Log out and back in for i3, then verify i3+i3blocks (battery, date, volume...)
 ```
 
-#### Software setup
-
-- Applications: Installed from text files. The command to be used is commented at the top of each packages.*.txt files
-- Browser extensions: Installed via GUI. A script will open the extension URLs, then I simply click on them.
-
-Here's how I would install all my SW:
-
+#### Diagnose
 ```bash
-
-# Apt and snap packages. Snap may fail due to --classic flags
-sudo apt install $(sed "s/#.*//g" packages.apt.txt  | xargs)
-sudo snap install $(sed "s/#.*//g" packages.snap.txt  | xargs)
-
-# Firefox extensions. This opens a few tabs which need interaction
-firefox $(sed "s/#.*//g" packages.ffext.txt  | xargs)
+dotfiles-edit             # opens $EDITOR at the dotfiles dir
+dotfiles-monitor          # Checks all dotfiles symlinks status
+dotfiles-bash-functions   # New bash functions imported at the shell
+ls bash/bin               # New executables available to the shell in PATH
 ```
 
-## First time setups
-
-Here's a todo list when using these on a new system:
-- Install software from text files
-- Stow all dotfiles
-- If using i3:  
-    - Log out and back in
-    - Check i3 works in general - it usually will
-    - Check i3blocks are working - more prone to conflicts
-- Handling credentials:
-    - Password manager and extensions
-    - Set git user and email automtically
-
-
-### See also
+#### See also
 
 - [Components](.docs/Components.md) 
 - [Issues](.docs/Issues.md)
 
 
+<br>
+<br>
 <img src="./.docs/preview.png" width="640" height="360" />
-
