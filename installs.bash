@@ -69,7 +69,8 @@ sudo apt install "${packages_apt[@]}"
 sudo snap install "${packages_snap[@]}"
 
 # Custom github packages
-mkdir -p /opt/pabsan-0
+sudo mkdir -p /opt/pabsan-0
+sudo chown -R $USER /opt/pabsan-0
 cd /opt/pabsan-0 && (
     git clone https://github.com/pabsan-0/flashcards && (
         cd flashcards &&
@@ -78,7 +79,7 @@ cd /opt/pabsan-0 && (
 
     git clone https://github.com/pabsan-0/fortunes && (
         cd fortunes &&
-        fortune_pabsan --update &&
+        ./fortune --update &&
         ln -s "$PWD/fortune" "$HOME/bin/fortune_pabsan"
     )
 
