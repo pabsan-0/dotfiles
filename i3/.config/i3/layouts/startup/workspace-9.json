@@ -2,7 +2,8 @@
     "border": "normal",
     "floating": "auto_off",
     "layout": "splith",
-    "percent": null,
+    "marks": [],
+    "percent": 1,
     "type": "con",
     "nodes": [
         {
@@ -10,41 +11,20 @@
             "current_border_width": 2,
             "floating": "auto_off",
             "geometry": {
-               "height": 1060,
-               "width": 945,
-               "x": 10,
-               "y": 10
+               "height": 1159,
+               "width": 1920,
+               "x": 0,
+               "y": 20
             },
-            "name": "web.whatsapp.com",
-            "percent": 0.5,
+            "marks": [],
+            "name": "Slack",
+            "percent": 1,
             "swallows": [
                {
-               "class": "^Brave$",
-               "instance": "^web\\.whatsapp\\.com$"
-               }
-            ],
-            "type": "con"
-        },
-        {
-            "border": "normal",
-            "current_border_width": 2,
-            "floating": "auto_off",
-            "geometry": {
-               "height": 1060,
-               "width": 945,
-               "x": 10,
-               "y": 10
-            },
-            "name": "Chat | Microsoft Teams Classic",
-            "percent": 0.5,
-            "swallows": [
-               {
-               "class": "^Brave$",
-               "instance": "^teams\\.microsoft\\.com$"
+               "class": "^Slack$"
                }
             ],
             "type": "con"
         }
     ]
 }
-

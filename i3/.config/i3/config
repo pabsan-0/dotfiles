@@ -29,7 +29,7 @@ bindsym $mod+Shift+Left  move workspace to output left
 bindsym $mod+Shift+Right move workspace to output right
 
 # split in h/v orientation
-bindsym $mod+s split h  
+bindsym $mod+s split h
 bindsym $mod+v split v
 
 # window sizes
@@ -51,13 +51,10 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 bindsym $mod+Shift+z floating toggle
 bindsym $mod+z focus mode_toggle
 bindsym $mod+Shift+s sticky toggle
-#
-# If I used dunst, I'd need this - kept while I figure whatsapp urgent 
-# exec /usr/bin/dunst
 
 ########## Workspaces ##########
 
-set $workspace0 "0 "
+set $workspace0 "0 "
 set $workspace1 "1 "
 set $workspace2 "2 "
 set $workspace3 "3 "
@@ -71,20 +68,22 @@ set $workspace10 "10 "
 
 # switch to workspace, default application if not already running
 # remember these dont work with auto back and forth
-bindsym $mod+grave workspace $workspace0; exec [ $(ps h -C obsidian | wc -l) = 0 ] && obsidian 
-bindsym $mod+1 workspace $workspace1; exec i3-save-tree --workspace 1 | grep brave   || brave 
-bindsym $mod+2 workspace $workspace2; exec i3-save-tree --workspace 2 | grep konsole || konsole
+bindsym $mod+grave workspace $workspace0; exec i3-save-tree --workspace 0 | grep calend  || ~/bin/web-googlecalendar
+bindsym $mod+1 workspace $workspace1;     exec i3-save-tree --workspace 1 | grep brave   || brave
+bindsym $mod+2 workspace $workspace2;     exec i3-save-tree --workspace 2 | grep konsole || konsole
 bindsym $mod+3 workspace $workspace3
 bindsym $mod+4 workspace $workspace4
 bindsym $mod+5 workspace $workspace5
 bindsym $mod+6 workspace $workspace6
 bindsym $mod+7 workspace $workspace7
 bindsym $mod+8 workspace $workspace8
-bindsym $mod+9 workspace $workspace9; exec i3-save-tree --workspace 9 | grep teams || ~/bin/web-teams \
-                                    ; exec i3-save-tree --workspace 9 | grep whats || ~/bin/web-whatsapp 
-bindsym $mod+0 workspace $workspace10 exec i3-save-tree --workspace 10 | grep spotify || spotify 
+bindsym $mod+9 workspace $workspace9; exec i3-save-tree --workspace 9 | grep slack || slack
+bindsym $mod+0 workspace $workspace10
 
-bindsym $mod+Tab workspace back_and_forth 
+# exec i3-save-tree --workspace 9 | grep whats || ~/bin/web-whatsapp
+# exec i3-save-tree --workspace 10 | grep calend || ~/bin/web-googlecalendar
+
+bindsym $mod+Tab workspace back_and_forth
 
 
 # move focused container to workspace
@@ -148,7 +147,7 @@ bar {
 		focused_workspace  $bg-color          $bg-color          $text-color
 		inactive_workspace $inactive-bg-color $inactive-bg-color $inactive-text-color
 		urgent_workspace   $urgent-bg-color   $urgent-bg-color   $text-color
-		
+
         background $inactive-bg-color
 		separator #757575
 	}
@@ -190,7 +189,7 @@ for_window [class="Pavucontrol"] \
     floating enable, \
     sticky enable, \
     resize set width 580 height 420, \
-    move position 1320 630  
+    move position 1320 630
 
 # Applications
 bindsym $mod+Return exec konsole
@@ -201,11 +200,11 @@ bindsym $mod+Control+d exec rofi -show window
 bindsym Print exec flameshot gui
 
 # Custom commands
-bindsym $mod+c exec ~/.config/i3/scripts/catecosas.sh 
+bindsym $mod+c exec ~/.config/i3/scripts/catecosas.sh
 
 ########## Boot ##########
 
-# Define a layout for startup 
+# Define a layout for startup
 exec --no-startup-id i3-msg "workspace $workspace0;  append_layout ~/.config/i3/layouts/startup/workspace-0.json"
 exec --no-startup-id i3-msg "workspace $workspace1;  append_layout ~/.config/i3/layouts/startup/workspace-1.json"
 exec --no-startup-id i3-msg "workspace $workspace2;  append_layout ~/.config/i3/layouts/startup/workspace-2.json"
@@ -215,18 +214,20 @@ exec --no-startup-id i3-msg "workspace $workspace10; append_layout ~/.config/i3/
 # Open apps
 # exec --no-startup-id obsidian
 # exec --no-startup-id brave
-# exec --no-startup-id code 
+# exec --no-startup-id code
 exec --no-startup-id konsole
-# exec --no-startup-id ~/bin/web-whatsapp # bin/ scripts with browser apps 
-# exec --no-startup-id ~/bin/web-teams 
+exec --no-startup-id slack
+exec --no-startup-id ~/bin/web-googlecalendar
+# exec --no-startup-id ~/bin/web-whatsapp # bin/ scripts with browser apps
+# exec --no-startup-id ~/bin/web-teams
 # exec --no-startup-id brave --app="https://www.youtube.com/watch?v=jfKfPfyJRdk&pp=ygUJbG9maSBnaXJs"
 # exec --no-startup-id spotify
 
 # Tray and misc
-exec --no-startup-id nm-applet
+exec --no-startup-id dunst           # notification manager ASAP else will be ignored
+exec --no-startup-id nm-applet       # network manager tray
 exec --no-startup-id udiskie --tray  # auto mount usbs etc
 exec --no-startup-id diodon          # clipboard manager
 
 # Leave me in WS2
 exec --no-startup-id i3-msg workspace $workspace2
-
