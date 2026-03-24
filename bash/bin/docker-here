@@ -1,19 +1,29 @@
 #! /usr/bin/env bash
 
+docker_list_command() {
+    docker image ls --format 'table {{.Repository}}:{{.Tag}}\t{{.ID}}\t{{.CreatedSince}}\t{{.Size}}' \
+        | tail -n +2
+}
+
 docker_image_select_fzf() {
     local docker_user_filter=${1-"*"}
     local selected
 
-    selected=$(                                                                  \
-        docker image ls | while read -r name tag etc; do                         \
-            [[ "$name $tag $etc" =~ $DOCKER_HERE_FILTER ]] &&                    \
-            [[ "$name $tag $etc" =~ $docker_user_filter ]] && echo "$name:$tag"; \
-        done | fzf --select-1                                                    ;
+    selected=$(                                                   \
+        docker_list_command | while read -r line; do              \
+            [[ "$line" =~ $DOCKER_HERE_FILTER ]] &&               \
+            [[ "$line" =~ $docker_user_filter ]] && echo "$line"; \
+        done | fzf --select-1                                     ;
     )
 
+    # Keep only the first word (image:tag), drop the rest of the table row
+    selected="${selected%% *}"
+
+    echo "Running image $selected" >&2
     echo "$selected"
 }
 
+# No FZF fallback
 docker_image_select_vanilla() {
     local docker_user_filter=${1-"*"}
 
@@ -25,11 +35,11 @@ docker_image_select_vanilla() {
     local selected_with_index
 
     index=1
-    image_multiline_str=$(                                                                     \
-        docker image ls | while read -r name tag etc; do                                       \
-            [[ "$name $tag $etc" =~ $DOCKER_HERE_FILTER ]] &&                                  \
-            [[ "$name $tag $etc" =~ $docker_user_filter ]] && echo "$((index++)). $name:$tag"; \
-        done                                                                                   ;
+    image_multiline_str=$(                                                      \
+        docker_list_command | while read -r line; do                            \
+            [[ "$line" =~ $DOCKER_HERE_FILTER ]] &&                             \
+            [[ "$line" =~ $docker_user_filter ]] && echo "$((index++)). $line"; \
+        done                                                                    ;
     )
 
     if [[ -n "$image_multiline_str" ]]; then
@@ -48,23 +58,28 @@ docker_image_select_vanilla() {
 
         # Parse the `1. image-name:tag` into  `image-name:tag`
         selected_with_index="${image_list[$((index_selected-1))]}"
-        selected="${selected_with_index#*.' '}"
+        selected="${selected_with_index#*.' '}" # discard index
+        selected="${selected%% *}" # keep only first word (name:tag)
 
     else
         selected=""
     fi
 
+    echo "Running image $selected" >&2
     echo "$selected"
 }
 
-docker_nvidia () {
+docker_run () {
     local image_with_tag="${1}"
+
+    local gpu_flags=()
+    if [[ "$image_with_tag" =~ "nvidia" ]]; then
+        gpu_flags=(--runtime=nvidia --gpus all)
+    fi
 
     docker run                              \
         -it                                 \
         --rm                                \
-        --runtime=nvidia                    \
-        --gpus all                          \
         --network=host                      \
         --name docker-here                  \
         -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
@@ -76,6 +91,7 @@ docker_nvidia () {
         --shm-size=64gb                     \
         -w /host                            \
         -v "${PWD}:/host"                   \
+        "${gpu_flags[@]}"                   \
         "$image_with_tag"                   \
         bash -c "bash"                      ;
 
@@ -103,8 +119,8 @@ main() {
 
     local arg="${1:-}"
     case "${arg}" in
-        -h|--help)  print_usage; exit 0           ;; 
-        *)          local docker_user_filter="$1" ;;
+        -h|--help)  print_usage; exit 0       ;;
+        *)          docker_user_filter="$arg" ;;
     esac
 
     if command -v "fzf" > /dev/null; then
@@ -114,14 +130,7 @@ main() {
         docker_image_with_tag=$(docker_image_select_vanilla "$docker_user_filter")
     fi
 
-    if [[ "$docker_image_with_tag" =~ "nvidia" ]]; then
-        docker_nvidia "$docker_image_with_tag"
-    else
-        : # TBD
-        docker_nvidia "$docker_image_with_tag"
-        echo TO BE IMPLEMENTED: Falling back to running in NVIDIA mode.
-    fi
-
+    docker_run "$docker_image_with_tag"
 }
 
 main "$@"
