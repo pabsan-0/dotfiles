@@ -1,11 +1,11 @@
 " Indices to jump with gF
-" ~/.vimrc:138 
+" ~/.vimrc:138
 
 " Automatic reloading of .vimrc
 autocmd! bufwritepost .vimrc source %
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
-""" Customisation of existing features 
+""" Customisation of existing features
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " All swap files in the same dir, make sure dir exists!
@@ -110,7 +110,7 @@ nnoremap <silent> [b :bprevious<CR>
 nnoremap <silent> ]b :bnext<CR>
 nnoremap <silent> [B :bfirst<CR>
 nnoremap <silent> ]B :blast<CR>
-" 
+"
 nnoremap <silent> [a :prev<CR>
 nnoremap <silent> ]a :next<CR>
 nnoremap <silent> [A :first<CR>
@@ -137,15 +137,16 @@ let g:vimwiki_post_hook = 'sed -i /map_key.*-.*VimwikiRemoveHeaderLevel/d ftplug
 call plug#begin()
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'       " fuzzy finding
-Plug 'tpope/vim-fugitive'     " git 
+Plug 'tpope/vim-fugitive'     " git
+Plug 'tpope/vim-rhubarb'      " github
 Plug 'tpope/vim-surround'     " bracing conveniences
 Plug 'airblade/vim-gitgutter' " git hints
 Plug 'kshenoy/vim-signature'  " display marks
 Plug 'tpope/vim-vinegar'      " super netrw
-Plug 'dense-analysis/ale'     " async lint engine 
+Plug 'dense-analysis/ale'     " async lint engine
 Plug 'puremourning/vimspector' " tui debugger
 Plug 'vimwiki/vimwiki', { 'do': g:vimwiki_post_hook }
-Plug 'junegunn/vim-easy-align' 
+Plug 'junegunn/vim-easy-align'
 Plug 'tpope/vim-commentary'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 Plug 'pabsan-0/vim-actions'
@@ -153,17 +154,17 @@ Plug 'pabsan-0/vim-flashcards'
 Plug 'pabsan-0/vim-snippets'
 Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 Plug 'github/copilot.vim'
-Plug 'DanBradbury/copilot-chat.vim'
+" Plug 'DanBradbury/copilot-chat.vim'
 call plug#end()
 
 " Fzf.vim
 
-" Lets you keep history of searches. 
+" Lets you keep history of searches.
 " Explicitly map c-p and c-n to keep usual behavior
 let g:fzf_history_dir = '~/.local/share/fzf-history'
 let $FZF_DEFAULT_OPTS = '--bind ctrl-n:down,ctrl-p:up,alt-n:next-history,alt-p:prev-history,ctrl-j:preview-down,ctrl-k:preview-up'
 
-nnoremap <leader>f <Esc>:Files<cr> 
+nnoremap <leader>f <Esc>:Files<cr>
 nnoremap <leader>b <Esc>:Buffers<cr>
 nnoremap <leader>r <Esc>:Rg<cr>
 nnoremap <leader>D <Esc>:GFiles?<cr>
@@ -194,10 +195,10 @@ let g:ale_linters = {
 nnoremap <silent> [e :ALEPrevious<CR>
 nnoremap <silent> ]e :ALENext<CR>
 
-let g:ale_virtualtext_cursor = 0 " dont add virtual text 
+let g:ale_virtualtext_cursor = 0 " dont add virtual text
 let g:ale_fix_on_save = 1
 let g:ale_fixers = {
-\   '*': [],
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \   'help': ['align_help_tags'],
 \   'javascript': ['deno'],
 \   'python': ['black', 'isort'],
@@ -230,20 +231,20 @@ vmap <leader>a <Plug>CopilotChatAddSelection
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
-""" Custom functionality 
+""" Custom functionality
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " look for # vimcmd: in the first lines and execute it
 function! VimExecute()
     " default command
-    let command = "%:p"   
+    let command = "%:p"
 
     let line = 1
     while line <= 5 && line('$') >= line
         let comment = getline(line)
         if comment =~ 'vimcmd:\s*\S\+'
             let command = substitute(comment, '.*vimcmd:\s*\(\S\+.*\)$', '\1', '')
-            break 
+            break
         endif
         let line += 1
     endwhile
@@ -307,7 +308,7 @@ nnoremap <silent> <leader><leader>c :call UECppSwitch()<CR>
 " Custom remaps
 
 " Coding and debugging
-nnoremap <leader><leader>r :!%:p 
+nnoremap <leader><leader>r :!%:p
 nnoremap <leader><leader>R :call VimExecute()<CR>
 nnoremap <leader><leader>m :make<CR>
 nnoremap <leader><leader>v <Esc>:!cd &&  glow %:p -p vim <CR><CR><cr>
@@ -322,7 +323,7 @@ nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 " To be incorporated
 nnoremap <c-t> /[A-Z]<return>
 
-" Detect Arduino .ino files as C++ 
+" Detect Arduino .ino files as C++
 augroup cpp_detect
     au BufNewFile,BufRead *.ino setlocal filetype=cpp
 augroup end

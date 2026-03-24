@@ -1,0 +1,2 @@
+#! /usr/bin/env bash
+brave --app="https://app.slack.com/client/T2VDBJWL8"

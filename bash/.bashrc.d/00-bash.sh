@@ -14,15 +14,18 @@ bind '"\C-^":"tmux-sessionizer ~ \n"' # Ctrl Shift `
 # Straightforward xdg-open, silent
 ,() {
     [ -n "$1" ] || return
-    xdg-open "$1" >/dev/null 2>&1 &
-    disown
+    ( xdg-open "$1" >/dev/null 2>&1 & )
 }
 
-# Straightforward xdg-open
+# Straightforward xdg-open, verbose
 ,,() {
     xdg-open "$1"
 }
 
+# Open a new terminal here
+t() {
+    ( $TERMINAL "${1-.}" >/dev/null 2>&1 & )
+}
 
 # Create dir and cd in
 take() {

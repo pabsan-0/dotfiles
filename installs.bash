@@ -8,6 +8,7 @@ packages_apt=(
     konsole            # Low input latency terminal
     tmux               # Terminal multiplexer
     tmuxinator         # tmux compositor
+    tree               # tree file view
 
     # Window manager and desktop
     i3                 # main WM
@@ -22,6 +23,8 @@ packages_apt=(
     xbacklight         # Brightness controls
     fonts-font-awesome # Emoji charset
     diodon             # clipboard manager
+    xclip              # scriptable clipboard
+    ncdu               # interactive disk usage
 
     # Hardware interactions
     xserver-xorg-input-synaptics  # sensible touchpad defaults, requires reboot
@@ -33,11 +36,11 @@ packages_apt=(
 
     # Useful extras
     xdotool            # X window utilities
-    snap               # Yet another package manager
     lm-sensors         # Monitor CPU temperature
     fzf                # the fuzzy finder
     ripgrep            # grep but faster
     task-spooler       # task spooler for job queueing
+    shellcheck         # Shell linter
 
     # Funky stuff
     neofetch           # System stats
@@ -51,8 +54,13 @@ packages_apt=(
 
     # Hardware
     brightnessctl      # control brightness
+    sct                # Screen color temperature
     arandr             # xrandr gui
     autorandr          # auto randr
+
+    # Package managers
+    snap               # yet another package manager
+    pipx               # fancy pip
 )
 
 packages_snap=(
@@ -61,16 +69,29 @@ packages_snap=(
     brave
     bitwarden
     bw
+    slack
+)
+
+packages_pipx=(
+    black
+    isort
 )
 
 # Public packages as listed above
 set -x
 sudo apt install "${packages_apt[@]}"
-sudo snap install "${packages_snap[@]}"
+
+for pkg in "${packages_snap[@]}"; do
+    sudo snap install "$pkg"
+done
+
+for pkg in "${packages_pipx[@]}"; do
+    pipx install "$pkg"
+done
 
 # Custom github packages
 sudo mkdir -p /opt/pabsan-0
-sudo chown -R $USER /opt/pabsan-0
+sudo chown -R "$USER" /opt/pabsan-0
 cd /opt/pabsan-0 && (
     git clone https://github.com/pabsan-0/flashcards && (
         cd flashcards &&

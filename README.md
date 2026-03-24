@@ -1,4 +1,4 @@
-# Dotfiles 
+# Dotfiles
 
 These are my dotfiles. I use these across a few **ubuntu** computers with a few modifications. Do not copypaste blindly.
 
@@ -12,6 +12,7 @@ cd dotfiles
 ./installs_brave.bash     # GUI interactive browser extension installs
 ./stow.bash bash vim i3   # Stow using the helper file
 
+sudo chmod +s $(which brightnessctl) # Allows brightness controls from i3
 vim +PlugInstall +qall    # Once vim is installed and dotfiles in place, install plugins
 gnome-session-quit        # Log out and back in for i3, then verify i3+i3blocks (battery, date, volume...)
 ```
@@ -26,7 +27,7 @@ ls bash/bin               # New executables available to the shell in PATH
 
 #### See also
 
-- [Components](.docs/Components.md) 
+- [Components](.docs/Components.md)
 - [Issues](.docs/Issues.md)
 
 
