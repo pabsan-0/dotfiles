@@ -136,24 +136,28 @@ let g:vimwiki_post_hook = 'sed -i /map_key.*-.*VimwikiRemoveHeaderLevel/d ftplug
 " Install with :PlugInstall
 call plug#begin()
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'       " fuzzy finding
-Plug 'tpope/vim-fugitive'     " git
-Plug 'tpope/vim-rhubarb'      " github
-Plug 'tpope/vim-surround'     " bracing conveniences
-Plug 'airblade/vim-gitgutter' " git hints
-Plug 'kshenoy/vim-signature'  " display marks
-Plug 'tpope/vim-vinegar'      " super netrw
-Plug 'dense-analysis/ale'     " async lint engine
-Plug 'puremourning/vimspector' " tui debugger
+Plug 'junegunn/fzf.vim'          " fuzzy finding
+Plug 'tpope/vim-fugitive'        " git tool
+Plug 'tpope/vim-rhubarb'         " github tool
+Plug 'tpope/vim-surround'        " bracing conveniences
+Plug 'airblade/vim-gitgutter'    " git hints
+Plug 'kshenoy/vim-signature'     " display marks
+Plug 'tpope/vim-vinegar'         " super netrw
+Plug 'dense-analysis/ale'        " async lint engine
+Plug 'puremourning/vimspector'   " tui debugger
+Plug 'junegunn/vim-easy-align'   " vertical alignment
+Plug 'tpope/vim-commentary'      " very easy comment switching
+Plug 'github/copilot.vim'        " copilot autocomplete
+Plug 'rhysd/conflict-marker.vim' " easy merge conflict mappings
+Plug 'junegunn/gv.vim'           " commit history inspector
+
+Plug 'pabsan-0/vim-actions'      " commands atop fzf
+Plug 'pabsan-0/vim-flashcards'   " notes atop fzf
+Plug 'pabsan-0/vim-snippets'     " snippets atop fzf
+
 Plug 'vimwiki/vimwiki', { 'do': g:vimwiki_post_hook }
-Plug 'junegunn/vim-easy-align'
-Plug 'tpope/vim-commentary'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-Plug 'pabsan-0/vim-actions'
-Plug 'pabsan-0/vim-flashcards'
-Plug 'pabsan-0/vim-snippets'
 Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
-Plug 'github/copilot.vim'
 " Plug 'DanBradbury/copilot-chat.vim'
 call plug#end()
 
@@ -190,7 +194,8 @@ let g:ale_linters_explicit = 1
 let g:ale_linters = {
 \   'javascript': ['deno --options-indent-width 4'],
 \   'sh': ['shellcheck'],
-\   'python': ['ruff']
+\   'python': ['ruff'],
+\   'dockerfile': ['hadolint']
 \}
 nnoremap <silent> [e :ALEPrevious<CR>
 nnoremap <silent> ]e :ALENext<CR>

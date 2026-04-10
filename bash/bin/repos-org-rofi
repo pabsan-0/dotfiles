@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# ROFI selector for organization repos. Org fetching is slower than user's
+# because the API takes a longer path, so this adopts a cached approach.
+
+# CONFIGURATION
+# Set to your organization name or "$(git config user.name)"
+TARGET=${1:-fluendo}
+CACHE_DIR="$HOME/.cache/gh-rofi"
+CACHE_FILE="$CACHE_DIR/$TARGET-repos.txt"
+REFRESH_LABEL="🔄 Refresh Cache"
+
+mkdir -p "$CACHE_DIR"
+
+# Helper function to update the cache
+fetch_repos() {
+    notify-send "GitHub Launcher" "Updating cache for $TARGET..."
+    gh repo list "$TARGET" -L 1000 --json nameWithOwner -q '.[].nameWithOwner' > "$CACHE_FILE"
+    notify-send "GitHub Launcher" "Cache updated."
+}
+
+# Initial fetch if the file doesn't exist
+if [[ ! -f "$CACHE_FILE" ]]; then
+    fetch_repos
+fi
+
+# Show Rofi and capture selection
+SELECTED=$( (echo "$REFRESH_LABEL"; cat "$CACHE_FILE") | \
+    rofi -dmenu -i -p "GitHub ($TARGET):" -theme-str 'window {width: 50%;}')
+
+if [[ -z "$SELECTED" ]]; then
+    # User pressed ESC or closed Rofi
+    exit 0
+elif [[ "$SELECTED" == "$REFRESH_LABEL" ]]; then
+    # Refresh the cache and exit
+    fetch_repos
+else
+    # Open the selected repo in the browser
+    gh repo view "$SELECTED" --web
+fi

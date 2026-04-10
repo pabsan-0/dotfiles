@@ -9,6 +9,7 @@ packages_apt=(
     tmux               # Terminal multiplexer
     tmuxinator         # tmux compositor
     tree               # tree file view
+    git
 
     # Window manager and desktop
     i3                 # main WM
@@ -22,6 +23,7 @@ packages_apt=(
     lxappearance       # GUI customiser
     xbacklight         # Brightness controls
     fonts-font-awesome # Emoji charset
+    picom              # Transparency manager
     diodon             # clipboard manager
     xclip              # scriptable clipboard
     ncdu               # interactive disk usage
@@ -41,6 +43,8 @@ packages_apt=(
     ripgrep            # grep but faster
     task-spooler       # task spooler for job queueing
     shellcheck         # Shell linter
+    jq                 # JSON parser
+    yq                 # YAML parser
 
     # Funky stuff
     neofetch           # System stats
@@ -54,7 +58,7 @@ packages_apt=(
 
     # Hardware
     brightnessctl      # control brightness
-    sct                # Screen color temperature
+    # sct                # Screen color temperature
     arandr             # xrandr gui
     autorandr          # auto randr
 
@@ -89,7 +93,20 @@ for pkg in "${packages_pipx[@]}"; do
     pipx install "$pkg"
 done
 
-# Custom github packages
+# Public packages with custom installs
+[[ $(command -v hadolint) ]] || {
+    github_url='https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64'
+    curl -fsSL "$github_url" -o ~/.local/bin/hadolint
+    chmod +x ~/.local/bin/hadolint
+}
+[[ $(command -v lazyjira) ]] || {
+    github_url="https://github.com/textfuel/lazyjira/releases/download/v2.7.4/lazyjira_2.7.4_linux_amd64.deb"
+    curl -fsSL "$github_url" -o /tmp/lazyjira.deb
+    sudo apt install /tmp/lazyjira.deb
+    rm /tmp/lazyjira.deb
+}
+
+# Custom self-owned github packages
 sudo mkdir -p /opt/pabsan-0
 sudo chown -R "$USER" /opt/pabsan-0
 cd /opt/pabsan-0 && (
