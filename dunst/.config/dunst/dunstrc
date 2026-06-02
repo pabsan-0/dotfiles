@@ -1,4 +1,16 @@
 [global]
+    # close notification
+    close = mod4+m
+
+    # close all notifications
+    close_all = mod4+shift+m
+
+    # redisplay last message(s)
+    history = mod4+n
+
+    # context menu
+    context = mod4+shift+i
+
     font = Hack 11
 
     # allow a small subset of html markup:
@@ -131,36 +143,18 @@
     width = 1
     color = "#4d5566"
 
-[shortcuts]
-    # shortcuts are specified as [modifier+][modifier+]...key
-    # available modifiers are 'ctrl', 'mod1' (the alt-key), 'mod2', 'mod3'
-    # and 'mod4' (windows-key)
-    # xev might be helpful to find names for keys
-
-    # close notification
-    close = mod4+m
-
-    # close all notifications
-    close_all = mod4+shift+m
-
-    # redisplay last message(s)
-    history = mod4+n
-
-    # context menu
-    context = mod4+shift+i
-
 # [urgency_low]
 #     # IMPORTANT: colors have to be defined in quotation marks.
 #     # Otherwise the '#' and following  would be interpreted as a comment.
 #     background = "#222222"
 #     foreground = "#888888"
 #     timeout = 10
-# 
+#
 # [urgency_normal]
 #     background = "#285577"
 #     foreground = "#ffffff"
 #     timeout = 10
-# 
+#
 # [urgency_critical]
 #     background = "#900000"
 #     foreground = "#ffffff"
