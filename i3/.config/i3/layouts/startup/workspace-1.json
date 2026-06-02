@@ -12,8 +12,8 @@
     "percent": 1,
     "swallows": [
        {
-          "class": "^Brave$",
-          "instance": "^brave$"
+          "class": "^Brave.*$",
+          "instance": "^brave.*$"
        }
     ],
     "type": "con"

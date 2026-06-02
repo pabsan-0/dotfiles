@@ -22,11 +22,12 @@
 [alias]
     s    = status
     co   = checkout
-    cc   = commit 
-    d    = diff 
+    cc   = commit
+    d    = diff
     ds   = diff --staged
     ; adog = log --all --decorate --oneline --graph
     adog = log --all --graph --decorate --date=short --pretty=format:'%C(yellow)%h%C(reset) %C(cyan)%ad%C(reset) %C(auto)%d%C(reset) %s'
+    adogs = adog -7
 
     wa    = git worktree add
     wls   = ! git --git-dir=$(echo ./*.git) worktree list

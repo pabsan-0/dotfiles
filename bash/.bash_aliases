@@ -6,3 +6,5 @@ alias conf_vim='vim ~/.vimrc'
 alias conf_tmux='vim ~/.tmux.conf'
 
 alias sl=ls
+
+alias dotx11="dot -Tx11"

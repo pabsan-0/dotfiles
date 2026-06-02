@@ -1,0 +1,72 @@
+gui:
+    sidePanelWidth: 100
+    issueListFields:
+        - key
+        - assignee
+        - status
+        - updated
+        - summary
+        - priority
+        - Team
+    statusIcons:
+        On hold: ✋
+        Future: 🔮
+        In Review: ±
+        Review Approved: 🟢
+        Review Completed: 🔴
+
+# fields:
+#   - id: "customfield_11200"
+#     name: "Team"
+
+
+issueTabs:
+  - name: "Queue"
+    jql: 'statusCategory != Done AND ((assignee = currentUser() AND status NOT IN ("In Review", "Ready to Review")) OR (cf[10500] = currentUser() AND status IN ("Ready to Review", "In Review"))) ORDER BY statusCategory ASC, updated DESC'
+
+  - name: "Awaiting Review"
+    jql: 'assignee = currentUser() AND status IN ("In Review", "Ready to Review") ORDER BY updated DESC'
+
+  # - name: "Reported"
+  #   jql: 'reporter = currentUser() AND assignee != currentUser() AND statusCategory != Done ORDER BY updated DESC'
+
+  - name: "Watched"
+    jql: 'watcher = currentUser() AND statusCategory != Done ORDER BY updated DESC'
+
+  - name: "All Mine"
+    jql: 'assignee = currentUser() ORDER BY statusCategory ASC, priority DESC, updated DESC'
+
+  # - name: "Assigned Open"
+  #   jql: "assignee = currentUser() AND statusCategory != Done ORDER BY statusCategory ASC, updated DESC"
+
+  # - name: "Assigned All"
+  #   jql: "assignee = currentUser() ORDER BY statusCategory ASC, updated DESC"
+
+  # - name: "Mentions"
+  #   jql: "text ~ currentUser() ORDER BY statusCategory ASC, updated DESC"
+
+  # - name: "To Review"
+  #   jql: "'Reviewer[User Picker (single user)]' = currentUser() ORDER BY updated DESC"
+
+  # - name: "Watched Active"
+  #   jql: "watcher = currentUser() AND statusCategory != Done ORDER BY updated DESC"
+
+
+keybinding:
+    universal:
+        switchPanel: tab
+        prevTab: h
+        nextTab: l
+    issues:
+        focusRight: J
+    projects:
+        focusRight: J
+    detail:
+        focusLeft: K
+
+
+customCommands:
+  - key: "Y"
+    name: "Copy issue key"
+    command: "printf %s {{.Key}} | xclip -sel c"
+    refresh: false

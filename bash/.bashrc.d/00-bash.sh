@@ -27,6 +27,11 @@ t() {
     ( $TERMINAL "${1-.}" >/dev/null 2>&1 & )
 }
 
+# Open a new terminal here and quit
+T() {
+    ( $TERMINAL "${1-.}" >/dev/null 2>&1 & ) && exit
+}
+
 # Create dir and cd in
 take() {
     mkdir "$1" && cd "$1"
@@ -71,11 +76,11 @@ this_file_path () {
     local DIR=
 
     # resolve $SOURCE until the file is no longer a symlink
-    while [ -L "$SOURCE" ]; do 
+    while [ -L "$SOURCE" ]; do
         DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
         SOURCE=$(readlink "$SOURCE")
         # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
-        [[ $SOURCE != /* ]] && SOURCE=$DIR/$SOURCE 
+        [[ $SOURCE != /* ]] && SOURCE=$DIR/$SOURCE
     done
     echo $( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
 }
@@ -110,14 +115,14 @@ source_dir () {
 
 
 # capture the output of a command so it can be retrieved with ret
-cap () { 
-    tee /tmp/capture.out; 
+cap () {
+    tee /tmp/capture.out;
 }
 
 
 # return the output of the most recent command that was captured by cap
 ret () {
-    cat /tmp/capture.out; 
+    cat /tmp/capture.out;
 }
 
 # Highlight: like grep, but show everything
@@ -131,4 +136,3 @@ high() {
     # Use magenta (purple) for matches
     GREP_COLORS='mt=1;95' grep --color=always -E "$pattern|$" "$@"
 }
-

@@ -140,6 +140,7 @@ Plug 'junegunn/fzf.vim'          " fuzzy finding
 Plug 'tpope/vim-fugitive'        " git tool
 Plug 'tpope/vim-rhubarb'         " github tool
 Plug 'tpope/vim-surround'        " bracing conveniences
+Plug 'tpope/vim-eunuch'          " Move, Chmod, SudoWrite...
 Plug 'airblade/vim-gitgutter'    " git hints
 Plug 'kshenoy/vim-signature'     " display marks
 Plug 'tpope/vim-vinegar'         " super netrw
@@ -147,15 +148,26 @@ Plug 'dense-analysis/ale'        " async lint engine
 Plug 'puremourning/vimspector'   " tui debugger
 Plug 'junegunn/vim-easy-align'   " vertical alignment
 Plug 'tpope/vim-commentary'      " very easy comment switching
-Plug 'github/copilot.vim'        " copilot autocomplete
+" Plug 'github/copilot.vim'        " copilot autocomplete
 Plug 'rhysd/conflict-marker.vim' " easy merge conflict mappings
 Plug 'junegunn/gv.vim'           " commit history inspector
+Plug 'wellle/context.vim'
+Plug 'vim-scripts/a.vim'
+Plug 'vim-scripts/taglist.vim'
+Plug 'TamaMcGlinn/quickfixdd'
+
+Plug 'gh-tui-tools/gh-review.vim'
 
 Plug 'pabsan-0/vim-actions'      " commands atop fzf
 Plug 'pabsan-0/vim-flashcards'   " notes atop fzf
 Plug 'pabsan-0/vim-snippets'     " snippets atop fzf
+Plug 'pabsan-0/vim-slidev'       " slidev conveniences
+Plug 'pabsan-0/vim-pr-fix'       " pr fixing conveniences
+Plug 'pabsan-0/vim-gst-debug'    " vim log parsing
+" Plug 'pabsan-0/vimini'
 
-Plug 'vimwiki/vimwiki', { 'do': g:vimwiki_post_hook }
+
+" Plug 'vimwiki/vimwiki', { 'do': g:vimwiki_post_hook }
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 " Plug 'DanBradbury/copilot-chat.vim'
@@ -207,10 +219,11 @@ let g:ale_fixers = {
 \   'help': ['align_help_tags'],
 \   'javascript': ['deno'],
 \   'python': ['black', 'isort'],
-\   'cpp': ['clang-format']
+\   'cpp': ['clang-format'],
+\   'markdown': ['prettier']
 \}
 " Easy saving without reformatting
-command W :noautocmd w
+command! W :noautocmd w
 
 " Vimspector
 let g:vimspector_enable_mappings = 'HUMAN'
@@ -227,13 +240,24 @@ let g:vimwiki_syntax_list['markdown']['typeface'] = {'bold': [], 'italic': [], '
 nmap ga <Plug>(EasyAlign)
 xmap ga <Plug>(EasyAlign)
 
-" Commentary
-" autocmd FileType apache setlocal commentstring=#\ %s
+" Commentary (not really plugin-specific) overrides
+augroup commentStrings
+    autocmd BufEnter *.md,*.markdown setlocal commentstring=<!--\ %s\ -->
+augroup end
 
 " Copilot chat
 nnoremap <leader>C :CopilotChatOpen<CR>
 vmap <leader>a <Plug>CopilotChatAddSelection
 
+" Context
+let g:context_highlight_border = 'Comment'
+let g:context_highlight_border = '<hide>'
+let g:context_highlight_tag = '<hide>'
+highlight ContextBg ctermfg=darkgray
+let g:context_highlight_normal = 'ContextBg'
+
+" taglist
+let g:Tlist_WinWidth = 50
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ Custom functionality
@@ -346,5 +370,10 @@ function! GstFormat() range
     normal gaip-\' \'
   endif
 endfunction
-command GstFormat :call GstFormat()
+command! GstFormat :call GstFormat()
 nnoremap <silent> <Leader>gf :GstFormat<CR>
+
+
+" gf but create file if it does not exist
+nnoremap <leader>gf :e <cfile><cr>
+vnoremap <leader>gf y:e <C-r>"<CR>
