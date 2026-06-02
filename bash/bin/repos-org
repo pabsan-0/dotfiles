@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+# FZF selector for organization repos. Org fetching is slower than user's
+# because the API takes a longer path, so this adopts a cached approach.
+
+# Quick check for deps for the future me
+dependencies=("gh" "notify-send" "column" "fzf" "git" "xdg-open")
+for dep in "${dependencies[@]}"; do
+    if ! command -v "$dep" &> /dev/null; then
+        echo "[WARN] Missing required dependency '$dep'. Attempting to continue"
+    fi
+done
+
+arg__cache=false      # Whether to cache
+arg__cache_only=false # Whether to cache & quit
+arg__target=fluendo   # GH user or org to fetch repos for
+
+while ((${#}))
+do
+    arg="${1:-}"
+    case "${arg}" in
+        --cache)
+            arg__cache=true
+            ;;
+        --cache-only)
+            arg__cache=true
+            arg__cache_only=true
+            ;;
+        *)
+            arg__target="$arg"
+            ;;
+    esac
+    shift
+done
+
+CACHE_FILE="$HOME/.cache/pabsan-0/$(basename "$0")/$arg__target.txt"
+
+cook_cache() {
+    mkdir -p "$(dirname "$CACHE_FILE")"
+    notify-send "$0" "Updating cache for $arg__target... You'll be notified when done."
+
+    # Get repos with info. Crop description to 80 char
+    gh repo list "$arg__target" -L 1000  \
+        | awk -F'\t' -v OFS='\t' '{ if (length($2) > 80) $2 = substr($2, 1, 60) "..." ; print }' \
+        > "$CACHE_FILE"
+
+    # FIXME hardcoded my user too
+    gh repo list "pabsan-0" -L 1000  \
+        | awk -F'\t' -v OFS='\t' '{ if (length($2) > 80) $2 = substr($2, 1, 60) "..." ; print }' \
+        >> "$CACHE_FILE"
+
+    local exit_code=$?
+
+    if [[ $exit_code -eq 0 ]]; then
+        notify-send "$0" "Cache updated for $arg__target. $(wc -l < "$CACHE_FILE") repos found."
+    else
+        notify-send "$0" "Cache update FAILED for $arg__target (exit code $exit_code)."
+    fi
+}
+
+
+if [[ ! -f "$CACHE_FILE" ]]; then
+    cook_cache
+elif [[ $arg__cache_only == true ]]; then
+    cook_cache
+    exit 0
+elif [[ $arg__cache == true ]]; then
+    cook_cache
+fi
+
+# The nohup ... & helps when running this script from ephemeral shells, such as my custom rofi launcher
+column -s$'\t' -t "$CACHE_FILE" | fzf                                                      \
+    --bind='enter:execute(git clone https://github.com/{1})+abort'                         \
+    --bind=',:execute-silent(nohup xdg-open https://github.com/{1} >/dev/null 2>&1)+abort' \
+    --bind=".:execute-silent(nohup $0 --cache-only $arg__target >/dev/null 2>&1 &)+abort"  \
+    --bind="Y:execute-silent(echo https://github.com/{1} | xclip -sel c)+abort"            \
+    --preview=""                                                                           \
+    --header='recache .  browse ,  clone ↵  yank Y'                                               ;

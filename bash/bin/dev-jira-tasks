@@ -1,0 +1,211 @@
+#!/bin/bash
+# jira-bulk.sh — opens a temp file for editing, then runs on save
+# Usage:            bash jira-bulk.sh
+# From file:        bash jira-bulk.sh <file>
+# Dry run:          DRY_RUN=1 bash jira-bulk.sh
+# List history:     bash jira-bulk.sh --history
+# Recover session:  bash jira-bulk.sh --recover <index>
+
+HISTORY_DIR="/tmp/jira-bulk-history"
+TEMPLATE='DRYRUN  true
+
+COMMAND jira issue create --no-input
+FIELD   --type="{}"
+FIELD   --summary="{}"
+FIELD   --body="{}"
+FIELD   --assignee="{}@fluendo.com"
+FIELD   --custom "Reviewer={}@fluendo.com"
+FIELD   --parent="{}"
+FIELD   --custom="Team=Engineering"
+
+# type --- summary --- body --- assignee --- reviewer --- parent
+[] --- [] --- [] --- [] --- [] --- []
+'
+
+# ============================================================
+
+show_help() {
+    cat <<EOF
+Usage: $(basename "$0") [OPTION|FILE]
+
+Opens a task template in \$EDITOR, then creates Jira issues from the saved file.
+
+Options:
+  (none)             Open a blank template
+  <file>             Load an existing file as the starting template
+  --recover <index>  Recover a previous session by index
+  --history          List all saved sessions with their indices
+  --help             Show this help message
+
+Environment:
+  EDITOR             Editor to use (default: vim)
+  DRY_RUN=1          Print commands without executing them (overridden by DRYRUN in file)
+
+Template format:
+  COMMAND  <base command>
+  DRYRUN   true|false
+  FIELD    <flag with {} placeholder>
+  # ...    Comments (ignored)
+  v1 --- v2 --- v3 --- ...   Data rows (columns map to FIELD order)
+
+Examples:
+  bash $(basename "$0")
+  bash $(basename "$0") my-tasks.jira
+  DRY_RUN=1 bash $(basename "$0")
+  bash $(basename "$0") --recover 2
+  bash $(basename "$0") --history
+EOF
+}
+
+list_history() {
+    echo "Saved sessions:"
+    i=0
+    for f in "$HISTORY_DIR"/*.jira; do
+        [[ -f "$f" ]] || { echo "  (none)"; break; }
+        echo "  [$i] $(basename "$f") — $(head -n 1 "$f")"
+        ((i++))
+    done
+}
+
+recover_session() {
+    local index="${1:?Usage: $0 --recover <index>}"
+    mapfile -t files < <(ls "$HISTORY_DIR"/*.jira 2>/dev/null)
+    if [[ -z "${files[$index]+x}" ]]; then
+        echo "No session at index $index. Run '$0 --history' to list."
+        exit 1
+    fi
+    local tmpfile
+    tmpfile=$(mktemp /tmp/jira-bulk-XXXXXX.jira)
+    cp "${files[$index]}" "$tmpfile"
+    echo "Recovering: ${files[$index]}" >&2
+    echo "$tmpfile"
+}
+
+prepare_tmpfile() {
+    local source="$1"
+    local tmpfile
+    tmpfile=$(mktemp /tmp/jira-bulk-XXXXXX.jira)
+    if [[ -n "$source" ]]; then
+        cp "$source" "$tmpfile"
+        echo "Loaded from file: $source" >&2
+    else
+        echo "$TEMPLATE" > "$tmpfile"
+    fi
+    echo "$tmpfile"
+}
+
+edit_and_check() {
+    local tmpfile="$1"
+    ${EDITOR:-vim} "$tmpfile"
+    if diff <(echo "$TEMPLATE") "$tmpfile" > /dev/null 2>&1; then
+        echo "No changes made, aborting."
+        rm "$tmpfile"
+        exit 0
+    fi
+}
+
+save_history() {
+    local tmpfile="$1"
+    mkdir -p "$HISTORY_DIR"
+    local histfile="$HISTORY_DIR/$(date +%Y%m%d-%H%M%S).jira"
+    cp "$tmpfile" "$histfile"
+    echo "Session saved: $histfile"
+}
+
+parse_tasks() {
+    local tmpfile="$1"
+    COMMAND=""
+    FIELDS=()
+    CMDS=()
+    dry_run="${DRY_RUN:-1}"
+
+    while IFS= read -r line; do
+        [[ -z "$line" ]]            && continue
+        [[ "$line" =~ ^# ]]         && continue
+        [[ "$line" =~ ^COMMAND\  ]] && { COMMAND="${line#COMMAND }"; continue; }
+        [[ "$line" =~ ^FIELD\  ]]   && { FIELDS+=("${line#FIELD   }"); continue; }
+        [[ "$line" =~ ^DRYRUN\  ]]  && { dry_run="${line#DRYRUN  }"; continue; }
+        [[ "$line" == *' --- '* ]]  || continue
+
+        IFS='|' read -ra values <<< "${line// --- /|}"
+
+        local cmd="$COMMAND"
+        for i in "${!FIELDS[@]}"; do
+            local field="${FIELDS[$i]}"
+            local value
+            value="$(echo "${values[$i]}" | xargs)"
+
+            [[ -z "$value" ]]      && continue
+            [[ "$value" == "[]" ]] && continue
+
+            local interpolated="${field/\{\}/$value}"
+            cmd="$cmd $interpolated"
+        done
+
+        CMDS+=("$cmd")
+
+    done < "$tmpfile"
+}
+
+run_tasks() {
+    # Print all commands
+    echo ""
+    for cmd in "${CMDS[@]}"; do
+        echo "$cmd"
+    done
+    echo ""
+
+    # Dry-run: print notice and exit
+    if [[ "$dry_run" == "true" || "$dry_run" == "1" ]]; then
+        echo "Dry-run mode: No jira commands were actually ran. Copy and paste the above at your discretion."
+        exit 0
+    fi
+
+    # Live run: ask for confirmation
+    read -rp "Run the above commands? [y/N] " answer
+    [[ "$answer" =~ ^[yY]$ ]] || { echo "Aborted."; exit 0; }
+
+    set -x
+    for cmd in "${CMDS[@]}"; do
+        eval "$cmd"
+    done
+    set +x
+}
+
+# ============================================================
+
+main() {
+    case "$1" in
+        --help)
+            show_help
+            exit 0
+            ;;
+        --history)
+            list_history
+            exit 0
+            ;;
+        --recover)
+            TMPFILE=$(recover_session "$2")
+            ;;
+        "")
+            TMPFILE=$(prepare_tmpfile)
+            ;;
+        *)
+            if [[ -f "$1" ]]; then
+                TMPFILE=$(prepare_tmpfile "$1")
+            else
+                echo "Unknown argument or file not found: $1"
+                echo "Run '$(basename "$0") --help' for usage."
+                exit 1
+            fi
+            ;;
+    esac
+
+    edit_and_check "$TMPFILE"
+    save_history "$TMPFILE"
+    parse_tasks "$TMPFILE"
+    run_tasks
+    rm "$TMPFILE"
+}
+
+main "$@"

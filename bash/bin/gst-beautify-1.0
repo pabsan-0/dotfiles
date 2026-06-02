@@ -1,0 +1,139 @@
+#!/usr/bin/env python3
+import shlex
+import sys
+
+
+def beautify_pipeline(pipeline_str, vertical=False):
+    try:
+        raw_tokens = shlex.split(pipeline_str)
+    except ValueError as e:
+        return f"Error parsing pipeline: {e}"
+
+    # SANITIZATION: Remove empty strings, pure whitespace, or literal newlines left by shlex
+    tokens = [t for t in raw_tokens if t.strip()]
+
+    if not tokens:
+        return ""
+
+    lines = []
+    current_line = ""
+    current_indent_level = 1  # 1 level = 4 spaces
+    state = "START"
+
+    for i, token in enumerate(tokens):
+        # 1. Handle the first token (usually the executable or first element)
+        if i == 0:
+            current_line = shlex.quote(token)
+            if "gst-launch" in token:
+                state = "EXPECT_ELEMENT"
+            else:
+                state = "EXPECT_PROPERTY"
+            continue
+
+        # 2. Detect branches (e.g., "t.", "mux.video_0")
+        is_branch = False
+        if state != "EXPECT_ELEMENT":
+            if token.endswith("."):
+                is_branch = True
+            elif "." in token and "=" not in token and "/" not in token:
+                if i + 1 < len(tokens) and tokens[i + 1].startswith("!"):
+                    is_branch = True
+
+        if is_branch:
+            lines.append(current_line)
+            current_indent_level = 1
+            current_line = ("    " * current_indent_level) + shlex.quote(token)
+            current_indent_level = 2
+            state = "EXPECT_BANG"
+            continue
+
+        # 3. Handle standard links
+        if token == "!":
+            lines.append(current_line)
+            current_line = ("    " * current_indent_level) + "!"
+            state = "EXPECT_ELEMENT"
+            continue
+
+        # 4. Handle squashed links (e.g., "!videoconvert")
+        if token.startswith("!") and len(token) > 1:
+            lines.append(current_line)
+            current_line = (
+                ("    " * current_indent_level) + "! " + shlex.quote(token[1:])
+            )
+            state = "EXPECT_PROPERTY"
+            continue
+
+        # 5. Handle standard Elements/Caps right after a '!'
+        if state == "EXPECT_ELEMENT":
+            current_line += " " + shlex.quote(token)
+            state = "EXPECT_PROPERTY"
+            continue
+
+        # 6. Handle Standalone Elements (declared without a '!')
+        if state in ("EXPECT_PROPERTY", "EXPECT_BANG"):
+            # If it lacks '=', '/', and ',', it's not a property or cap—it's a new element
+            if "=" not in token and "/" not in token and "," not in token:
+                lines.append(current_line)
+                current_indent_level = 1  # Reset to base indentation
+                current_line = ("    " * current_indent_level) + shlex.quote(token)
+                state = "EXPECT_PROPERTY"
+                continue
+
+        # 7. Handle Properties
+        if state in ("EXPECT_PROPERTY", "EXPECT_BANG"):
+            if vertical:
+                lines.append(current_line)
+                prop_indent = current_indent_level + 1
+                current_line = ("    " * prop_indent) + shlex.quote(token)
+            else:
+                current_line += " " + shlex.quote(token)
+
+            state = "EXPECT_PROPERTY"
+
+    if current_line:
+        lines.append(current_line)
+
+    if not lines:
+        return ""
+
+    # Calculate dynamic alignment column based on the longest line, capped at 80
+    lines_to_backslash = lines[:-1]
+    if lines_to_backslash:
+        max_line_length = max(len(line) for line in lines_to_backslash)
+        target_col = min(max_line_length + 2, 80)
+    else:
+        target_col = 80
+
+    # Apply the backslash alignment
+    formatted_lines = []
+    for i, line in enumerate(lines):
+        if i < len(lines) - 1:
+            pad_len = target_col - 2 - len(line)
+            if pad_len > 0:
+                formatted_lines.append(line + (" " * pad_len) + " \\")
+            else:
+                formatted_lines.append(line + " \\")
+        else:
+            formatted_lines.append(line)
+
+    return "\n".join(formatted_lines)
+
+
+if __name__ == "__main__":
+    args = sys.argv[1:]
+    vertical_mode = False
+
+    if "--vertical" in args:
+        vertical_mode = True
+        args.remove("--vertical")
+
+    input_str = ""
+    if not sys.stdin.isatty():
+        input_str = sys.stdin.read().strip()
+    elif len(args) > 0:
+        input_str = " ".join(args)
+    else:
+        print("Usage: echo 'gst-launch-1.0 ...' | ./gst-beautify.py [--vertical]")
+        sys.exit(1)
+
+    print(beautify_pipeline(input_str, vertical=vertical_mode))
