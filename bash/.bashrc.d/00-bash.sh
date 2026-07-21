@@ -1,10 +1,11 @@
 # Misc exports
 export EDITOR="/usr/bin/vim"
-export TERMINAL="/usr/bin/konsole"
+export TERMINAL="/usr/bin/konsole" # Want to abandon
 export PATH="$HOME/bin:$PATH"
 export DOTFILES="$HOME/dotfiles"
 export BASHRC_D="$HOME/.bashrc.d"
 
+set -o noclobber
 
 # Bindings for tmux sessioizer
 bind '"\C-f":"tmux-sessionizer\n"'

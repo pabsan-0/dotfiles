@@ -126,7 +126,7 @@ fi
 # export PATH="/usr/local/go/bin:$PATH"
 # source ~/.cargo/env
 
-command -v fortune_pabsan >/dev/null 2>&1 && echo -e "\e[36m$(fortune_pabsan 2>/dev/null)\e[m"
+command -v fortune-pabsan >/dev/null 2>&1 && echo -e "\e[36m$(fortune-pabsan 2>/dev/null)\e[m"
 source ~/.bashrc.d/init
 
 # This is where you put your setup-specific stuff, keys, etc.
