@@ -3,40 +3,82 @@ import shlex
 import sys
 
 
-def beautify_pipeline(pipeline_str, vertical=False):
+def beautify_pipeline(pipeline_str, vertical=False, split_first=False, horizontal=False):
     try:
         raw_tokens = shlex.split(pipeline_str)
     except ValueError as e:
-        return f"Error parsing pipeline: {e}"
+        raise ValueError(f"Error parsing pipeline: {e}") from e
 
-    # SANITIZATION: Remove empty strings, pure whitespace, or literal newlines left by shlex
-    tokens = [t for t in raw_tokens if t.strip()]
+    # ==========================================
+    # PHASE 1: FLATTEN & NORMALIZE
+    # ==========================================
+    normalized_tokens = []
+    for t in raw_tokens:
+        t = t.strip()
+        if not t:
+            continue
 
-    if not tokens:
+        # Drop standalone formatting artifacts
+        if t in ("\\", ";"):
+            continue
+
+        # Strip trailing semicolons if they are attached to an element/property
+        if t.endswith(";"):
+            t = t[:-1]
+            if not t:
+                continue
+
+        # NORMALIZE: Un-squash links (e.g., "!videoconvert" becomes "!" and "videoconvert")
+        # This ensures the shaping phase only ever deals with uniform tokens.
+        if t.startswith("!") and len(t) > 1:
+            normalized_tokens.append("!")
+            normalized_tokens.append(t[1:])
+        else:
+            normalized_tokens.append(t)
+
+    if not normalized_tokens:
         return ""
 
+    # ==========================================
+    # PHASE 2: HORIZONTAL OVERRIDE (Optional)
+    # ==========================================
+    # If horizontal, simply quote the normalized tokens and join them.
+    if horizontal:
+        flat_str = " ".join(t if t == "!" else shlex.quote(t) for t in normalized_tokens)
+        return flat_str
+
+    # ==========================================
+    # PHASE 3: RESHAPE (Vertical / Standard)
+    # ==========================================
     lines = []
     current_line = ""
     current_indent_level = 1  # 1 level = 4 spaces
     state = "START"
 
-    for i, token in enumerate(tokens):
+    for i, token in enumerate(normalized_tokens):
         # 1. Handle the first token (usually the executable or first element)
         if i == 0:
             current_line = shlex.quote(token)
             if "gst-launch" in token:
-                state = "EXPECT_ELEMENT"
+                if split_first:
+                    lines.append(current_line)
+                    current_indent_level = 1
+                    current_line = ("    " * current_indent_level)
+                    state = "EXPECT_FIRST_ELEMENT"
+                else:
+                    state = "EXPECT_ELEMENT"
             else:
                 state = "EXPECT_PROPERTY"
             continue
 
         # 2. Detect branches (e.g., "t.", "mux.video_0")
         is_branch = False
-        if state != "EXPECT_ELEMENT":
-            if token.endswith("."):
+        if state not in ("EXPECT_ELEMENT", "EXPECT_FIRST_ELEMENT"):
+            if token.endswith(".") and "=" not in token:
                 is_branch = True
             elif "." in token and "=" not in token and "/" not in token:
-                if i + 1 < len(tokens) and tokens[i + 1].startswith("!"):
+                # Because we normalized squashed links, the next token is guaranteed to be purely "!"
+                if i + 1 < len(normalized_tokens) and normalized_tokens[i + 1] == "!":
                     is_branch = True
 
         if is_branch:
@@ -54,32 +96,30 @@ def beautify_pipeline(pipeline_str, vertical=False):
             state = "EXPECT_ELEMENT"
             continue
 
-        # 4. Handle squashed links (e.g., "!videoconvert")
-        if token.startswith("!") and len(token) > 1:
-            lines.append(current_line)
-            current_line = (
-                ("    " * current_indent_level) + "! " + shlex.quote(token[1:])
-            )
-            state = "EXPECT_PROPERTY"
-            continue
-
-        # 5. Handle standard Elements/Caps right after a '!'
+        # 4. Handle standard Elements/Caps right after a '!'
         if state == "EXPECT_ELEMENT":
             current_line += " " + shlex.quote(token)
             state = "EXPECT_PROPERTY"
             continue
 
-        # 6. Handle Standalone Elements (declared without a '!')
+        # 4.5 Handle the very first element if split_first is active
+        if state == "EXPECT_FIRST_ELEMENT":
+            current_line += shlex.quote(token)
+            state = "EXPECT_PROPERTY"
+            continue
+
+        # 5. Handle Standalone Elements (declared without a '!')
         if state in ("EXPECT_PROPERTY", "EXPECT_BANG"):
             # If it lacks '=', '/', and ',', it's not a property or cap—it's a new element
             if "=" not in token and "/" not in token and "," not in token:
                 lines.append(current_line)
-                current_indent_level = 1  # Reset to base indentation
+                current_indent_level = 1  # Reset to base indentation for the secondary source
                 current_line = ("    " * current_indent_level) + shlex.quote(token)
+                current_indent_level = 2  # BUMP INDENT for any subsequent links off this source
                 state = "EXPECT_PROPERTY"
                 continue
 
-        # 7. Handle Properties
+        # 6. Handle Properties
         if state in ("EXPECT_PROPERTY", "EXPECT_BANG"):
             if vertical:
                 lines.append(current_line)
@@ -96,44 +136,144 @@ def beautify_pipeline(pipeline_str, vertical=False):
     if not lines:
         return ""
 
-    # Calculate dynamic alignment column based on the longest line, capped at 80
-    lines_to_backslash = lines[:-1]
-    if lines_to_backslash:
-        max_line_length = max(len(line) for line in lines_to_backslash)
+    # ==========================================
+    # PHASE 4: ALIGNMENT & TERMINATION
+    # ==========================================
+    if lines:
+        max_line_length = max(len(line) for line in lines)
         target_col = min(max_line_length + 2, 80)
     else:
         target_col = 80
 
-    # Apply the backslash alignment
     formatted_lines = []
     for i, line in enumerate(lines):
-        if i < len(lines) - 1:
-            pad_len = target_col - 2 - len(line)
-            if pad_len > 0:
-                formatted_lines.append(line + (" " * pad_len) + " \\")
-            else:
-                formatted_lines.append(line + " \\")
+        end_char = "\\" if i < len(lines) - 1 else ";"
+        pad_len = target_col - 2 - len(line)
+        if pad_len > 0:
+            formatted_lines.append(line + (" " * pad_len) + f" {end_char}")
         else:
-            formatted_lines.append(line)
+            formatted_lines.append(line + f" {end_char}")
 
     return "\n".join(formatted_lines)
 
 
+def test():
+    """Runs a suite of pipeline strings through all formatting modes to verify logic."""
+    test_cases = [
+        (
+            "1. The 'Dot in Property' Fix Test",
+            'gst-launch-1.0 filesrc location=my_video.mp4 ! decodebin ! textoverlay text="End." ! autovideosink'
+        ),
+        (
+            "2. The Quoting and Spacing Test",
+            'gst-launch-1.0 videotestsrc pattern=ball !videoconvert ! textoverlay text="This is a test string" font-desc="Sans 24" !autovideosink'
+        ),
+        (
+            "3. Complex Branching (Tee and Demuxers)",
+            'gst-launch-1.0 videotestsrc ! tee name=t ! queue ! autovideosink t. ! queue ! x264enc ! mp4mux name=mux ! filesink location=out.mp4 audiotestsrc ! mux.audio_0'
+        ),
+        (
+            "4. Standalone Element Instantiation",
+            'gst-launch-1.0 videotestsrc is-live=true videoconvert x264enc bitrate=2000 h264parse mp4mux filesink location=test.mp4'
+        ),
+        (
+            "5. Long Line Backslash Alignment Test",
+            'gst-launch-1.0 videotestsrc ! video/x-raw,format=I420,width=1920,height=1080,framerate=60/1 ! x264enc bitrate=5000 speed-preset=ultrafast tune=zerolatency ! mp4mux ! filesink location=/tmp/extremely_long_path_name_to_test_the_dynamic_backslash_alignment_logic_in_the_script.mp4'
+        ),
+        (
+            "6. The 'Caps Filter' Test",
+            'gst-launch-1.0 v4l2src device=/dev/video0 ! video/x-raw, width=640, height=480 ! videoconvert ! autovideosink'
+        ),
+        (
+            "7. Multiline Pipeline (Basic)",
+            '''gst-launch-1.0 videotestsrc
+            ! videoconvert
+            ! autovideosink'''
+        ),
+        (
+            "8. Multiline Pipeline with Shell Continuations",
+            '''gst-launch-1.0 \\
+                videotestsrc pattern=snow \\
+                ! video/x-raw,width=1280,height=720 \\
+                ! videoconvert \\
+                ! autovideosink'''
+        ),
+        (
+            "9. Multiline Pipeline with Broken Properties",
+            '''gst-launch-1.0 v4l2src
+                device=/dev/video0
+                ! capsfilter
+                caps="video/x-raw, width=640, height=480"
+                ! autovideosink ;'''
+        ),
+        (
+            "10. Massively Complex 'Boss Level' Pipeline",
+            '''gst-launch-1.0 \\
+                videotestsrc pattern=ball \\
+                ! video/x-raw,width=1920,height=1080 \\
+                ! tee name=t \\
+                t. ! queue !videoconvert \\
+                ! textoverlay text="Branch 1: Squashed and Quoted" font-desc="Sans 24" \\
+                ! autovideosink ; \\
+                t. ! queue ! x264enc bitrate=5000 tune=zerolatency is-live=true \\
+                h264parse mp4mux name=mux \\
+                ! filesink location=/tmp/complex_test.mp4 \\
+                audiotestsrc wave=sine volume=0.5 ! mux.audio_0 ;'''
+        )
+    ]
+
+    for name, pipeline in test_cases:
+        print(f"=== {name} ===")
+        print("\n[INPUT]")
+        print(pipeline)
+
+        print("\n[OUTPUT - NORMAL]")
+        print(beautify_pipeline(pipeline))
+
+        print("\n[OUTPUT - VERTICAL]")
+        print(beautify_pipeline(pipeline, vertical=True))
+
+        print("\n[OUTPUT - HORIZONTAL]")
+        print(beautify_pipeline(pipeline, horizontal=True))
+        print("-" * 80 + "\n")
+
+
 if __name__ == "__main__":
     args = sys.argv[1:]
-    vertical_mode = False
 
+    # Process flags
+    vertical_mode = False
     if "--vertical" in args:
         vertical_mode = True
         args.remove("--vertical")
+
+    split_first_mode = False
+    if "--split-first" in args:
+        split_first_mode = True
+        args.remove("--split-first")
+
+    horizontal_mode = False
+    if "--horizontal" in args:
+        horizontal_mode = True
+        args.remove("--horizontal")
+
+    # If --test is present, run the full test suite and exit
+    if "--test" in args:
+        test()
+        sys.exit(0)
 
     input_str = ""
     if not sys.stdin.isatty():
         input_str = sys.stdin.read().strip()
     elif len(args) > 0:
-        input_str = " ".join(args)
+        input_str = shlex.join(args)
     else:
-        print("Usage: echo 'gst-launch-1.0 ...' | ./gst-beautify.py [--vertical]")
+        print("Usage: echo 'gst-launch-1.0 ...' | ./gst-beautify.py [--vertical] [--horizontal] [--split-first]", file=sys.stderr)
+        print("       ./gst-beautify.py --test", file=sys.stderr)
         sys.exit(1)
 
-    print(beautify_pipeline(input_str, vertical=vertical_mode))
+    try:
+        print(beautify_pipeline(input_str, vertical=vertical_mode, split_first=split_first_mode, horizontal=horizontal_mode))
+    except ValueError as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(1)
