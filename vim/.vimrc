@@ -98,6 +98,7 @@ let g:netrw_altv = 1
 let g:netrw_winsize = 75
 let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
 let g:netrw_altfile = 1 " alternate file is never netrw
+let g:netrw_fastbrowse = 0
 
 " autodelete netrw buffers on exit
 augroup AutoDeleteNetrwHiddenBuffers
@@ -148,13 +149,13 @@ Plug 'dense-analysis/ale'        " async lint engine
 Plug 'puremourning/vimspector'   " tui debugger
 Plug 'junegunn/vim-easy-align'   " vertical alignment
 Plug 'tpope/vim-commentary'      " very easy comment switching
-" Plug 'github/copilot.vim'        " copilot autocomplete
 Plug 'rhysd/conflict-marker.vim' " easy merge conflict mappings
 Plug 'junegunn/gv.vim'           " commit history inspector
-Plug 'wellle/context.vim'
-Plug 'vim-scripts/a.vim'
-Plug 'vim-scripts/taglist.vim'
-Plug 'TamaMcGlinn/quickfixdd'
+Plug 'wellle/context.vim'        " see scope as shadow text at the top
+Plug 'vim-scripts/a.vim'         " alternate source/header files
+Plug 'vim-scripts/taglist.vim'   " taglist utility
+Plug 'TamaMcGlinn/quickfixdd'    " remove from quickfix with dd
+Plug 'Yggdroot/indentLine'       " preview indent lines
 
 Plug 'gh-tui-tools/gh-review.vim'
 
@@ -164,13 +165,14 @@ Plug 'pabsan-0/vim-snippets'     " snippets atop fzf
 Plug 'pabsan-0/vim-slidev'       " slidev conveniences
 Plug 'pabsan-0/vim-pr-fix'       " pr fixing conveniences
 Plug 'pabsan-0/vim-gst-debug'    " vim log parsing
-" Plug 'pabsan-0/vimini'
+Plug 'pabsan-0/vim-paginate'     " vim pager
 
 
-" Plug 'vimwiki/vimwiki', { 'do': g:vimwiki_post_hook }
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
+" Plug 'vimwiki/vimwiki', { 'do': g:vimwiki_post_hook }
+" Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 " Plug 'DanBradbury/copilot-chat.vim'
+" Plug 'github/copilot.vim'        " copilot autocomplete
 call plug#end()
 
 " Fzf.vim
@@ -179,14 +181,21 @@ call plug#end()
 " Explicitly map c-p and c-n to keep usual behavior
 let g:fzf_history_dir = '~/.local/share/fzf-history'
 let $FZF_DEFAULT_OPTS = '--bind ctrl-n:down,ctrl-p:up,alt-n:next-history,alt-p:prev-history,ctrl-j:preview-down,ctrl-k:preview-up'
+let g:fzf_layout = { 'down': '60%' }
 
 nnoremap <leader>f <Esc>:Files<cr>
 nnoremap <leader>b <Esc>:Buffers<cr>
-nnoremap <leader>r <Esc>:Rg<cr>
 nnoremap <leader>D <Esc>:GFiles?<cr>
 
+nnoremap <leader>r <Esc>:Rg<cr>
+xnoremap <leader>r "hy:Rg <C-r>=escape(@h, '[]\/*?.$^()')<CR><CR>
+nnoremap <leader>R :Rg <C-r><C-w><CR>
+
 " Vim fugitive
-nnoremap <leader>gd :Gdiffsplit<CR>
+nnoremap <leader>dt :G difftool<CR>
+nnoremap <leader>dT :G difftool
+nnoremap <leader>ds :Gvdiffsplit<CR>
+nnoremap <leader>dS :Gvdiffsplit
 
 " Vim gitgutter
 " jump hunks: [c ]c; preview, stage, and undo hunks:  <leader>hp, <leader>hs, and <leader>hu
@@ -228,6 +237,39 @@ command! W :noautocmd w
 " Vimspector
 let g:vimspector_enable_mappings = 'HUMAN'
 let g:vimspector_sign_priority = {}  " TBD
+let g:vimspector_configurations = {
+\   'Python: Run Current File': {
+\     'adapter': 'debugpy',
+\     'filetypes': [ 'python' ],
+\     'configuration': {
+\       'request': 'launch',
+\       'program': '${file}',
+\       'cwd': '${workspaceRoot}',
+\       'stopOnEntry': v:true
+\     }
+\   },
+\   'C/C++: Launch Current Binary': {
+\     'adapter': 'vscode-cpptools',
+\     'filetypes': [ 'c', 'cpp', 'rust' ],
+\     'configuration': {
+\       'request': 'launch',
+\       'program': '${fileDirname}/${fileBasenameNoExtension}',
+\       'cwd': '${workspaceRoot}',
+\       'stopOnEntry': v:true
+\     }
+\   },
+\   'Bash: GDB Bash running Current Script': {
+\     'adapter': 'vscode-cpptools',
+\     'filetypes': [ 'sh', 'bash' ],
+\     'configuration': {
+\       'request': 'launch',
+\       'program': '/bin/bash',
+\       'args': [ '${file}' ],
+\       'cwd': '${workspaceRoot}',
+\       'stopOnEntry': v:false
+\     }
+\   }
+\ }
 
 " Vimwiki
 let g:vimwiki_list = [{'path': '~/vimwiki', 'syntax': 'default', 'ext': '.wiki'}]
@@ -258,6 +300,11 @@ let g:context_highlight_normal = 'ContextBg'
 
 " taglist
 let g:Tlist_WinWidth = 50
+
+" indentlines
+" disable by default
+let g:indentLine_enabled = 0
+let g:indentLine_char = '⎸'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ Custom functionality
@@ -346,7 +393,7 @@ nnoremap <leader><leader>v <Esc>:!cd &&  glow %:p -p vim <CR><CR><cr>
 nnoremap <leader>gr :call OpenReadmeAtGitRoot()<CR>
 
 " Help me better see what im doing
-nnoremap <leader><leader><Tab> :set invlist<CR>
+nnoremap <leader><leader><Tab> :IndentLinesToggle<CR>:set invlist<CR>
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 
 " To be incorporated
@@ -377,3 +424,33 @@ nnoremap <silent> <Leader>gf :GstFormat<CR>
 " gf but create file if it does not exist
 nnoremap <leader>gf :e <cfile><cr>
 vnoremap <leader>gf y:e <C-r>"<CR>
+
+
+" K binding fallback ladder
+let g:default_kp = &keywordprg
+set keywordprg=:ChainedLookup
+command! -nargs=+ ChainedLookup call ChainedLookupCb(<f-args>)
+
+function! ChainedLookupCb(...)
+    let l:count = a:0 > 1 ? a:1 : ''
+    let l:word = a:0 > 1 ? a:2 : a:1
+
+    " GStreamer plugins
+    call system('gst-inspect-1.0 ' .. l:word .. ' >/dev/null 2>&1')
+    if v:shell_error == 0
+        let l:cmd = 'env PAGER=cat gst-inspect-1.0 ' .. l:word
+        call term_start(l:cmd, {
+        \   'curwin': 1,
+        \   'exit_cb': {job, status -> timer_start(10, {-> feedkeys(":\<C-u>keepjumps normal! gg\<CR>", 'n')})}
+        \ })
+        return
+    endif
+
+    " Fallback to native
+    let &keywordprg = g:default_kp
+    try
+        execute 'normal! ' .. l:count .. 'K'
+    finally
+        set keywordprg=:ChainedLookup
+    endtry
+endfunction
