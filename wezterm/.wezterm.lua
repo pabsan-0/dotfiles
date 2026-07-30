@@ -37,8 +37,10 @@ config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = true
 
 wezterm.on('conditional-leader', function(window, pane)
-    local process_name = pane:get_foreground_process_name()
-    if process_name and process_name:find('tmux') then
+    local process_name = pane:get_foreground_process_name() or ""
+    local pane_title = pane:get_title() or ""
+
+    if process_name:find('tmux') or pane_title:find('tmux') then
         window:perform_action(wezterm.action.SendKey { key = 's', mods = 'CTRL' }, pane)
     else
         window:perform_action(wezterm.action.ActivateKeyTable {
