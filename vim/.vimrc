@@ -156,6 +156,7 @@ Plug 'vim-scripts/a.vim'         " alternate source/header files
 Plug 'vim-scripts/taglist.vim'   " taglist utility
 Plug 'TamaMcGlinn/quickfixdd'    " remove from quickfix with dd
 Plug 'Yggdroot/indentLine'       " preview indent lines
+Plug 'vim-scripts/AnsiEsc.vim'
 
 Plug 'gh-tui-tools/gh-review.vim'
 
@@ -306,6 +307,13 @@ let g:Tlist_WinWidth = 50
 let g:indentLine_enabled = 0
 let g:indentLine_char = '⎸'
 
+" AnsiEsc
+" reject \r... mapping that i do not use
+augroup UnmapAnsiEscPluginKeys
+    autocmd!
+    autocmd VimEnter * silent! nunmap \rwp
+augroup END
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ Custom functionality
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -454,3 +462,11 @@ function! ChainedLookupCb(...)
         set keywordprg=:ChainedLookup
     endtry
 endfunction
+
+" Strip ANSI codes
+command! AnsiStrip silent! %s/\e\[[0-9;]*[mK]//ge | noh
+
+" Visual around method (C-style with column 0 braces and blank line separators)
+" vnoremap am <Esc>[[V][o{j
+vnoremap am <Esc>k][V%{j
+omap am :normal vam<CR>
