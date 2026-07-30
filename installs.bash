@@ -23,7 +23,7 @@ packages_apt=(
     lxappearance       # GUI customiser
     xbacklight         # Brightness controls
     fonts-font-awesome # Emoji charset
-    picom              # Transparency manager
+    xcompmgr           # Transparency manager
     diodon             # clipboard manager
     xclip              # scriptable clipboard
     ncdu               # interactive disk usage
@@ -104,6 +104,12 @@ done
     curl -fsSL "$github_url" -o /tmp/lazyjira.deb
     sudo apt install /tmp/lazyjira.deb
     rm /tmp/lazyjira.deb
+}
+[[ $(command -v wezterm) ]] || {
+    github_url="https://github.com/wezterm/wezterm/releases/download/20240203-110809-5046fc22/wezterm-20240203-110809-5046fc22.Ubuntu22.04.deb"
+    curl -fsSL "$github_url" -o /tmp/wezterm.deb
+    sudo apt install /tmp/wezterm.deb
+    rm /tmp/wezterm.deb
 }
 
 # Custom self-owned github packages

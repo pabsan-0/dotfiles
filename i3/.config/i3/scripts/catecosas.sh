@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export TERMINAL="konsole -e bash -c"
+export TERMINAL="wezterm -e bash -c"
 
 read -r -d '' YAML <<'YAML' || true
 
@@ -20,6 +20,7 @@ jira/manual:                       xdg-open https://fluendo.atlassian.net/wiki/s
 confluence:                        xdg-open https://fluendo.atlassian.net/wiki/home
 confluence/company-handbook:       xdg-open https://fluendo.atlassian.net/wiki/spaces/COM/
 confluence/how-to-work-eng-team:   xdg-open https://fluendo.atlassian.net/wiki/spaces/ENG/pages/3052077073/How+to+work+in+engineering+team#Merge-to-master
+drive:                             xdg-open https://drive.google.com/drive/my-drive
 drive/consulting-services:         xdg-open https://drive.google.com/drive/folders/1bZHaoo798QsFkgsvHMW7e8iB1jSx3fxX
 
 gemini:                            xdg-open https://gemini.google.com/app
@@ -30,9 +31,9 @@ kenjo:                             xdg-open https://app.kenjo.io/
 kenjo/attendances:                 xdg-open https://app.kenjo.io/cloud/attendance/my-attendance
 travelperk:                        xdg-open https://fluendo.perk.com/home/
 
-term/lazyjira:                     ${TERMINAL} "i3-msg fullscreen enable; exec lazyjira"
-term/gh-dash:                      ${TERMINAL} "i3-msg fullscreen enable; exec gh dash 2>/dev/null"
-term/gst-1.26.2:                   ${TERMINAL} "i3-msg fullscreen enable; cd /opt/gstreamer--pinned/1.26.8/ && vim -c 'set clipboard=unnamedplus' "
+term/lazyjira:                     ${TERMINAL} "sleep 0.1; i3-msg fullscreen enable; exec lazyjira"
+term/gh-dash:                      ${TERMINAL} "sleep 0.1; i3-msg fullscreen enable; exec gh dash 2>/dev/null"
+term/gst-1.26.2:                   ${TERMINAL} "sleep 0.1; i3-msg fullscreen enable; cd /opt/gstreamer--pinned/1.26.8/ && vim -c 'set clipboard=unnamedplus' "
 
 YAML
 

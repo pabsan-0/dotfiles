@@ -70,7 +70,7 @@ set $workspace10 "10 "
 # remember these dont work with auto back and forth
 bindsym $mod+grave workspace $workspace0; exec i3-save-tree --workspace 0 | grep calend  || ~/bin/web-googlecalendar
 bindsym $mod+1 workspace $workspace1;     exec i3-save-tree --workspace 1 | grep brave   || brave
-bindsym $mod+2 workspace $workspace2;     exec i3-save-tree --workspace 2 | grep konsole || konsole
+bindsym $mod+2 workspace $workspace2;     exec i3-save-tree --workspace 2 | grep wezterm || wezterm
 bindsym $mod+3 workspace $workspace3
 bindsym $mod+4 workspace $workspace4
 bindsym $mod+5 workspace $workspace5
@@ -195,7 +195,7 @@ for_window [class="Pavucontrol"] \
     move position 1320 630
 
 # Applications
-bindsym $mod+Return exec konsole
+bindsym $mod+Return exec wezterm
 bindsym $mod+Shift+q kill
 bindsym $mod+d exec rofi -show drun
 bindsym $mod+Shift+d exec rofi -show run
@@ -218,7 +218,7 @@ exec --no-startup-id i3-msg "workspace $workspace10; append_layout ~/.config/i3/
 # exec --no-startup-id obsidian
 # exec --no-startup-id brave
 # exec --no-startup-id code
-exec --no-startup-id konsole
+exec --no-startup-id wezterm
 exec --no-startup-id slack
 exec --no-startup-id ~/bin/web-googlecalendar
 # exec --no-startup-id ~/bin/web-whatsapp # bin/ scripts with browser apps

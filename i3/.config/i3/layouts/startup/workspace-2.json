@@ -9,12 +9,11 @@
        "y": 18
     },
     "marks": [],
-    "name": "~ : bash — Konsole",
     "percent": 1,
     "swallows": [
        {
-       "class": "^konsole$",
-       "instance": "^konsole$"
+       "class": "wezterm",
+       "instance": "wezterm"
        }
     ],
     "type": "con"
