@@ -1,5 +1,6 @@
 " Indices to jump with gF
 " ~/.vimrc:138
+" ~/.vim/plugin/
 
 " Automatic reloading of .vimrc
 autocmd! bufwritepost .vimrc source %
@@ -157,6 +158,7 @@ Plug 'vim-scripts/taglist.vim'   " taglist utility
 Plug 'TamaMcGlinn/quickfixdd'    " remove from quickfix with dd
 Plug 'Yggdroot/indentLine'       " preview indent lines
 Plug 'vim-scripts/AnsiEsc.vim'
+Plug 'aymericbeaumet/vim-symlink'
 
 Plug 'gh-tui-tools/gh-review.vim'
 
@@ -308,165 +310,39 @@ let g:indentLine_enabled = 0
 let g:indentLine_char = '⎸'
 
 " AnsiEsc
-" reject \r... mapping that i do not use
+" reject \r... mapping that i use for something else
 augroup UnmapAnsiEscPluginKeys
     autocmd!
     autocmd VimEnter * silent! nunmap \rwp
 augroup END
+" related: strip rather than escape
+command! AnsiStrip silent! %s/\e\[[0-9;]*[mK]//ge | noh
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ Custom functionality
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" look for # vimcmd: in the first lines and execute it
-function! VimExecute()
-    " default command
-    let command = "%:p"
-
-    let line = 1
-    while line <= 5 && line('$') >= line
-        let comment = getline(line)
-        if comment =~ 'vimcmd:\s*\S\+'
-            let command = substitute(comment, '.*vimcmd:\s*\(\S\+.*\)$', '\1', '')
-            break
-        endif
-        let line += 1
-    endwhile
-    execute "!".command
-    "normal ":!".command
-endfunction
-
-
-function! OpenReadmeAtGitRoot()
-    " Get the path to the repository root (empty on error)
-    let root = system('git rev-parse --show-toplevel 2>/dev/null')
-
-    " Check if root is empty (indicates error)
-    if empty(root)
-        echoerr "Not a git repository"
-        return
-    endif
-
-    " Open README.md in a new buffer
-    let root = root[0:-2]
-    execute 'edit ' . root .'/README.md'
-endfunction
-
-
-function! UECppSwitch()
-    " Switch between header and source in UE cpp file structures
-
-    let l:extension = expand('%:e')
-    let l:filename_noext = expand('%:p:r')
-
-    " Source file in case-insensitive Private directory
-    if l:extension == 'cpp' && l:filename_noext =~ '/private/'
-
-        " Append extension and case-preserving substitution
-        let l:filename = l:filename_noext .. '.h'
-        if l:filename_noext =~# '/private/'
-            let l:filename = substitute (l:filename, '/\Cprivate/', '/public/', 'gi')
-        else
-            let l:filename = substitute (l:filename, '/\CPrivate/', '/Public/', 'gi')
-        endif
-
-        execute "edit " ..  expand(l:filename)
-
-    " Header file in case-insensitive Public directory
-    elseif l:extension == 'h' && l:filename_noext =~ '/public/'
-
-        " Append extension and case-preserving substitution
-        let l:filename = l:filename_noext .. '.cpp'
-        if l:filename_noext =~# '/public/'
-            let l:filename = substitute (l:filename, '/\Cpublic/', '/private/', 'gi')
-        else
-            let l:filename = substitute (l:filename, '/\CPublic/', '/Private/', 'gi')
-        endif
-
-        execute "edit " ..  expand(l:filename)
-    endif
-endfunction
-
-
-nnoremap <silent> <leader><leader>c :call UECppSwitch()<CR>
-" Custom remaps
-
 " Coding and debugging
-nnoremap <leader><leader>r :!%:p
-nnoremap <leader><leader>R :call VimExecute()<CR>
-nnoremap <leader><leader>m :make<CR>
-nnoremap <leader><leader>v <Esc>:!cd &&  glow %:p -p vim <CR><CR><cr>
-
-" Documentation and sanity
+nnoremap <leader>x :!%:p
+nnoremap <leader>X :call VimCmdExecute()<CR>
+nnoremap <leader>m :make<CR>
 nnoremap <leader>gr :call OpenReadmeAtGitRoot()<CR>
 
 " Help me better see what im doing
 nnoremap <leader><leader><Tab> :IndentLinesToggle<CR>:set invlist<CR>
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 
-" To be incorporated
+" jump to uppercase
 nnoremap <c-t> /[A-Z]<return>
+" gf but create file if it does not exist
+nnoremap <leader>gf :e <cfile><cr>
+vnoremap <leader>gf y:e <C-r>"<CR>
+
+" Visual around method (C-style with column 0 braces and blank line separators)
+vnoremap am <Esc>k][V%{j
+omap am :normal vam<CR>
 
 " Detect Arduino .ino files as C++
 augroup cpp_detect
     au BufNewFile,BufRead *.ino setlocal filetype=cpp
 augroup end
-
-
-function! GstFormat() range
-  " Append ; if not already there
-  exec 's/\v;?\s*$/ ;/'
-
-  " Replace !| with newline and proper indentation
-  "    <--- actual subs ---> <--------------- indentation bullshit ------------------------------>
-  exec 's/\v([!|])/\="\\\r" . repeat(" ", indent(".")) . repeat(" ", &shiftwidth) . submatch(1)/g'
-
-  if exists(':EasyAlign')
-    normal gaip-\' \'
-  endif
-endfunction
-command! GstFormat :call GstFormat()
-nnoremap <silent> <Leader>gf :GstFormat<CR>
-
-
-" gf but create file if it does not exist
-nnoremap <leader>gf :e <cfile><cr>
-vnoremap <leader>gf y:e <C-r>"<CR>
-
-
-" K binding fallback ladder
-let g:default_kp = &keywordprg
-set keywordprg=:ChainedLookup
-command! -nargs=+ ChainedLookup call ChainedLookupCb(<f-args>)
-
-function! ChainedLookupCb(...)
-    let l:count = a:0 > 1 ? a:1 : ''
-    let l:word = a:0 > 1 ? a:2 : a:1
-
-    " GStreamer plugins
-    call system('gst-inspect-1.0 ' .. l:word .. ' >/dev/null 2>&1')
-    if v:shell_error == 0
-        let l:cmd = 'env PAGER=cat gst-inspect-1.0 ' .. l:word
-        call term_start(l:cmd, {
-        \   'curwin': 1,
-        \   'exit_cb': {job, status -> timer_start(10, {-> feedkeys(":\<C-u>keepjumps normal! gg\<CR>", 'n')})}
-        \ })
-        return
-    endif
-
-    " Fallback to native
-    let &keywordprg = g:default_kp
-    try
-        execute 'normal! ' .. l:count .. 'K'
-    finally
-        set keywordprg=:ChainedLookup
-    endtry
-endfunction
-
-" Strip ANSI codes
-command! AnsiStrip silent! %s/\e\[[0-9;]*[mK]//ge | noh
-
-" Visual around method (C-style with column 0 braces and blank line separators)
-" vnoremap am <Esc>[[V][o{j
-vnoremap am <Esc>k][V%{j
-omap am :normal vam<CR>
