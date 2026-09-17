@@ -78,6 +78,13 @@ config.key_tables = {
 }
 
 config.keys = {
+    -- Convenient scrolls
+    { key = 'P', mods = 'CTRL|SHIFT', action = wezterm.action.ScrollToPrompt(-1) },
+    { key = 'N', mods = 'CTRL|SHIFT', action = wezterm.action.ScrollToPrompt(1)  },
+    { key = 'U', mods = 'CTRL|SHIFT', action = wezterm.action.ScrollByPage(-0.5) },
+    { key = 'D', mods = 'CTRL|SHIFT', action = wezterm.action.ScrollByPage(0.5) },
+    { key = 'K', mods = 'CTRL|SHIFT', action = wezterm.action.ScrollByLine(-1) },
+    { key = 'J', mods = 'CTRL|SHIFT', action = wezterm.action.ScrollByLine(1) },
     -- Leader: Ctrl+s by default, unless in tmux. Ctrl+Shift+s always reaches wezterm
     {
         key = 's',
@@ -107,32 +114,35 @@ config.keys = {
     },
     -- Scans terminal for filenames and opens selection in $EDITOR
     {
-    key = 'E',
-    mods = 'CTRL|SHIFT',
-    action = wezterm.action.QuickSelectArgs {
-        label = 'open in editor',
-        action = wezterm.action_callback(function(window, pane)
-          local selection = window:get_selection_text_for_pane(pane)
-          local file_path = selection:gsub('^%s*(.-)%s*$', '%1')
-          local editor = os.getenv('EDITOR') or 'vim'
-          window:perform_action(
-            wezterm.action.SpawnCommandInNewTab {
-              args = { editor, file_path },
-            },
-            pane
-          )
-        end),
-      },
+        key = 'E',
+        mods = 'CTRL|SHIFT',
+        action = wezterm.action.QuickSelectArgs {
+            label = 'open in editor',
+            action = wezterm.action_callback(function(window, pane)
+                local selection = window:get_selection_text_for_pane(pane)
+                -- Trim whitespace
+                local file_path = selection:gsub('^%s*(.-)%s*$', '%1')
+                local editor = os.getenv('EDITOR') or 'vim'
+
+                -- \x15 sends Ctrl-U to clear the current line
+                -- \r sends Enter to execute the command
+                local cmd = '\x15' .. editor .. ' "' .. file_path .. '"\r'
+
+                pane:send_text(cmd)
+            end),
+        },
     },
     -- Dump all scrollback into $EDITOR
     {
         key = 'h',
         mods = 'CTRL|SHIFT',
         action = wezterm.action_callback(function(window, pane)
-
             local dimensions = pane:get_dimensions()
             local total_lines = dimensions.scrollback_rows + dimensions.viewport_rows
-            local text = pane:get_lines_as_text(total_lines)
+            local text = pane:get_lines_as_escapes(total_lines)
+
+            -- Strip sequences AnsiEsc doesn't know how to conceal
+            text = text:gsub("\x1b%([A-Z0-9]", "")
 
             local tmp_dir = os.getenv("TMPDIR") or "/tmp"
             local timestamp = os.date("%Y%m%d_%H%M%S")
@@ -147,12 +157,16 @@ config.keys = {
                 wezterm.action.SpawnCommandInNewTab {
                     args = {
                         'vim', name,
-                        '-c', 'set buftype=nofile readonly nolist',
-                        '-c', 'xnoremap y "+y',
-                        '-c', 'nnoremap y "+y',
+                        '-c', 'set buftype=nofile readonly nolist nowrapscan',
+                        '-c', 'nnoremap y "+y | xnoremap y "+y',
                         '-c', 'nnoremap yy "+yy',
                         '-c', 'nnoremap Y "+Y',
-                        '-c', 'normal G'
+                        '-c', "nnoremap <silent> <C-P> k<Cmd>call search('@.*\\$', 'bWe')<CR>",
+                        '-c', "nnoremap <silent> <C-N> <Cmd>call search('@.*\\$', 'We')<CR>",
+                        '-c', "xnoremap <silent> <C-P> k<Cmd>call search('@.*\\$', 'bWe')<CR>",
+                        '-c', "xnoremap <silent> <C-N> <Cmd>call search('@.*\\$', 'We')<CR>",
+                        '-c', 'AnsiEsc',
+                        '-c', 'normal G',
                     },
                 },
                 pane
@@ -165,6 +179,19 @@ config.keys = {
     },
 }
 
+config.mouse_bindings = {
+  -- Open links with Ctrl-Click and not with just Click
+  {
+    event = { Up = { streak = 1, button = 'Left' } },
+    mods = 'NONE',
+    action = wezterm.action.DisableDefaultAssignment,
+  },
+  {
+    event = { Up = { streak = 1, button = 'Left' } },
+    mods = 'CTRL',
+    action = wezterm.action.OpenLinkAtMouseCursor,
+  },
+}
 
 config.colors = {
     foreground = '#FFFFFF',
