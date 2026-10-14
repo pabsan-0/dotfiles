@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+# gst-logfilter-1.0
+# Filters a prerecorded GStreamer log based on the GST_DEBUG environment variable.
+# Usage: ./gst-logfilter-1.0 [logfile.log] <or pipe via stdin>
+
+# 1. Warn if GST_DEBUG is unset or empty
+if [ -z "${GST_DEBUG}" ]; then
+    echo "WARNING: GST_DEBUG environment variable is not set or is empty." >&2
+    # Default behavior: if no filter is set, just pipe the log through untouched.
+    cat "$@"
+    exit 0
+fi
+
+# 2. Parse GST_DEBUG and filter log via awk
+awk -v debug_env="$GST_DEBUG" '
+BEGIN {
+    # Initialize GStreamer string-to-number level mapping
+    lvl_map["ERROR"]   = 1
+    lvl_map["WARN"]    = 2
+    lvl_map["WARNING"] = 2
+    lvl_map["FIXME"]   = 3
+    lvl_map["INFO"]    = 4
+    lvl_map["DEBUG"]   = 5
+    lvl_map["LOG"]     = 6
+    lvl_map["TRACE"]   = 7
+    lvl_map["MEMDUMP"] = 9
+
+    default_level = 0
+    last_decision = 1 # Assume print by default if log starts with unparsed lines
+
+    # Parse the GST_DEBUG string (e.g., "3,h264parse:5,v4l2*:6")
+    n = split(debug_env, parts, ",")
+    for (i = 1; i <= n; i++) {
+        part = parts[i]
+        if (index(part, ":") > 0) {
+            split(part, cat_lvl, ":")
+            cat = cat_lvl[1]
+            lvl = cat_lvl[2] + 0
+
+            if (cat == "*") {
+                default_level = lvl
+            } else {
+                cat_levels[cat] = lvl
+            }
+        } else {
+            # Global level provided without a category (e.g., GST_DEBUG=4)
+            default_level = part + 0
+        }
+    }
+}
+{
+    # Preserve the original line (with ANSI colors) for stdout
+    orig = $0
+
+    # Temporarily strip ANSI escape codes so we can reliably read columns
+    gsub(/\x1B\[[0-9;]*[a-zA-Z]/, "")
+
+    # Standard GStreamer log columns:
+    # 1:Time 2:PID 3:Thread 4:LEVEL 5:CATEGORY 6:File/Line/Func 7+:Message
+    level_str = $4
+    cat       = $5
+
+    # Check if the line matches a standard GStreamer log header
+    if (level_str in lvl_map) {
+        msg_level = lvl_map[level_str]
+        allowed_level = default_level
+
+        # 1. Check for exact category match
+        if (cat in cat_levels) {
+            allowed_level = cat_levels[cat]
+        }
+        # 2. Check for wildcard category match (e.g., "GST_*")
+        else {
+            for (c in cat_levels) {
+                if (index(c, "*") > 0) {
+                    pattern = "^" c "$"
+                    gsub(/\*/, ".*", pattern)
+                    if (cat ~ pattern) {
+                        allowed_level = cat_levels[c]
+                        break
+                    }
+                }
+            }
+        }
+
+        # Filter decision based on computed allowed level
+        if (msg_level <= allowed_level) {
+            last_decision = 1
+            print orig
+        } else {
+            last_decision = 0
+        }
+    } else {
+        # This handles multi-line outputs (like MEMDUMP or formatted strings)
+        # It inherits the print decision of the parent log line
+        if (last_decision == 1) {
+            print orig
+        }
+    }
+}
+' "$@"

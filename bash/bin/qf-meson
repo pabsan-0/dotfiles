@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# Scrollback to temp file
+LOG=$(mktemp)
+wezterm cli get-text ${1:+--pane-id "$1"} > "$LOG"
+
+ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+BUILD_DIR=$(find "$ROOT" -maxdepth 3 -type f -name "build.ninja" -exec dirname {} + 2>/dev/null | head -n 1)
+
+# If no build directory exists, create a default 'build/' folder
+# so Vim's quickfix list can resolve the compiler's '../' relative paths
+if [ -z "$BUILD_DIR" ]; then
+    BUILD_DIR="$ROOT/build"
+    mkdir -p "$BUILD_DIR"
+    echo "No build directory found. Created '$BUILD_DIR' to satisfy relative paths."
+    trap 'rmdir $BUILD_DIR' EXIT
+else
+    echo "Using existing build directory: $BUILD_DIR"
+fi
+
+cd "$BUILD_DIR"
+vim -q "$LOG" -c "copen"
