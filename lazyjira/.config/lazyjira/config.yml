@@ -9,11 +9,14 @@ gui:
         - priority
         - Team
     statusIcons:
-        On hold: ✋
         Future: 🔮
-        In Review: ±
-        Review Approved: 🟢
-        Review Completed: 🔴
+        To Do: ""
+        On hold: ✋
+        In Progress: 👉
+        Ready to Review: "\x1b[90m±\x1b[39m"
+        Review Approved: "\x1b[32m±\x1b[39m"
+        Review Completed: "\x1b[31m±\x1b[39m"
+        In Review: "\x1b[33m±\x1b[39m"
 
 # fields:
 #   - id: "customfield_11200"
@@ -22,7 +25,7 @@ gui:
 
 issueTabs:
   - name: "Queue"
-    jql: 'statusCategory != Done AND ((assignee = currentUser() AND status NOT IN ("In Review", "Ready to Review")) OR (cf[10500] = currentUser() AND status IN ("Ready to Review", "In Review"))) ORDER BY statusCategory ASC, updated DESC'
+    jql: 'statusCategory != Done AND ((assignee = currentUser() AND status NOT IN ("In Review", "Ready to Review")) OR (cf[10500] = currentUser() AND status IN ("Ready to Review", "In Review"))) ORDER BY status DESC'
 
   - name: "Awaiting Review"
     jql: 'assignee = currentUser() AND status IN ("In Review", "Ready to Review") ORDER BY updated DESC'
