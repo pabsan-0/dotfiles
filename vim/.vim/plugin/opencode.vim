@@ -1,3 +1,4 @@
+" Dump me in ~/.vim/plugin
 " FIXME range selection not working
 
 let s:opencode_buf = 0
@@ -127,6 +128,10 @@ function! OpenCodeRunNew(prompt)
     tnoremap <buffer> <C-6> <C-\><C-n><C-6>
     tnoremap <buffer> <C-^> <C-\><C-n><C-^>
     tnoremap <buffer> <C-5> <C-\><C-n>:call OpenCodeInsertLocation()<CR>i
+    tnoremap <buffer> <C-d> <C-w>c
+    tnoremap <buffer> \o    <C-w>c
+    tnoremap <buffer> \\    \
+
 
     let s:opencode_buf = bufnr('%')
 endfunction

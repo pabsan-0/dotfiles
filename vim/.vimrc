@@ -2,8 +2,8 @@
 " ~/.vimrc:138
 " ~/.vim/plugin/
 
-" Automatic reloading of .vimrc
-autocmd! bufwritepost .vimrc source %
+" Automatic reloading of .vimrc - this fucks up wezterm's colorscheme
+" autocmd! bufwritepost .vimrc source %
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ Customisation of existing features
@@ -88,7 +88,7 @@ set scrolloff=15
 
 " Status line with filename
 set laststatus=2
-set statusline=%F
+set statusline=%F\ %m\ %r%=%l/%L
 hi StatusLine ctermbg=white ctermfg=black
 
 " Netrw filetree options
@@ -147,6 +147,7 @@ Plug 'airblade/vim-gitgutter'    " git hints
 Plug 'kshenoy/vim-signature'     " display marks
 Plug 'tpope/vim-vinegar'         " super netrw
 Plug 'dense-analysis/ale'        " async lint engine
+Plug 'liuchengxu/vista.vim'      " Tlist but better (requires universal ctags!)
 Plug 'puremourning/vimspector'   " tui debugger
 Plug 'junegunn/vim-easy-align'   " vertical alignment
 Plug 'tpope/vim-commentary'      " very easy comment switching
@@ -157,10 +158,9 @@ Plug 'vim-scripts/a.vim'         " alternate source/header files
 Plug 'vim-scripts/taglist.vim'   " taglist utility
 Plug 'TamaMcGlinn/quickfixdd'    " remove from quickfix with dd
 Plug 'Yggdroot/indentLine'       " preview indent lines
-Plug 'vim-scripts/AnsiEsc.vim'
-Plug 'aymericbeaumet/vim-symlink'
-
-Plug 'gh-tui-tools/gh-review.vim'
+Plug 'airblade/vim-rooter'       " sensible auto cd on open
+Plug 'AndrewRadev/splitjoin.vim' " split statements into multiline
+Plug 'flwyd/vim-conjoin'         " join \-escaped lines
 
 Plug 'pabsan-0/vim-actions'      " commands atop fzf
 Plug 'pabsan-0/vim-flashcards'   " notes atop fzf
@@ -169,13 +169,17 @@ Plug 'pabsan-0/vim-slidev'       " slidev conveniences
 Plug 'pabsan-0/vim-pr-fix'       " pr fixing conveniences
 Plug 'pabsan-0/vim-gst-debug'    " vim log parsing
 Plug 'pabsan-0/vim-paginate'     " vim pager
-
+Plug 'pabsan-0/vim-carapace'     " in-editor shell completion
 
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
-" Plug 'vimwiki/vimwiki', { 'do': g:vimwiki_post_hook }
+Plug 'powerman/vim-plugin-ansiesc',  { 'do': 'sed -i ''s/^\s\+map/\"\0/g'' plugin/cecutil.vim' }
+
+" Not adopted
+Plug 'vimwiki/vimwiki', { 'do': g:vimwiki_post_hook }
 " Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 " Plug 'DanBradbury/copilot-chat.vim'
-" Plug 'github/copilot.vim'        " copilot autocomplete
+" Plug 'github/copilot.vim'         " copilot autocomplete
+" Plug 'aymericbeaumet/vim-symlink' " trippy
 call plug#end()
 
 " Fzf.vim
@@ -183,11 +187,12 @@ call plug#end()
 " Lets you keep history of searches.
 " Explicitly map c-p and c-n to keep usual behavior
 let g:fzf_history_dir = '~/.local/share/fzf-history'
-let $FZF_DEFAULT_OPTS = '--bind ctrl-n:down,ctrl-p:up,alt-n:next-history,alt-p:prev-history,ctrl-j:preview-down,ctrl-k:preview-up'
+let $FZF_DEFAULT_OPTS = '--bind ctrl-n:down,ctrl-p:up,alt-n:next-history,alt-p:prev-history,ctrl-j:down,ctrl-k:up'
 let g:fzf_layout = { 'down': '60%' }
 
 nnoremap <leader>f <Esc>:Files<cr>
 nnoremap <leader>b <Esc>:Buffers<cr>
+nnoremap <leader>t <Esc>:Tags<cr>
 nnoremap <leader>D <Esc>:GFiles?<cr>
 
 nnoremap <leader>r <Esc>:Rg<cr>
@@ -202,7 +207,7 @@ nnoremap <leader>dS :Gvdiffsplit
 
 " Vim gitgutter
 " jump hunks: [c ]c; preview, stage, and undo hunks:  <leader>hp, <leader>hs, and <leader>hu
-set updatetime=100
+set updatetime=300
 set signcolumn=yes
 highlight clear SignColumn
 highlight GitGutterAdd    guifg=#009900 ctermfg=green ctermbg=NONE
@@ -214,28 +219,44 @@ highlight GitGutterChange guifg=#bbbb00 ctermfg=3 ctermbg=NONE " orange
 let g:SignatureMarkTextHLDynamic = 1
 
 " ALE
+set omnifunc=ale#completion#OmniFunc
+let g:ale_virtualtext_cursor = 0 " dont add virtual text
 let g:ale_linters_explicit = 1
+let g:ale_fix_on_save = 1
 let g:ale_linters = {
 \   'javascript': ['deno --options-indent-width 4'],
-\   'sh': ['shellcheck'],
+\   'sh': ['language_server', 'shellcheck'],
 \   'python': ['ruff'],
-\   'dockerfile': ['hadolint']
-\}
-nnoremap <silent> [e :ALEPrevious<CR>
-nnoremap <silent> ]e :ALENext<CR>
+\   'dockerfile': ['hadolint'],
+\   'c': ['clangd'],
+\   'cpp': ['clangd'],
+\   'rust': ['analyzer','cargo']
+\ }
 
-let g:ale_virtualtext_cursor = 0 " dont add virtual text
-let g:ale_fix_on_save = 1
 let g:ale_fixers = {
 \   '*': ['remove_trailing_lines', 'trim_whitespace'],
 \   'help': ['align_help_tags'],
 \   'javascript': ['deno'],
 \   'python': ['black', 'isort'],
 \   'cpp': ['clang-format'],
-\   'markdown': ['prettier']
-\}
+\   'markdown': ['prettier'],
+\   'rust': ['rustfmt'],
+\ }
+
 " Easy saving without reformatting
 command! W :noautocmd w
+
+nnoremap <silent> [e :ALEPrevious<CR>
+nnoremap <silent> ]e :ALENext<CR>
+nnoremap <silent> gd :ALEGoToDefinition<CR>
+nnoremap <silent> gr :ALEFindReferences<CR>
+nnoremap <silent> gR :ALEFindReferences -quickfix<CR>
+
+" let g:ale_rust_analyzer_config = { 'diagnostics': { 'disabled': ['unlinked-file'], }, }
+
+" Vista
+" See also tagbar in the future: https://users.rust-lang.org/t/taglist-like-vim-plugin-for-rust/21924/13
+command! V :Vista!!
 
 " Vimspector
 let g:vimspector_enable_mappings = 'HUMAN'
@@ -284,15 +305,15 @@ let g:vimwiki_syntax_list['markdown']['typeface'] = {'bold': [], 'italic': [], '
 " Easy align
 nmap ga <Plug>(EasyAlign)
 xmap ga <Plug>(EasyAlign)
+let g:easy_align_delimiters = {}
+" Matches `&& \`, or just `\`, or just `;`, ensuring it's the last one on the line
+let g:easy_align_delimiters['n'] = { 'pattern': '\%(\%(&& \)\?\\\|;\)\ze[^\\;]*$' }
+let g:easy_align_delimiters['\'] = { 'pattern': '\\' }
 
 " Commentary (not really plugin-specific) overrides
 augroup commentStrings
     autocmd BufEnter *.md,*.markdown setlocal commentstring=<!--\ %s\ -->
 augroup end
-
-" Copilot chat
-nnoremap <leader>C :CopilotChatOpen<CR>
-vmap <leader>a <Plug>CopilotChatAddSelection
 
 " Context
 let g:context_highlight_border = 'Comment'
@@ -318,6 +339,11 @@ augroup END
 " related: strip rather than escape
 command! AnsiStrip silent! %s/\e\[[0-9;]*[mK]//ge | noh
 
+" Vim-carapace
+let g:carapace_overrides = {
+    \ 'gst-launch-1.0': [['DropWithValue', '--gst-plugin-load']],
+    \ }
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 """ Custom functionality
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -338,7 +364,7 @@ nnoremap <c-t> /[A-Z]<return>
 nnoremap <leader>gf :e <cfile><cr>
 vnoremap <leader>gf y:e <C-r>"<CR>
 
-" Visual around method (C-style with column 0 braces and blank line separators)
+" Visual around Method (C-style with column 0 braces and blank line separators)
 vnoremap am <Esc>k][V%{j
 omap am :normal vam<CR>
 
@@ -346,3 +372,31 @@ omap am :normal vam<CR>
 augroup cpp_detect
     au BufNewFile,BufRead *.ino setlocal filetype=cpp
 augroup end
+
+autocmd FileType rust setlocal formatoptions-=o
+
+
+" Ripgrep that will match non-comments in some files (exclude noncode manually)
+command! -bang -nargs=? RgCode
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case --type rust --type c  -P ' .
+  \   shellescape('^(?!\s*(//|#|/\*|\*|<!--|--)).*' . <q-args>),
+  \   1,
+  \   fzf#vim#with_preview(),
+  \   <bang>0)
+
+" Open a local tab in custom GStreamer repo. Rg if visual
+function! s:GstExplore(count)
+  if a:count == -1
+    tabe | lcd /opt/gst | Explore
+  else
+    let l:saved_reg = getreg('"')
+    normal! gv""y
+    let l:query = getreg('"')
+    call setreg('"', l:saved_reg)
+    let l:query = substitute(l:query, '\n', ' ', 'g')
+    tabe | lcd /opt/gst
+    execute 'RgCode ' . escape(l:query, '|')
+  endif
+endfunction
+command! -bang -range=-1 Gst call <SID>GstExplore(<count>)

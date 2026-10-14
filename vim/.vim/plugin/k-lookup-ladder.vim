@@ -17,6 +17,19 @@ function! ChainedLookupCb(...)
         return
     endif
 
+    echom l:word
+    if l:word =~ "^g_"
+        let l:url = "https://duckduckgo.com/?q=!ducky+" .. l:word .. "+site%3Agtk.org"
+        call system("xdg-open " .. shellescape(l:url))
+        echom l:url
+        return
+    endif
+
+    if exists('g:loaded_ale')
+        execute 'ALEHover'
+        return
+    endif
+
     " Fallback to native
     let &keywordprg = g:default_kp
     try
