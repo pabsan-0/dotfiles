@@ -22,6 +22,10 @@ gh() {
             command gh pr create --title "$(git branch --show-current)" "$@"
         fi
 
+    # elif [[ "$1" == "worktree" && "$2" == "remove" && $(($# != 3 )) ]]; then
+    #     mkdir -p _"archived"
+    #     mv "$3" "_archived/$3"
+    #     command gh $@
     else
         command gh "$@"
     fi

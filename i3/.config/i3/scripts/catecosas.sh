@@ -6,8 +6,10 @@ read -r -d '' YAML <<'YAML' || true
 
 github:                            xdg-open https://github.com/$(git config user.name)
 github/gists:                      xdg-open https://gist.github.com/$(git config user.name)
-github/repos-org:                  ${TERMINAL} "i3-msg fullscreen enable; exec repos-org --no-term fluendo"
-github/repos:                      ${TERMINAL} "i3-msg fullscreen enable; exec repos pabsan-0"
+github/repos-org:                  ${TERMINAL} "sleep 0.2; i3-msg fullscreen enable; exec repos-org --no-term fluendo"
+github/repos:                      ${TERMINAL} "sleep 0.2; i3-msg fullscreen enable; exec repos pabsan-0"
+
+gitlab/gstreamer:                  xdg-open https://gitlab.freedesktop.org/gstreamer/gstreamer
 
 gmail:                             xdg-open https://mail.google.com/
 tasks:                             xdg-open https://tasks.google.com/tasks
@@ -31,9 +33,9 @@ kenjo:                             xdg-open https://app.kenjo.io/
 kenjo/attendances:                 xdg-open https://app.kenjo.io/cloud/attendance/my-attendance
 travelperk:                        xdg-open https://fluendo.perk.com/home/
 
-term/lazyjira:                     ${TERMINAL} "sleep 0.1; i3-msg fullscreen enable; exec lazyjira"
-term/gh-dash:                      ${TERMINAL} "sleep 0.1; i3-msg fullscreen enable; exec gh dash 2>/dev/null"
-term/gst-1.26.2:                   ${TERMINAL} "sleep 0.1; i3-msg fullscreen enable; cd /opt/gstreamer--pinned/1.26.8/ && vim -c 'set clipboard=unnamedplus' "
+term/lazyjira:                     ${TERMINAL} "sleep 0.2; i3-msg fullscreen enable; exec lazyjira"
+term/gh-dash:                      ${TERMINAL} "sleep 0.2; i3-msg fullscreen enable; exec gh dash 2>/dev/null"
+term/gst-1.26.2:                   ${TERMINAL} "sleep 0.2; i3-msg fullscreen enable; cd /opt/gstreamer--pinned/1.26.8/ && vim -c 'set clipboard=unnamedplus' "
 
 YAML
 

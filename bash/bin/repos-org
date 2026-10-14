@@ -37,7 +37,7 @@ CACHE_FILE="$HOME/.cache/pabsan-0/$(basename "$0")/$arg__target.txt"
 
 cook_cache() {
     mkdir -p "$(dirname "$CACHE_FILE")"
-    notify-send "$0" "Updating cache for $arg__target... You'll be notified when done."
+    notify-send "$0: Updating cache for $arg__target... You'll be notified when done."
 
     # Get repos with info. Crop description to 80 char
     gh repo list "$arg__target" -L 1000  \
@@ -52,9 +52,9 @@ cook_cache() {
     local exit_code=$?
 
     if [[ $exit_code -eq 0 ]]; then
-        notify-send "$0" "Cache updated for $arg__target. $(wc -l < "$CACHE_FILE") repos found."
+        notify-send "$0: Cache updated for $arg__target. $(wc -l < "$CACHE_FILE") repos found."
     else
-        notify-send "$0" "Cache update FAILED for $arg__target (exit code $exit_code)."
+        notify-send "$0: Cache update FAILED for $arg__target (exit code $exit_code)."
     fi
 }
 

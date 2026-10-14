@@ -69,7 +69,7 @@ set $workspace10 "10 "
 # switch to workspace, default application if not already running
 # remember these dont work with auto back and forth
 bindsym $mod+grave workspace $workspace0; exec i3-save-tree --workspace 0 | grep calend  || ~/bin/web-googlecalendar
-bindsym $mod+1 workspace $workspace1;     exec i3-save-tree --workspace 1 | grep brave   || brave
+bindsym $mod+1 workspace $workspace1;     exec i3-save-tree --workspace 1 | grep brave   || brave-browser
 bindsym $mod+2 workspace $workspace2;     exec i3-save-tree --workspace 2 | grep wezterm || wezterm
 bindsym $mod+3 workspace $workspace3
 bindsym $mod+4 workspace $workspace4
@@ -188,11 +188,14 @@ bindsym XF86MonBrightnessUp exec brightnessctl s +5%
 ########## Applications ##########
 
 # GUI volume control. Scan position with xdotool selectwindow getwindowgeometry
-for_window [class="Pavucontrol"] \
-    floating enable, \
-    sticky enable, \
+for_window [class="Pavucontrol"] floating enable, sticky enable, \
     resize set width 580 height 420, \
     move position 1320 630
+
+for_window [class="Arandr"] floating enable, sticky enable, \
+    resize set width 580 height 420
+
+for_window [class="ripdrag"] floating enable, sticky enable
 
 # Applications
 bindsym $mod+Return exec wezterm

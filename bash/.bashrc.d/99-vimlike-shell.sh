@@ -12,7 +12,7 @@ qq () {
     history                                               |
         sort --numeric-sort                               |
         awk '{$1=""; sub(/^[[:space:]]+/, ""); print $0}' |
-        cat > "$tempfile"
+        cat >| "$tempfile"
     }
 
     # Open file in vim, running two commands on startup
