@@ -5,6 +5,42 @@ local config = wezterm.config_builder()
 -- config.hyperlink_rules = wezterm.default_hyperlink_rules()
 -- config.quick_select_patterns = {}
 
+-- Support for Jira issue keys && git repo integration
+local JIRA_BASE_URL = "https://fluendo.atlassian.net/browse/"
+local JIRA_PATTERN = [[[A-Za-z0-9._/-]*[A-Z][A-Z0-9_]+-\d+[A-Za-z0-9._/-]*]]
+
+config.hyperlink_rules = wezterm.default_hyperlink_rules()
+table.insert(config.hyperlink_rules, {
+  regex = [[\b[A-Z][A-Z0-9_]+-\d+\b]],
+  format = JIRA_BASE_URL .. '$0',
+})
+
+config.quick_select_patterns = {
+    [[\b[A-Z][A-Z0-9_]+-\d+\b]], -- jira issues
+}
+
+local function get_github_repo_url(pane)
+  local cwd_uri = pane:get_current_working_dir()
+  if not cwd_uri or not cwd_uri.file_path then return nil end
+
+  local success, stdout, _ = wezterm.run_child_process {
+    'git', '-C', cwd_uri.file_path, 'remote', 'get-url', 'origin'
+  }
+
+  if not success or not stdout then return nil end
+
+  local url = stdout:gsub('%s+', ''):gsub('%.git$', '')
+
+  if url:find('^git@github%.com:') then
+    url = url:gsub('^git@github%.com:', 'https://github.com/')
+  elseif url:find('^ssh://git@github%.com/') then
+    url = url:gsub('^ssh://git@github%.com/', 'https://github.com/')
+  end
+
+  return url
+end
+
+
 
 -- Perf and rendering
 config.front_end = "Software"
@@ -176,6 +212,59 @@ config.keys = {
             -- wezterm.sleep_ms(1000)
             -- os.remove(name)
       end),
+    },
+    {
+        key = 'I',
+        mods = 'CTRL|SHIFT',
+        action = wezterm.action.QuickSelectArgs {
+            patterns = { JIRA_PATTERN },
+            action = wezterm.action_callback(function(window, pane)
+                -- Retrieve the quick-selected text directly from the pane
+                local label = window:get_selection_text_for_pane(pane)
+                if not label then return end
+
+                local jira_key = label:match("([A-Z][A-Z0-9_]+%-%d+)")
+                if not jira_key then return end
+
+                local jira_url = JIRA_BASE_URL .. jira_key
+                local gh_repo_url = get_github_repo_url(pane)
+                local gh_branch_url = gh_repo_url and string.format("%s/tree/%s", gh_repo_url, label) or nil
+
+                local choices = {
+                    { id = 'copy_key',  label = '🏷️  Copy Key (' .. jira_key .. ')' },
+                    { id = 'open_jira', label = '🌐 Open Jira Link' },
+                    { id = 'copy_jira', label = '🔗 Copy Jira Link' },
+                }
+
+                if gh_branch_url then
+                    table.insert(choices, { id = 'open_gh', label = '🐙 Open GitHub Branch (' .. jira_key .. ')' })
+                    table.insert(choices, { id = 'copy_gh', label = '📋 Copy GitHub Branch Link' })
+                end
+
+                window:perform_action(
+                wezterm.action.InputSelector {
+                    title = 'Jira Actions: ' .. jira_key,
+                    choices = choices,
+                    action = wezterm.action_callback(function(inner_window, inner_pane, choice_id)
+                        if not choice_id then return end
+
+                        if choice_id == 'copy_key' then
+                            inner_window:copy_to_clipboard(jira_key, 'Clipboard')
+                        elseif choice_id == 'open_jira' then
+                            wezterm.open_with(jira_url)
+                        elseif choice_id == 'copy_jira' then
+                            inner_window:copy_to_clipboard(jira_url, 'Clipboard')
+                        elseif choice_id == 'open_gh' then
+                            wezterm.open_with(gh_branch_url)
+                        elseif choice_id == 'copy_gh' then
+                            inner_window:copy_to_clipboard(gh_branch_url, 'Clipboard')
+                        end
+                    end),
+                },
+                pane
+                )
+            end),
+        },
     },
 }
 
