@@ -148,6 +148,17 @@ config.keys = {
         mods = 'SHIFT',
         action = wezterm.action.SendString ' '
     },
+    -- Scans terminal for WORDS
+    {
+        key = 'W',
+        mods = 'CTRL|SHIFT',
+        action = wezterm.action.QuickSelectArgs {
+            label = 'copy word',
+            patterns = {
+                [[\S+]],
+            },
+        },
+    },
     -- Scans terminal for filenames and opens selection in $EDITOR
     {
         key = 'E',
@@ -197,10 +208,10 @@ config.keys = {
                         '-c', 'nnoremap y "+y | xnoremap y "+y',
                         '-c', 'nnoremap yy "+yy',
                         '-c', 'nnoremap Y "+Y',
-                        '-c', "nnoremap <silent> <C-P> k<Cmd>call search('@.*\\$', 'bWe')<CR>",
-                        '-c', "nnoremap <silent> <C-N> <Cmd>call search('@.*\\$', 'We')<CR>",
-                        '-c', "xnoremap <silent> <C-P> k<Cmd>call search('@.*\\$', 'bWe')<CR>",
-                        '-c', "xnoremap <silent> <C-N> <Cmd>call search('@.*\\$', 'We')<CR>",
+                        '-c', "nnoremap <silent> <C-P> k<Cmd>call search('@.*[$#]', 'bWe')<CR>",
+                        '-c', "nnoremap <silent> <C-N> <Cmd>call search('@.*[$#]', 'We')<CR>",
+                        '-c', "xnoremap <silent> <C-P> k<Cmd>call search('@.*[$#]', 'bWe')<CR>",
+                        '-c', "xnoremap <silent> <C-N> <Cmd>call search('@.*[$#]', 'We')<CR>",
                         '-c', 'AnsiEsc',
                         '-c', 'normal G',
                     },
