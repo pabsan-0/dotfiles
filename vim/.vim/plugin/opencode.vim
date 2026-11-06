@@ -131,27 +131,14 @@ function! OpenCodeUserLocation(start, end)
     return l:location
 endfunction
 
-" Line range to send as context, in order of precedence: the range the command
-" was given, a newer visual selection, then the last range used. A selection is
-" recognised by its marks, which are read now because they are live while the
-" command runs even after Vim has drained the keys that ended visual mode.
+" Line range to send as context: a visual selection captured when visual mode
+" was left, otherwise the range the command was given or the cursor line.
 function! OpenCodeSourceRange(...)
-    let l:given = a:0 ? a:1 : [line('.'), line('.')]
-    let [l:first, l:last] = sort([line("'<"), line("'>")], 'n')
-    let l:selected = l:first > 0 && l:first != l:last
-    let l:fresh = l:selected && [l:first, l:last] != get(g:, 'opencode_selected', [0, 0])
-
-    if exists('g:opencode_command_range')
-        let l:range = l:fresh ? [l:first, l:last] : l:given
-    elseif l:selected && (l:fresh || line('.') != get(g:, 'opencode_cursor', -1))
-        let l:range = [l:first, l:last]
-    else
-        let l:range = get(g:, 'opencode_selection', l:given)
+    let l:range = a:0 ? a:1 : [line('.'), line('.')]
+    if exists('b:opencode_visual')
+        let l:range = b:opencode_visual
+        unlet b:opencode_visual
     endif
-
-    let g:opencode_selection = l:range
-    let g:opencode_selected = l:selected ? [l:first, l:last] : get(g:, 'opencode_selected', [0, 0])
-    let g:opencode_cursor = line('.')
     unlet! g:opencode_command_range
     return l:range
 endfunction
@@ -282,12 +269,35 @@ function! s:QuitOpencode()
     silent! execute 'bwipeout!' s:opencode_buf
 endfunction
 
+" A visual selection becomes context only if leaving visual mode did not edit
+" the buffer, and it is used once: the next Ctrl-5, cursor move or buffer change
+" drops it. This means deleting a paragraph wont pass the deleted range on the
+" next request.
+function! s:TrackVisual()
+    let l:visual = "[vV\<C-v>]"
+    let l:old = v:event.old_mode
+    let l:new = v:event.new_mode
+    if l:new =~# l:visual && l:old !~# l:visual
+        let b:opencode_visual_tick = b:changedtick
+        unlet! b:opencode_visual
+    elseif l:old =~# l:visual && l:new !~# l:visual
+        if get(b:, 'opencode_visual_tick', -1) == b:changedtick
+            let b:opencode_visual = sort([line("'<"), line("'>")], 'n')
+        else
+            unlet! b:opencode_visual
+        endif
+        unlet! b:opencode_visual_tick
+    endif
+endfunction
+
 augroup AutocmdOpenCode
     autocmd!
+    autocmd ModeChanged * call s:TrackVisual()
+    autocmd CursorMoved * unlet! b:opencode_visual
+    autocmd TextChanged * unlet! b:opencode_visual
     autocmd VimLeavePre * call OpenCodeClose()
     " :qa refuses while a terminal job runs; drop it before the decision
     autocmd QuitPre * call s:QuitOpencode()
-    " The marks are live on the way out of visual mode, the anchor is not
 augroup END
 
 
